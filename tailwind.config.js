@@ -5,6 +5,9 @@ export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
+      maxWidth: {
+        main: '1120px',
+      },
       colors: {
         primary: '#2e73dc',
         accent: {

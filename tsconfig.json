@@ -23,6 +23,7 @@
     /* Others */
     "paths": {
       "#/assets/*": ["./src/assets/*"],
+      "#/config/*": ["./src/config/*"],
       "#/base/*": ["./src/features/base/*"],
       "#/core/*": ["./src/features/core/*"]
     }
