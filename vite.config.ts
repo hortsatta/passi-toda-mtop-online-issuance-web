@@ -30,6 +30,18 @@ export default defineConfig({
           new URL('./src/features/core', import.meta.url),
         ),
       },
+      {
+        find: '#/user',
+        replacement: fileURLToPath(
+          new URL('./src/features/user', import.meta.url),
+        ),
+      },
+      {
+        find: '#/franchise',
+        replacement: fileURLToPath(
+          new URL('./src/features/franchise', import.meta.url),
+        ),
+      },
     ],
   },
 });

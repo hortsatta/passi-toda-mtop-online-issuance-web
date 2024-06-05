@@ -8,3 +8,13 @@ export const queryUserKey = {
   // studentSingle: ['users', 'student-single'],
   // allStudentList: ['users', 'all-student-list'],
 };
+
+export const queryFranchiseKey = {
+  list: ['franchises', 'list'],
+  single: ['franchises', 'single'],
+};
+
+export const queryTodaAssociationKey = {
+  list: ['toda-associations', 'list'],
+  single: ['toda-associations', 'single'],
+};

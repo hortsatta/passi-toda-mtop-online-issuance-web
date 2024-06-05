@@ -1,4 +1,4 @@
-import type { AuditTrail } from '#/core/models/core.mode';
+import type { AuditTrail } from '#/core/models/core.model';
 
 export enum UserApprovalStatus {
   Pending = 'pending',
@@ -34,6 +34,7 @@ export type UserProfile = Partial<AuditTrail> & {
   birthDate: Date;
   gender: UserGender;
   phoneNumber: string;
+  driverLicenseNo: string;
   middleName?: string;
   fullName?: string;
   reverseFullName?: string;

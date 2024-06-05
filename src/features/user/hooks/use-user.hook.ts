@@ -10,13 +10,10 @@ import {
 import { UserRole } from '../models/user.model';
 
 import type { User } from '../models/user.model';
-import type { UserRegisterFormData } from '../models/user-form-data.model';
+import type { UserCreateFormData } from '../models/user-form-data.model';
 
 type Result = {
-  register: (
-    data: UserRegisterFormData,
-    role: UserRole,
-  ) => Promise<User | null>;
+  register: (data: UserCreateFormData, role: UserRole) => Promise<User | null>;
   getUser: () => Promise<User>;
 };
 
@@ -42,7 +39,7 @@ export function useUser(): Result {
     useMutation(registerMemberUser());
 
   const register = useCallback(
-    async (data: UserRegisterFormData, role: UserRole) => {
+    async (data: UserCreateFormData, role: UserRole) => {
       try {
         let newUser = null;
 

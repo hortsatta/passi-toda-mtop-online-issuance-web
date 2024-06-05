@@ -9,20 +9,39 @@ export default {
         main: '1120px',
       },
       colors: {
-        primary: '#2e73dc',
+        primary: {
+          DEFAULT: '#2e73dc',
+          'button-hover': '#125dce',
+        },
         accent: {
           DEFAULT: '#f4a203',
         },
         backdrop: {
           DEFAULT: '#121212',
           surface: '#18181c',
-          field: 'rgba(217,217,217, 0.05)',
-          'field-primary': '#855800',
+          'surface-accent': '#d98f00',
+          input: 'rgba(217,217,217, 0.05)',
+          'input-primary': '#855800',
+          'input-hover': 'rgba(217,217,217, 0.1)',
         },
         text: 'rgba(255,255,255, 0.8)',
+        border: {
+          DEFAULT: 'rgba(255,255,255, 0.1)',
+        },
       },
       fontFamily: {
         body: ['var(--font-body)', ...defaultTheme.fontFamily.sans],
+      },
+      keyframes: {
+        ltr: {
+          '0%': { left: '-25%', opacity: 0 },
+          '50%': { opacity: 1 },
+          '75%': { opacity: 1 },
+          '100%': { left: '100%', opacity: 0 },
+        },
+      },
+      animation: {
+        loading: 'ltr 1s linear infinite',
       },
     },
   },

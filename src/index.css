@@ -8,8 +8,12 @@
     --font-display: Display;
   }
 
+  html {
+    @apply text-sm;
+  }
+
   body {
-    @apply bg-backdrop font-body text-text;
+    @apply bg-backdrop font-body text-sm text-text;
   }
 
   a {
@@ -28,12 +32,38 @@
   h1,
   h2,
   h3 {
-    @apply text-2xl;
+    @apply text-3xl;
   }
 
   h4,
   h5,
   h6 {
-    @apply text-lg;
+    @apply text-xl;
   }
+
+  input[type='date']::-webkit-calendar-picker-indicator {
+    @apply opacity-0;
+  }
+
+  input[type='date'],
+  input[type='date']:focus {
+    @apply bg-transparent;
+  }
+
+  select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+}
+
+input:-internal-autofill-selected + label,
+input:-internal-autofill-selected:hover + label,
+input:-internal-autofill-selected:focus + label,
+textarea:-internal-autofill-selected + label,
+textarea:-internal-autofill-selected:hover + label,
+textarea:-internal-autofill-selected:focus + label,
+select:-internal-autofill-selected + label,
+select:-internal-autofill-selected:hover + label,
+select:-internal-autofill-selected:focus + label {
+  @apply !text-black;
 }

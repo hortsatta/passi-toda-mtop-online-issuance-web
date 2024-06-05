@@ -12,7 +12,7 @@ import type {
   UseQueryOptions,
 } from '@tanstack/react-query';
 import type { User } from '../models/user.model';
-import type { UserRegisterFormData } from '../models/user-form-data.model';
+import type { UserCreateFormData } from '../models/user-form-data.model';
 
 const BASE_URL = 'users';
 const ISSUER_URL = `${BASE_URL}/issuers`;
@@ -31,7 +31,6 @@ export function getCurrentUser(
       const user = await kyInstance.get(url).json();
       return transformToUser(user);
     } catch (error: any) {
-      console.log('error', typeof error);
       const apiError = await generateApiError(error);
       throw apiError;
     }
@@ -46,11 +45,11 @@ export function getCurrentUser(
 
 export function registerIssuerUser(
   options?: Omit<
-    UseMutationOptions<User | null, Error, UserRegisterFormData, any>,
+    UseMutationOptions<User | null, Error, UserCreateFormData, any>,
     'mutationFn'
   >,
 ) {
-  const mutationFn = async (data: UserRegisterFormData): Promise<any> => {
+  const mutationFn = async (data: UserCreateFormData): Promise<any> => {
     const url = `${ISSUER_URL}/register`;
     const json = transformToUserCreateDto(data);
 
@@ -68,11 +67,11 @@ export function registerIssuerUser(
 
 export function registerMemberUser(
   options?: Omit<
-    UseMutationOptions<User | null, Error, UserRegisterFormData, any>,
+    UseMutationOptions<User | null, Error, UserCreateFormData, any>,
     'mutationFn'
   >,
 ) {
-  const mutationFn = async (data: UserRegisterFormData): Promise<any> => {
+  const mutationFn = async (data: UserCreateFormData): Promise<any> => {
     const url = `${MEMBER_URL}/register`;
     const json = transformToUserCreateDto(data);
 

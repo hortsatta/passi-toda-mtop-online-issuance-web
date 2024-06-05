@@ -3,3 +3,8 @@ export type AuditTrail = {
   updatedAt: Date;
   deletedAt: Date;
 };
+
+export type SelectItem = {
+  value: string;
+  label?: string;
+};

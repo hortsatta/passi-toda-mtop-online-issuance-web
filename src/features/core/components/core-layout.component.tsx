@@ -6,7 +6,7 @@ export function CoreLayout() {
   return (
     <div className='flex min-h-screen flex-col'>
       <CoreHeader />
-      <main className='max-w-main mx-auto w-full flex-1'>
+      <main className='mx-auto w-full max-w-main flex-1'>
         <Outlet />
       </main>
       {/* TODO footer */}

@@ -1,7 +1,7 @@
 import dayjs from '#/config/dayjs.config';
 import { generateFullNames } from './user-helper';
 
-import { UserApprovalStatus } from '../models/user.model';
+import { transformAuditTrail } from '#/core/helpers/core.helper';
 
 import type { User, UserProfile } from '../models/user.model';
 
@@ -16,29 +16,32 @@ export function transformToUser({
   lastSignInDate,
   userProfile,
 }: any): User {
-  const transformedUserProfile = transformToUserProfile(userProfile);
+  const transformedUserProfile = userProfile
+    ? transformToUserProfile(userProfile)
+    : ({} as any);
 
   return {
-    id,
-    createdAt: dayjs(createdAt).toDate(),
-    updatedAt: dayjs(updatedAt).toDate(),
     lastSignInDate: lastSignInDate ? dayjs(lastSignInDate).toDate() : null,
     role,
     email,
     approvalStatus,
     approvalDate: approvalDate ? dayjs(approvalDate).toDate() : null,
     userProfile: transformedUserProfile,
+    ...transformAuditTrail(id, createdAt, updatedAt),
   };
 }
 
 export function transformToUserProfile({
   id,
+  createdAt,
+  updatedAt,
   firstName,
   lastName,
   middleName,
   birthDate,
   phoneNumber,
   gender,
+  driverLicenseNo,
 }: any): UserProfile {
   const { fullName, reverseFullName } = generateFullNames(
     firstName,
@@ -47,15 +50,16 @@ export function transformToUserProfile({
   );
 
   return {
-    id,
     firstName,
     lastName,
     middleName,
     birthDate: dayjs(birthDate).toDate(),
     phoneNumber,
     gender,
+    driverLicenseNo,
     fullName,
     reverseFullName,
+    ...transformAuditTrail(id, createdAt, updatedAt),
   };
 }
 
@@ -68,12 +72,12 @@ export function transformToUserCreateDto({
   birthDate,
   phoneNumber,
   gender,
-  approvalStatus = UserApprovalStatus.Approved,
+  driverLicenseNo,
+  // approvalStatus = UserApprovalStatus.Approved,
 }: any) {
   return {
     email,
     password,
-    approvalStatus,
     userProfile: {
       firstName,
       lastName,
@@ -81,6 +85,7 @@ export function transformToUserCreateDto({
       birthDate,
       phoneNumber: phoneNumber.replace(/\D/g, ''),
       gender,
+      driverLicenseNo,
     },
   };
 }
@@ -93,6 +98,7 @@ export function transformToUserUpdateDto({
   birthDate,
   phoneNumber,
   gender,
+  driverLicenseNo,
 }: any) {
   return {
     email,
@@ -103,6 +109,7 @@ export function transformToUserUpdateDto({
       birthDate,
       phoneNumber: phoneNumber.replace(/\D/g, ''),
       gender,
+      driverLicenseNo,
     },
   };
 }
