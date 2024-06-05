@@ -1,3 +1,7 @@
+export const baseMemberRoute = 'm';
+
+export const baseIssuerRoute = 'i';
+
 export const routeConfig = {
   authSignIn: {
     name: 'sign-in',
@@ -15,7 +19,17 @@ export const routeConfig = {
   franchise: {
     name: 'franchises',
     to: 'franchises',
-    createTo: 'register',
+    label: 'Franchise',
+    list: {
+      label: 'List',
+    },
+    create: {
+      to: 'register',
+      label: 'Registration',
+    },
+    edit: {
+      to: 'edit',
+    },
   },
   user: {
     name: 'users',

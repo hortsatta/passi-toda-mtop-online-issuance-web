@@ -4,13 +4,15 @@ export type IconName =
   | 'arrow-counter-clockwise'
   | 'calendar'
   | 'caret-circle-down'
+  | 'check-circle'
   | 'eye'
   | 'eye-slash'
   | 'image'
   | 'sign-out'
   | 'user'
   | 'user-circle-plus'
-  | 'x';
+  | 'x'
+  | 'x-circle';
 
 export type FormProps<
   TProps extends keyof JSX.IntrinsicElements | JSXElementConstructor<any>,

@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import { useBoundStore } from '#/core/hooks/use-store.hook';
+import { BaseLoading } from '#/base/components/base-loading.component';
 
 import type { ReactNode } from 'react';
 import type { UserRole } from '../models/user.model';
@@ -12,8 +13,6 @@ type Props = {
   reverse?: boolean;
   redirectTo?: string;
 };
-
-const CLASSNAME_ORB = 'relative w-5 h-5 bg-text/50 rounded-full';
 
 export function AuthProtectedRoute({
   roles,
@@ -32,21 +31,7 @@ export function AuthProtectedRoute({
   }, [user, roles]);
 
   if (user === undefined) {
-    return (
-      <div className='flex h-screen w-full items-center justify-center'>
-        <div className='-mt-40 flex items-center gap-2.5'>
-          <div
-            className={`${CLASSNAME_ORB} animate-[bounce_1s_linear_infinite]`}
-          />
-          <div
-            className={`${CLASSNAME_ORB} animate-[bounce_1s_linear_0.2s_infinite]`}
-          />
-          <div
-            className={`${CLASSNAME_ORB} animate-[bounce_1s_linear_0.4s_infinite]`}
-          />
-        </div>
-      </div>
-    );
+    return <BaseLoading />;
   }
 
   if (reverse) {

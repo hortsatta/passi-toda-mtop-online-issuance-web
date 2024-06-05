@@ -29,8 +29,8 @@ export function getFranchisesByCurrentMemberUser(
   },
   options?: Omit<
     UseQueryOptions<Franchise[], Error, Franchise[], any>,
-    'queryFn'
-  >,
+    'queryFn' | 'queryKey'
+  > & { queryKey?: any },
 ) {
   const { ids, q, status, sort } = keys || {};
   const { queryKey, ...moreOptions } = options || {};

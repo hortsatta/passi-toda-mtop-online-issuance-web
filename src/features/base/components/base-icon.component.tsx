@@ -3,6 +3,7 @@ import {
   ArrowCounterClockwise,
   Calendar,
   CaretCircleDown,
+  CheckCircle,
   Eye,
   EyeSlash,
   Image,
@@ -10,6 +11,7 @@ import {
   User,
   UserCirclePlus,
   X,
+  XCircle,
 } from '@phosphor-icons/react';
 
 import type { Icon as PhosphorIcon, IconProps } from '@phosphor-icons/react';
@@ -29,6 +31,8 @@ export const BaseIcon = memo(
           return Calendar;
         case 'caret-circle-down':
           return CaretCircleDown;
+        case 'check-circle':
+          return CheckCircle;
         case 'eye':
           return Eye;
         case 'eye-slash':
@@ -43,6 +47,8 @@ export const BaseIcon = memo(
           return UserCirclePlus;
         case 'x':
           return X;
+        case 'x-circle':
+          return XCircle;
       }
     }, [name]);
 

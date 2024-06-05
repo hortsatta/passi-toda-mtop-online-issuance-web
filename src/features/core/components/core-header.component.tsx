@@ -1,5 +1,5 @@
 import { memo, useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import cx from 'classix';
 
 import { routeConfig } from '#/config/routes.config';
@@ -7,6 +7,9 @@ import { useAuth } from '#/user/hooks/use-auth.hook';
 import { AuthSignInFormCompact } from '#/user/components/auth-sign-in-form-compact.component';
 import { CurrentUserCard } from '#/user/components/current-user-card.component';
 import { useBoundStore } from '../hooks/use-store.hook';
+import { CoreNavMenu } from './core-nav-menu.component';
+
+import logoPng from '#/assets/images/logo.png';
 
 import type { ComponentProps } from 'react';
 
@@ -32,13 +35,26 @@ export const CoreHeader = memo(function ({
       )}
       {...moreProps}
     >
-      {/* TODO logo with hidden h1 */}
-      <h1>MTOP Online Issuance</h1>
+      <Link to='/' className='flex items-center gap-3 hover:no-underline'>
+        <img src={logoPng} alt='logo' />
+        <div className='text-text'>
+          <span className='font-medium uppercase leading-none'>Passi City</span>
+          <h1 className='text-2xl font-medium leading-none'>
+            MTOP Online Issuance
+          </h1>
+        </div>
+      </Link>
       {children}
       {user !== undefined && (
-        <div>
+        <div className='flex h-full items-center gap-5'>
           {!isSignInPage && !user && <AuthSignInFormCompact />}
-          {user && <CurrentUserCard user={user} signOut={signOut} />}
+          {user && (
+            <>
+              <CoreNavMenu role={user.role} />
+              <div className='h-3/5 w-px border-r border-border' />
+              <CurrentUserCard user={user} signOut={signOut} />
+            </>
+          )}
         </div>
       )}
     </header>
