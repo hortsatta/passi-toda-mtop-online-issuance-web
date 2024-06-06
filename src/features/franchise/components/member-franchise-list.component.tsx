@@ -47,7 +47,7 @@ export const MemberFranchiseList = memo(function ({
     >
       {isEmpty ? (
         <BaseDataEmptyMessage
-          message='No franchises available'
+          message='No franchises to show'
           linkTo={routeConfig.franchise.create.to}
         />
       ) : (

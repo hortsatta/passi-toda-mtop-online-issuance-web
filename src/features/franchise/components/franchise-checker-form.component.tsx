@@ -81,8 +81,9 @@ export const FranchiseCheckerForm = memo(function ({
         />
       </div>
       <BaseButton
-        className='h-[80px] w-full rounded-none border-none !bg-accent !text-xl hover:!bg-yellow-700 active:!bg-accent'
+        className='h-[80px] w-full rounded-none border-none !text-xl'
         type='submit'
+        variant='accent'
         loading={isSubmitting || isDone}
       >
         Proceed

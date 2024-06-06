@@ -11,14 +11,62 @@ import type {
   UseQueryOptions,
 } from '@tanstack/react-query';
 import type {
+  FranchiseDigest,
   Franchise,
   FranchiseApprovalStatus,
 } from '../models/franchise.model';
 import type { FranchiseUpsertFormData } from '../models/franchise-form-data.model';
 
 const BASE_URL = 'franchises';
+const ISSUER_URL = 'issuer';
 
 // TODO pagination
+
+export function getAllFranchises(
+  keys?: {
+    ids?: number[];
+    q?: string;
+    status?: string;
+    sort?: string;
+    limit?: number;
+  },
+  options?: Omit<
+    UseQueryOptions<Franchise[], Error, Franchise[], any>,
+    'queryFn' | 'queryKey'
+  > & { queryKey?: any },
+) {
+  const { q, status, sort, limit } = keys || {};
+  const { queryKey, ...moreOptions } = options || {};
+
+  const queryFn = async (): Promise<any> => {
+    const url = `${BASE_URL}/${ISSUER_URL}/list/all`;
+    const searchParams = generateSearchParams({
+      q,
+      status,
+      sort,
+      limit: limit?.toString(),
+    });
+
+    try {
+      const franchises = await kyInstance.get(url, { searchParams }).json();
+      return (franchises as any[]).map((franchise) =>
+        transformToFranchise(franchise),
+      );
+    } catch (error: any) {
+      const apiError = await generateApiError(error);
+      throw apiError;
+    }
+  };
+
+  return {
+    queryKey: [
+      ...(queryKey?.length ? queryKey : queryFranchiseKey.list),
+      { q, status, sort },
+    ],
+    queryFn,
+    ...moreOptions,
+  };
+}
 
 export function getFranchisesByCurrentMemberUser(
   keys?: {
@@ -60,6 +108,47 @@ export function getFranchisesByCurrentMemberUser(
       ...(queryKey?.length ? queryKey : queryFranchiseKey.list),
       { q, ids, status, sort },
     ],
+    queryFn,
+    ...moreOptions,
+  };
+}
+
+export function getFranchiseDigest(
+  options?: Omit<
+    UseQueryOptions<FranchiseDigest, Error, FranchiseDigest, any>,
+    'queryFn' | 'queryKey'
+  > & { queryKey?: any },
+) {
+  const { queryKey, ...moreOptions } = options || {};
+
+  const queryFn = async (): Promise<any> => {
+    const url = `${BASE_URL}/${ISSUER_URL}/list/digest`;
+
+    try {
+      const data: any = await kyInstance.get(url).json();
+
+      return {
+        pendingValidations: (data.pendingValidations as any[]).map(
+          (franchise) => transformToFranchise(franchise),
+        ),
+        pendingPayments: (data.pendingPayments as any[]).map((franchise) =>
+          transformToFranchise(franchise),
+        ),
+        recentApprovals: (data.recentApprovals as any[]).map((franchise) =>
+          transformToFranchise(franchise),
+        ),
+        recentRejections: (data.recentRejections as any[]).map((franchise) =>
+          transformToFranchise(franchise),
+        ),
+      };
+    } catch (error: any) {
+      const apiError = await generateApiError(error);
+      throw apiError;
+    }
+  };
+
+  return {
+    queryKey: [...(queryKey?.length ? queryKey : queryFranchiseKey.digestList)],
     queryFn,
     ...moreOptions,
   };
@@ -127,7 +216,7 @@ export function getFranchiseById(
 
     try {
       const franchise = await kyInstance.get(url, { searchParams }).json();
-      return franchise;
+      return transformToFranchise(franchise);
     } catch (error: any) {
       const apiError = await generateApiError(error);
       throw apiError;
@@ -135,7 +224,7 @@ export function getFranchiseById(
   };
 
   return {
-    queryKey: [...queryFranchiseKey.single, { id, status, exclude, include }],
+    queryKey: [...queryFranchiseKey.single, { id }],
     queryFn,
     ...options,
   };
@@ -152,7 +241,6 @@ export function createFranchise(
 
     try {
       const franchise = await kyInstance.post(BASE_URL, { json }).json();
-      console.log(franchise);
       return transformToFranchise(franchise);
     } catch (error: any) {
       const apiError = await generateApiError(error);
@@ -220,6 +308,7 @@ export function approveFranchise(
       const franchise = await kyInstance
         .patch(url, { json: { approvalStatus } })
         .json();
+
       return transformToFranchise(franchise);
     } catch (error: any) {
       const apiError = await generateApiError(error);

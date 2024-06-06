@@ -5,12 +5,17 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
 import cx from 'classix';
 
-import { routeConfig } from '#/config/routes.config';
+import {
+  baseIssuerRoute,
+  baseMemberRoute,
+  routeConfig,
+} from '#/config/routes.config';
 import { BaseButton } from '#/base/components/base-button.component';
 import { BaseButtonIcon } from '#/base/components/base-button-icon.component';
 import { BaseControlledInput } from '#/base/components/base-input.component';
 import { BaseControlledInputPassword } from '#/base/components/base-input-password.component';
 import { defaultValues, schema } from '../helpers/auth-sign-in-schema.helper';
+import { UserRole } from '../models/user.model';
 import { useAuth } from '../hooks/use-auth.hook';
 
 import type { ComponentProps } from 'react';
@@ -46,10 +51,14 @@ export const AuthSignInFormCompact = memo(function ({
   const submitForm = useCallback(
     async (data: AuthCredentials) => {
       try {
-        await signIn(data);
+        const user = await signIn(data);
+        const baseTo =
+          user.role === UserRole.Member
+            ? `/${baseMemberRoute}`
+            : `/${baseIssuerRoute}`;
         // Set is done and navigate to user role's dashboard
         setIsDone(true);
-        navigate(`/${routeConfig.franchise.to}`);
+        navigate(`${baseTo}/${routeConfig.franchise.to}`);
       } catch (error: any) {
         const email = getValues('email');
         reset({ email, password: '' });

@@ -11,6 +11,7 @@ export const queryUserKey = {
 
 export const queryFranchiseKey = {
   list: ['franchises', 'list'],
+  digestList: ['franchises', 'digest-list'],
   single: ['franchises', 'single'],
 };
 

@@ -15,6 +15,7 @@ export default {
         },
         accent: {
           DEFAULT: '#f4a203',
+          'button-hover': '#d8870d',
         },
         backdrop: {
           DEFAULT: '#121212',

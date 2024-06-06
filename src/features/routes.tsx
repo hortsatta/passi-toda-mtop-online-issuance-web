@@ -5,21 +5,31 @@ import {
   Outlet,
 } from 'react-router-dom';
 
-import { baseMemberRoute, routeConfig } from '#/config/routes.config';
+import {
+  baseIssuerRoute,
+  baseMemberRoute,
+  routeConfig,
+} from '#/config/routes.config';
 import { queryClient } from '#/config/react-query-client.config';
 import { UserRole } from './user/models/user.model';
 import {
-  getFranchiseByIdLoader,
-  getFranchisesLoader,
+  getFranchiseByIdLoader as getMemberFranchiseByIdLoader,
+  getFranchisesLoader as getMemberFranchisesLoader,
 } from './franchise/loaders/member-franchise.loader';
+import {
+  getFranchiseDigestLoader,
+  getFranchiseByIdLoader as getIssuerFranchiseByIdLoader,
+} from './franchise/loaders/issuer-franchise.loader';
 import { CoreLayout } from './core/components/core-layout.component';
 import { AuthProtectedRoute } from './user/components/auth-protected-route.component';
 import { CoreHomePage } from './core/pages/core-home.page';
 import { AuthSignInPage } from './user/pages/auth-sign-in.page';
-import { FranchiseRegisterPage } from './franchise/pages/franchise-register.page';
-import { MemberFranchiseListPage } from './franchise/pages/member-franchise-list.page';
 import { MemberUserRegisterPage } from './user/pages/member-user-register.page';
 import { MemberFranchiseSinglePage } from './franchise/pages/member-franchise-single.page';
+import { FranchiseRegisterPage } from './franchise/pages/franchise-register.page';
+import { MemberFranchiseListPage } from './franchise/pages/member-franchise-list.page';
+import { IssuerFranchiseListPage } from './franchise/pages/issuer-franchise-list.page';
+import { IssuerFranchiseSinglePage } from './franchise/pages/issuer-franchise-single.page';
 
 const routes = createRoutesFromElements(
   <Route path='/' element={<CoreLayout />}>
@@ -33,10 +43,39 @@ const routes = createRoutesFromElements(
       }
     />
     {/* ROLE MEMBER */}
+    <Route path={baseMemberRoute} element={<Outlet />}>
+      <Route path={routeConfig.franchise.to} element={<Outlet />}>
+        <Route
+          element={
+            <AuthProtectedRoute roles={[UserRole.Member]}>
+              <Outlet />
+            </AuthProtectedRoute>
+          }
+        >
+          <Route
+            index
+            element={<MemberFranchiseListPage />}
+            loader={getMemberFranchisesLoader(queryClient)}
+          />
+          <Route path=':id' element={<Outlet />}>
+            <Route
+              index
+              element={<MemberFranchiseSinglePage />}
+              loader={getMemberFranchiseByIdLoader(queryClient)}
+            />
+          </Route>
+        </Route>
+        <Route
+          path={routeConfig.franchise.create.to}
+          element={<FranchiseRegisterPage />}
+        />
+      </Route>
+    </Route>
+    {/* ROLE ISSUER */}
     <Route
-      path={baseMemberRoute}
+      path={baseIssuerRoute}
       element={
-        <AuthProtectedRoute roles={[UserRole.Member]}>
+        <AuthProtectedRoute roles={[UserRole.Issuer]}>
           <Outlet />
         </AuthProtectedRoute>
       }
@@ -44,20 +83,16 @@ const routes = createRoutesFromElements(
       <Route path={routeConfig.franchise.to} element={<Outlet />}>
         <Route
           index
-          element={<MemberFranchiseListPage />}
-          loader={getFranchisesLoader(queryClient)}
+          element={<IssuerFranchiseListPage />}
+          loader={getFranchiseDigestLoader(queryClient)}
         />
         <Route path=':id' element={<Outlet />}>
           <Route
             index
-            element={<MemberFranchiseSinglePage />}
-            loader={getFranchiseByIdLoader(queryClient)}
+            element={<IssuerFranchiseSinglePage />}
+            loader={getIssuerFranchiseByIdLoader(queryClient)}
           />
         </Route>
-        <Route
-          path={routeConfig.franchise.create.to}
-          element={<FranchiseRegisterPage />}
-        />
       </Route>
     </Route>
     <Route path={routeConfig.user.to} element={<Outlet />}>

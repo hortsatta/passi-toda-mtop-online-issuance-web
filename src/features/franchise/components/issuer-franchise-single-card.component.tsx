@@ -11,7 +11,6 @@ type Props = ComponentProps<'button'> & {
   franchise: Franchise;
   isDashboard?: boolean;
   onDetails?: () => void;
-  // onEdit?: () => void;
 };
 
 type CurrentStatusProps = {
@@ -21,11 +20,6 @@ type CurrentStatusProps = {
 const CurrentStatus = memo(function ({ approvalStatus }: CurrentStatusProps) {
   return (
     <div className='flex flex-col gap-0.5'>
-      {approvalStatus === FranchiseApprovalStatus.PendingValidation && (
-        <small className='animate-pulse text-xs uppercase text-orange-500'>
-          verifying application
-        </small>
-      )}
       {(approvalStatus === FranchiseApprovalStatus.PendingPayment ||
         approvalStatus === FranchiseApprovalStatus.Approved) && (
         <small className='flex items-center gap-1 text-xs uppercase text-green-500'>
@@ -49,23 +43,30 @@ const CurrentStatus = memo(function ({ approvalStatus }: CurrentStatusProps) {
   );
 });
 
-export const MemberFranchiseSingleCard = memo(function ({
+export const IssuerFranchiseSingleCard = memo(function ({
   className,
   franchise,
   onDetails,
   ...moreProps
 }: Props) {
-  const [mvFileNo, plateNo, approvalStatus, expiryDate, todaAssociationName] =
-    useMemo(
-      () => [
-        franchise.mvFileNo,
-        franchise.plateNo,
-        franchise.approvalStatus,
-        franchise.expiryDate,
-        franchise.todaAssociation.name,
-      ],
-      [franchise],
-    );
+  const [
+    mvFileNo,
+    plateNo,
+    approvalStatus,
+    expiryDate,
+    todaAssociationName,
+    reverseFullName,
+  ] = useMemo(
+    () => [
+      franchise.mvFileNo,
+      franchise.plateNo,
+      franchise.approvalStatus,
+      franchise.expiryDate,
+      franchise.todaAssociation.name,
+      franchise.user?.userProfile.reverseFullName,
+    ],
+    [franchise],
+  );
 
   const statusLabel = useMemo(() => {
     switch (approvalStatus) {
@@ -76,14 +77,14 @@ export const MemberFranchiseSingleCard = memo(function ({
       case FranchiseApprovalStatus.Rejected:
         return 'Rejected';
       default:
-        return 'Pending';
+        return 'Pending Verification';
     }
   }, [approvalStatus]);
 
   return (
     <button
       className={cx(
-        'relative flex h-60 w-full max-w-[326px] cursor-pointer flex-col justify-between rounded border border-border bg-backdrop-input px-5 py-4 text-left transition-colors hover:border-primary',
+        'relative flex h-80 w-full max-w-[326px] cursor-pointer flex-col justify-between rounded border border-border bg-backdrop-input px-5 py-4 text-left transition-colors hover:border-primary',
         className,
       )}
       onClick={onDetails}
@@ -102,6 +103,10 @@ export const MemberFranchiseSingleCard = memo(function ({
               <span className='text-base font-medium'>{mvFileNo}</span>
               <small className='uppercase leading-tight'>mv file no</small>
             </div>
+            <div className='flex flex-col'>
+              <span className='text-base font-medium'>{reverseFullName}</span>
+              <small className='uppercase leading-tight'>owner</small>
+            </div>
           </div>
           <div className='items-right flex flex-col'>
             <span className='text-right text-base font-medium'>
@@ -113,25 +118,34 @@ export const MemberFranchiseSingleCard = memo(function ({
         <div className='mt-5 w-full border-b border-border' />
       </div>
       <div className='flex w-full items-end justify-between'>
-        <span
-          className={cx(
-            'flex items-center gap-1 text-xl font-bold',
-            approvalStatus === FranchiseApprovalStatus.PendingPayment &&
-              'text-yellow-500',
-            approvalStatus === FranchiseApprovalStatus.Approved &&
-              'text-green-600',
-            approvalStatus === FranchiseApprovalStatus.Rejected &&
-              'text-red-600',
-          )}
-        >
-          {approvalStatus === FranchiseApprovalStatus.Approved && (
-            <BaseIcon name='check-circle' size={24} />
-          )}
-          {approvalStatus === FranchiseApprovalStatus.Rejected && (
-            <BaseIcon name='x-circle' size={24} />
-          )}
-          {statusLabel}
-        </span>
+        <div className='flex flex-col gap-3'>
+          {approvalStatus !== FranchiseApprovalStatus.Rejected &&
+            approvalStatus !== FranchiseApprovalStatus.Approved && (
+              <small className='text-xs text-green-600'>
+                select to review application
+              </small>
+            )}
+          <span
+            className={cx(
+              'flex items-center gap-1 text-xl font-bold',
+              (approvalStatus === FranchiseApprovalStatus.PendingValidation ||
+                approvalStatus === FranchiseApprovalStatus.PendingPayment) &&
+                'text-yellow-500',
+              approvalStatus === FranchiseApprovalStatus.Approved &&
+                'text-green-600',
+              approvalStatus === FranchiseApprovalStatus.Rejected &&
+                'text-red-600',
+            )}
+          >
+            {approvalStatus === FranchiseApprovalStatus.Approved && (
+              <BaseIcon name='check-circle' size={24} />
+            )}
+            {approvalStatus === FranchiseApprovalStatus.Rejected && (
+              <BaseIcon name='x-circle' size={24} />
+            )}
+            {statusLabel}
+          </span>
+        </div>
         <CurrentStatus approvalStatus={approvalStatus} />
       </div>
     </button>

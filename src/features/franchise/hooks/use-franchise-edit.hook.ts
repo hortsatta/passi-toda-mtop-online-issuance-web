@@ -33,7 +33,10 @@ export function useFranchiseEdit(id?: number): Result {
             queryKey: queryFranchiseKey.list,
           }),
           queryClient.invalidateQueries({
-            queryKey: [...queryFranchiseKey.single, { id: data?.id }],
+            queryKey: [
+              ...queryFranchiseKey.single,
+              { id: data?.id ? +data?.id : undefined },
+            ],
           }),
         ]),
     }),
@@ -48,7 +51,10 @@ export function useFranchiseEdit(id?: number): Result {
               queryKey: queryFranchiseKey.list,
             }),
             queryClient.invalidateQueries({
-              queryKey: [...queryFranchiseKey.single, { id }],
+              queryKey: [
+                ...queryFranchiseKey.single,
+                { id: id ? +id : undefined },
+              ],
             }),
           ]),
       }),

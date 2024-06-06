@@ -28,6 +28,13 @@ export type Franchise = Partial<AuditTrail> & {
   user?: User;
 };
 
+export type FranchiseDigest = {
+  pendingValidations: Franchise[];
+  pendingPayments: Franchise[];
+  recentApprovals: Franchise[];
+  recentRejections: Franchise[];
+};
+
 export type FranchiseSlice = {
   franchiseFormData?: FranchiseUpsertFormData | null;
   setFranchiseFormData: (franchiseFormData?: FranchiseUpsertFormData) => void;

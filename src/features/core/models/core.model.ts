@@ -4,11 +4,6 @@ export type AuditTrail = {
   deletedAt: Date;
 };
 
-export type SelectItem = {
-  value: string;
-  label?: string;
-};
-
 export type QueryFilterOption = {
   key: string;
   name: string;
@@ -25,6 +20,13 @@ export type QuerySort = {
   field: string;
   order: 'asc' | 'desc';
 };
+
+export type SelectItem = {
+  value: string;
+  label?: string;
+};
+
+export type ButtonVariant = 'primary' | 'accent' | 'accept' | 'warn';
 
 // export type QueryPagination = {
 //   take: number;

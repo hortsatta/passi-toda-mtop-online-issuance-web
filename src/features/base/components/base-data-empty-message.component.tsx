@@ -6,7 +6,7 @@ import type { ComponentProps } from 'react';
 
 type Props = ComponentProps<'div'> & {
   message: string;
-  linkTo: string;
+  linkTo?: string;
   linkLabel?: string;
 };
 
@@ -26,7 +26,7 @@ export const BaseDataEmptyMessage = memo(function ({
       {...moreProps}
     >
       <span>{message}</span>
-      <Link to={linkTo}>{linkLabel}</Link>
+      {linkTo && <Link to={linkTo}>{linkLabel}</Link>}
     </div>
   );
 });

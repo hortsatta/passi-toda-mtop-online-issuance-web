@@ -77,7 +77,7 @@ export const CoreNavMenu = memo(function ({ role, ...moreProps }: Props) {
         >
           <PopoverPanel
             anchor='bottom'
-            className='mt-2.5 flex flex-col gap-2.5 rounded border border-border bg-backdrop-surface !px-4 !pb-3 !pt-2.5'
+            className='mt-2.5 flex min-w-40 flex-col gap-2.5 rounded border border-border bg-backdrop-surface !px-4 !pb-3 !pt-2.5'
           >
             {role &&
               items[role].map(({ to, label }, index) => (
