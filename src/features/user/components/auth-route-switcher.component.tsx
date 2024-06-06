@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import { useBoundStore } from '#/core/hooks/use-store.hook';
-import { RouteLoading } from './auth-protected-route.component';
+import { BaseLoading } from '#/base/components/base-loading.component';
 
 import type { ReactNode } from 'react';
 import type { UserRole } from '../models/user.model';
@@ -27,7 +27,7 @@ export function AuthRouteSwitcher({ roleElements, redirectTo = '/' }: Props) {
   }, [roleElements, user]);
 
   if (user === undefined) {
-    return <RouteLoading />;
+    return <BaseLoading />;
   }
 
   if (!element) {

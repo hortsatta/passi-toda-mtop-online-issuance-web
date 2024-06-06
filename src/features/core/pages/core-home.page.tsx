@@ -4,7 +4,7 @@ import { FranchiseCheckerForm } from '#/franchise/components/franchise-checker-f
 export function CoreHomePage() {
   return (
     <BaseScene>
-      <div className='flex justify-between pt-6'>
+      <div className='flex justify-between pt-24'>
         <div className='w-fill flex max-w-[640px] flex-col gap-2.5'>
           <span className='text-5xl font-bold leading-snug'>
             Register and Renew your Motorized Tricycle Operator's Permits with

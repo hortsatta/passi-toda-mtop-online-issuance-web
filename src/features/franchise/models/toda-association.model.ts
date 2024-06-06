@@ -1,4 +1,4 @@
-import type { AuditTrail } from '#/core/models/core.mode';
+import type { AuditTrail } from '#/core/models/core.model';
 import type { Franchise } from './franchise.model';
 
 export type TodaAssociation = Partial<AuditTrail> & {

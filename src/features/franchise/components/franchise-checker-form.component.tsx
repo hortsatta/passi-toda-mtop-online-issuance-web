@@ -15,7 +15,7 @@ type FormData = {
   mvPlateNo: string;
 };
 
-const FRANCHISE_CREATE_TO = `/${routeConfig.franchise.to}/${routeConfig.franchise.createTo}`;
+const FRANCHISE_CREATE_TO = `/${routeConfig.franchise.to}/${routeConfig.franchise.create.to}`;
 
 const schema = z.object({
   mvPlateNo: z.string().min(3, 'MV File Number or Plate Number is too short'),

@@ -22,7 +22,7 @@ export type QuerySort = {
 };
 
 export type SelectItem = {
-  value: string;
+  value: string | number;
   label?: string;
 };
 
