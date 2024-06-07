@@ -62,7 +62,10 @@ const schema = z
     gender: z.nativeEnum(UserGender, {
       required_error: 'Provide your gender',
     }),
-    driverLicenseNo: z.string().length(11, `Invalid driver's license`),
+    driverLicenseNo: z
+      .string()
+      .length(11, `Invalid driver's license`)
+      .optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: 'Password does not match',
@@ -138,87 +141,91 @@ export const UserCreateForm = memo(function ({
         className='flex flex-col gap-10'
         onSubmit={handleSubmit(submitForm)}
       >
-        <fieldset className='flex flex-col gap-4' disabled={loading}>
-          <h4>Credentials</h4>
-          <div className='flex gap-2.5'>
-            <BaseControlledInput
-              type='email'
-              name='email'
-              label='Email'
-              control={control}
-              fullWidth
-              asterisk
-            />
-            <BaseControlledInputPassword
-              name='password'
-              label='Password'
-              control={control}
-              showPassword={showPassword}
-              setShowPassword={setShowPassword}
-              fullWidth
-              asterisk
-            />
-            <BaseControlledInputPassword
-              name='confirmPassword'
-              label='Confirm Password'
-              control={control}
-              showPassword={showPassword}
-              setShowPassword={setShowPassword}
-              fullWidth
-              asterisk
-            />
+        <fieldset className='flex flex-col gap-6' disabled={loading}>
+          <div className='flex flex-col gap-4'>
+            <h4>Credentials</h4>
+            <div className='flex gap-2.5'>
+              <BaseControlledInput
+                type='email'
+                name='email'
+                label='Email'
+                control={control}
+                fullWidth
+                asterisk
+              />
+              <BaseControlledInputPassword
+                name='password'
+                label='Password'
+                control={control}
+                showPassword={showPassword}
+                setShowPassword={setShowPassword}
+                fullWidth
+                asterisk
+              />
+              <BaseControlledInputPassword
+                name='confirmPassword'
+                label='Confirm Password'
+                control={control}
+                showPassword={showPassword}
+                setShowPassword={setShowPassword}
+                fullWidth
+                asterisk
+              />
+            </div>
           </div>
-          <h4>Personal Info</h4>
-          <div className='grid grid-cols-3 gap-2.5'>
-            <BaseControlledInput
-              name='firstName'
-              label='First Name'
-              control={control}
-              fullWidth
-              asterisk
-            />
-            <BaseControlledInput
-              name='lastName'
-              label='Last Name'
-              control={control}
-              fullWidth
-              asterisk
-            />
-            <BaseControlledInput
-              name='middleName'
-              label='Middle Name'
-              control={control}
-              fullWidth
-            />
-            <BaseControlledInputDate
-              type='date'
-              name='birthDate'
-              label='Date of Birth'
-              control={control}
-              fullWidth
-              asterisk
-            />
-            <BaseControlledInputSelect
-              name='gender'
-              label='Gender'
-              items={genderSelectOptions}
-              control={control}
-              fullWidth
-            />
-            <BaseControlledInput
-              name='phoneNumber'
-              label='Phone'
-              control={control}
-              fullWidth
-              asterisk
-            />
-            <BaseControlledInput
-              name='driverLicenseNo'
-              label={`Driver's License No`}
-              control={control}
-              fullWidth
-              asterisk
-            />
+          <div className='flex flex-col gap-4'>
+            <h4>Personal Info</h4>
+            <div className='grid grid-cols-3 gap-2.5'>
+              <BaseControlledInput
+                name='firstName'
+                label='First Name'
+                control={control}
+                fullWidth
+                asterisk
+              />
+              <BaseControlledInput
+                name='lastName'
+                label='Last Name'
+                control={control}
+                fullWidth
+                asterisk
+              />
+              <BaseControlledInput
+                name='middleName'
+                label='Middle Name'
+                control={control}
+                fullWidth
+              />
+              <BaseControlledInputDate
+                type='date'
+                name='birthDate'
+                label='Date of Birth'
+                control={control}
+                fullWidth
+                asterisk
+              />
+              <BaseControlledInputSelect
+                name='gender'
+                label='Gender'
+                items={genderSelectOptions}
+                control={control}
+                fullWidth
+              />
+              <BaseControlledInput
+                name='phoneNumber'
+                label='Phone'
+                control={control}
+                fullWidth
+                asterisk
+              />
+              <BaseControlledInput
+                name='driverLicenseNo'
+                label={`Driver's License No`}
+                control={control}
+                fullWidth
+                asterisk
+              />
+            </div>
           </div>
         </fieldset>
         <div className='w-full border-b border-border' />

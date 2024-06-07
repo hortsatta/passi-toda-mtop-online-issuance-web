@@ -85,7 +85,7 @@ export const MemberFranchiseSingleCard = memo(function ({
   return (
     <button
       className={cx(
-        'relative flex h-60 w-full max-w-[326px] cursor-pointer flex-col justify-between rounded border border-border bg-backdrop-input px-5 py-4 text-left transition-colors hover:border-primary',
+        'relative flex h-60 w-[326px] flex-shrink-0 cursor-pointer flex-col justify-between rounded border border-border bg-backdrop-input px-5 py-4 text-left transition-colors hover:border-primary',
         className,
       )}
       onClick={onDetails}

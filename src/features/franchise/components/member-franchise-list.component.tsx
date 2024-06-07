@@ -39,7 +39,7 @@ export const MemberFranchiseList = memo(function ({
   return (
     <div
       className={cx(
-        'flex w-full gap-4 rounded bg-backdrop-surface px-16 py-12',
+        'flex w-full flex-wrap gap-4 rounded bg-backdrop-surface px-16 py-12',
         className,
       )}
       role='table'

@@ -25,12 +25,12 @@ export const CurrentUserCard = memo(function ({
       className={cx('flex h-14 overflow-hidden rounded', className)}
       {...moreProps}
     >
-      <div className='border-border bg-backdrop-input flex flex-col items-end justify-center rounded border border-r-0 px-3'>
+      <div className='flex min-w-52 flex-col items-end justify-center rounded border border-r-0 border-border bg-backdrop-input px-3'>
         <span className='text-base leading-none text-white/50'>Hello,</span>
         <span className='text-base font-medium'>{fullName}</span>
       </div>
       <div className='flex h-full items-center gap-2.5'>
-        <div className='border-border bg-backdrop-input flex h-full w-[49px] items-center justify-center rounded-r border px-2'>
+        <div className='flex h-full w-[49px] items-center justify-center rounded-r border border-border bg-backdrop-input px-2'>
           <BaseIcon name='user' size={24} />
         </div>
         <BaseButtonIcon iconName='sign-out' onClick={signOut} />

@@ -72,6 +72,26 @@ export function transformToFranchiseFormData({
   };
 }
 
+export function transformToFranchiseValidateDto({
+  mvFileNo,
+  plateNo,
+  ownerDriverLicenseNo,
+  todaAssociationId,
+}: any) {
+  return {
+    mvFileNo,
+    plateNo,
+    ownerDriverLicenseNo,
+    vehicleORImgUrl: '',
+    vehicleCRImgUrl: '',
+    todaAssocMembershipImgUrl: '',
+    ownerDriverLicenseNoImgUrl: '',
+    brgyClearanceImgUrl: '',
+    todaAssociationId,
+    voterRegRecordImgUrl: '',
+  };
+}
+
 export function transformToFranchiseUpsertDto({
   mvFileNo,
   plateNo,
@@ -88,39 +108,12 @@ export function transformToFranchiseUpsertDto({
     mvFileNo,
     plateNo,
     ownerDriverLicenseNo,
-    vehicleORImgUrl: 'vehicleORImgUrl',
-    vehicleCRImgUrl: 'vehicleCRImgUrl',
-    todaAssocMembershipImgUrl: 'todaAssocMembershipImgUrl',
-    ownerDriverLicenseNoImgUrl: 'ownerDriverLicenseNoImgUrl',
-    brgyClearanceImgUrl: 'brgyClearanceImgUrl',
-    voterRegRecordImgUrl: 'voterRegRecordImgUrl',
+    vehicleORImgUrl,
+    vehicleCRImgUrl,
+    todaAssocMembershipImgUrl,
+    ownerDriverLicenseNoImgUrl,
+    brgyClearanceImgUrl,
+    voterRegRecordImgUrl,
     todaAssociationId: +todaAssociationId,
   };
 }
-
-// TODO TEMP
-// export function transformToFranchiseUpsertDto({
-//   mvFileNo,
-//   plateNo,
-//   ownerDriverLicenseNo,
-//   vehicleORImgUrl,
-//   vehicleCRImgUrl,
-//   todaAssocMembershipImgUrl,
-//   ownerDriverLicenseNoImgUrl,
-//   brgyClearanceImgUrl,
-//   todaAssociationId,
-//   voterRegRecordImgUrl,
-// }: any) {
-//   return {
-//     mvFileNo,
-//     plateNo,
-//     ownerDriverLicenseNo,
-//     vehicleORImgUrl,
-//     vehicleCRImgUrl,
-//     todaAssocMembershipImgUrl,
-//     ownerDriverLicenseNoImgUrl,
-//     brgyClearanceImgUrl,
-//     voterRegRecordImgUrl,
-//     todaAssociationId: +todaAssociationId,
-//   };
-// }

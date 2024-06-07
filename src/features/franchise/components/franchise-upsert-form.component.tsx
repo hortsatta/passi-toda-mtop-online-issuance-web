@@ -4,10 +4,11 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
+import isBase64 from 'validator/lib/isBase64';
 import cx from 'classix';
 
 import dayjs from '#/config/dayjs.config';
-import { routeConfig } from '#/config/routes.config';
+import { baseMemberRoute, routeConfig } from '#/config/routes.config';
 import { capitalize } from '#/core/helpers/string.helper';
 import { getErrorMessage } from '#/core/helpers/core.helper';
 import { useBoundStore } from '#/core/hooks/use-store.hook';
@@ -33,7 +34,7 @@ type Props = FormProps<'div', FranchiseUpsertFormData, Promise<Franchise>> & {
   isTodaAssociationFetching?: boolean;
 };
 
-// TODO TEMP
+const FRANCHISE_LIST_PATH = `/${baseMemberRoute}/${routeConfig.franchise.to}`;
 
 const schema = z.object({
   mvFileNo: z.string().length(15, 'Invalid MV file number'),
@@ -41,26 +42,57 @@ const schema = z.object({
     .string()
     .min(3, 'Invalid plate number')
     .max(7, 'Invalid plate number'),
-  ownerDriverLicenseNo: z.string().length(11, `Invalid Driver's License no`),
-  // START TEMP optional remove
-  vehicleORImgUrl: z.any(),
-  vehicleCRImgUrl: z.any(),
-  todaAssocMembershipImgUrl: z.any(),
-  ownerDriverLicenseNoImgUrl: z.any(),
-  brgyClearanceImgUrl: z.any(),
-  // END TEMP
-  todaAssociationId: z.number().int().gt(0, 'Select TODA association'),
-  voterRegRecordImgUrl: z.any().optional(),
+  ownerDriverLicenseNo: z.string().length(11, `Invalid Driver's License No.`),
+  vehicleORImgUrl: z
+    .string()
+    .refine(
+      (value) => isBase64(value.split(',').pop() || ''),
+      'Invalid Vehicle OR',
+    ),
+  vehicleCRImgUrl: z
+    .string()
+    .refine(
+      (value) => isBase64(value.split(',').pop() || ''),
+      'Invalid Vehicle CR',
+    ),
+  todaAssocMembershipImgUrl: z
+    .string()
+    .refine(
+      (value) => isBase64(value.split(',').pop() || ''),
+      'Invalid TODA Membership',
+    ),
+  ownerDriverLicenseNoImgUrl: z
+    .string()
+    .refine(
+      (value) => isBase64(value.split(',').pop() || ''),
+      `Invalid Driver's License.`,
+    ),
+  brgyClearanceImgUrl: z
+    .string()
+    .refine(
+      (value) => isBase64(value.split(',').pop() || ''),
+      'Invalid Barangay Clearance',
+    ),
+  todaAssociationId: z
+    .number({
+      message: 'Select TODA association',
+    })
+    .int()
+    .gt(0),
+  voterRegRecordImgUrl: z
+    .string()
+    .refine((value) => isBase64(value.split(',').pop() || ''))
+    .optional(),
 });
 
 const defaultValues: Partial<FranchiseUpsertFormData> = {
   mvFileNo: '',
   plateNo: '',
   ownerDriverLicenseNo: '',
-  vehicleORImgUrl: '',
-  vehicleCRImgUrl: '',
-  todaAssocMembershipImgUrl: '',
-  ownerDriverLicenseNoImgUrl: '',
+  vehicleORImgUrl: undefined,
+  vehicleCRImgUrl: undefined,
+  todaAssocMembershipImgUrl: undefined,
+  ownerDriverLicenseNoImgUrl: undefined,
   brgyClearanceImgUrl: '',
   todaAssociationId: undefined,
   voterRegRecordImgUrl: undefined,
@@ -128,7 +160,7 @@ export const FranchiseUpsertForm = memo(function ({
 
         toast.success(successText);
         onDone && onDone(true);
-        navigate(`/${routeConfig.franchise.to}`);
+        navigate(FRANCHISE_LIST_PATH);
       } catch (error: any) {
         toast.error(error.message);
       }
@@ -155,10 +187,10 @@ export const FranchiseUpsertForm = memo(function ({
         className='flex flex-col gap-10'
         onSubmit={handleSubmit(submitForm, handleSubmitError)}
       >
-        <fieldset className='flex flex-col gap-4' disabled={loading}>
-          <h4>Vehicle Info</h4>
-          <div className='flex w-full flex-1 flex-col gap-2.5'>
-            <div className='flex flex-1 gap-2.5'>
+        <fieldset className='flex flex-col gap-6' disabled={loading}>
+          <div className='flex flex-col gap-4'>
+            <h4>Vehicle Info</h4>
+            <div className='flex w-full flex-1 gap-2.5'>
               <BaseControlledInput
                 label='MV File No'
                 name='mvFileNo'
@@ -184,109 +216,117 @@ export const FranchiseUpsertForm = memo(function ({
                 isNumber
               />
             </div>
-            <div className='flex flex-1 gap-2.5 rounded border border-border p-2.5'>
-              <BaseControlledInputUploaderImage
-                label='Vehicle OR (Official Receipt) Photo'
-                name='vehicleORImgUrl'
-                control={control}
-                hideErrorMessage
-                fullWidth
-                asterisk
-                lg
-              />
-              <BaseControlledInputUploaderImage
-                label='Vehicle CR (Certificate of Registration) Photo'
-                name='vehicleCRImgUrl'
-                control={control}
-                hideErrorMessage
-                fullWidth
-                asterisk
-                lg
-              />
-              <BaseControlledInputUploaderImage
-                label='TODA Association Membership Photo'
-                name='todaAssocMembershipImgUrl'
-                control={control}
-                hideErrorMessage
-                fullWidth
-                asterisk
-                lg
-              />
+          </div>
+          <div className='flex flex-col gap-4'>
+            <h4>Documents</h4>
+            <div className='flex w-full flex-col gap-2.5'>
+              <div className='grid grid-cols-3 gap-2.5'>
+                <BaseControlledInputUploaderImage
+                  label='Vehicle Official Receipt (OR)'
+                  name='vehicleORImgUrl'
+                  control={control}
+                  hideErrorMessage
+                  fullWidth
+                  asterisk
+                  lg
+                />
+                <BaseControlledInputUploaderImage
+                  label='Vehicle Certificate of Registration (CR)'
+                  name='vehicleCRImgUrl'
+                  control={control}
+                  hideErrorMessage
+                  fullWidth
+                  asterisk
+                  lg
+                />
+                <BaseControlledInputUploaderImage
+                  label='TODA Association Membership'
+                  name='todaAssocMembershipImgUrl'
+                  control={control}
+                  hideErrorMessage
+                  fullWidth
+                  asterisk
+                  lg
+                />
+                <BaseControlledInputUploaderImage
+                  label={`Driver's License`}
+                  name='ownerDriverLicenseNoImgUrl'
+                  control={control}
+                  hideErrorMessage
+                  fullWidth
+                  asterisk
+                  lg
+                />
+                <BaseControlledInputUploaderImage
+                  label='Barangay Clearance'
+                  name='brgyClearanceImgUrl'
+                  control={control}
+                  hideErrorMessage
+                  fullWidth
+                  asterisk
+                  lg
+                />
+                <BaseControlledInputUploaderImage
+                  label={`Voter's Registration Record`}
+                  name='voterRegRecordImgUrl'
+                  control={control}
+                  hideErrorMessage
+                  fullWidth
+                  lg
+                />
+              </div>
+              <div className='grid grid-cols-3 gap-2.5'>
+                <BaseControlledInput
+                  label={`Driver's License No`}
+                  name='ownerDriverLicenseNo'
+                  control={control}
+                  fullWidth
+                  asterisk
+                />
+              </div>
             </div>
           </div>
-          <h4>Owner Info</h4>
-          <div className='flex flex-col gap-2.5'>
-            <div className='flex flex-1 gap-2.5 rounded border border-border p-2.5'>
-              <BaseControlledInputUploaderImage
-                label={`Driver's License Photo`}
-                name='ownerDriverLicenseNoImgUrl'
-                control={control}
-                fullWidth
-                asterisk
-                lg
-              />
-              <BaseControlledInputUploaderImage
-                label='Barangay Clearance Photo'
-                name='brgyClearanceImgUrl'
-                control={control}
-                hideErrorMessage
-                fullWidth
-                asterisk
-                lg
-              />
-              <BaseControlledInputUploaderImage
-                label={`Voter's Registration Record Photo`}
-                name='voterRegRecordImgUrl'
-                control={control}
-                hideErrorMessage
-                fullWidth
-                lg
-              />
-            </div>
-            <div className='grid grid-cols-3 gap-2.5'>
-              <BaseControlledInput
-                label={`Driver's License No`}
-                name='ownerDriverLicenseNo'
-                control={control}
-                fullWidth
-                asterisk
-              />
-              <BaseInput
-                value={userProfile.firstName}
-                label='First Name'
-                fullWidth
-                disabled
-              />
-              <BaseInput
-                value={userProfile.lastName}
-                label='Last Name'
-                fullWidth
-                disabled
-              />
-              <BaseInput
-                value={userProfile.middleName}
-                label='Middle Name'
-                fullWidth
-                disabled
-              />
-              <BaseInput
-                value={dayjs(userProfile.birthDate).format('YYYY-MM-DD')}
-                label='Date of Birth'
-                fullWidth
-                disabled
-              />
-              <BaseInput
-                value={capitalize(userProfile.gender)}
-                label='Gender'
-                fullWidth
-                disabled
-              />
-              <BaseInput
-                value={userProfile.phoneNumber}
-                label='Phone'
-                fullWidth
-                disabled
-              />
+          <div className='flex flex-col gap-4'>
+            <h4>Owner Info</h4>
+            <div className='flex flex-col gap-2.5'>
+              <div className='grid grid-cols-3 gap-2.5'>
+                <BaseInput
+                  value={userProfile.firstName}
+                  label='First Name'
+                  fullWidth
+                  disabled
+                />
+                <BaseInput
+                  value={userProfile.lastName}
+                  label='Last Name'
+                  fullWidth
+                  disabled
+                />
+                <BaseInput
+                  value={userProfile.middleName}
+                  label='Middle Name'
+                  fullWidth
+                  disabled
+                />
+                <BaseInput
+                  value={dayjs(userProfile.birthDate).format('YYYY-MM-DD')}
+                  label='Date of Birth'
+                  fullWidth
+                  disabled
+                />
+                <BaseInput
+                  value={capitalize(userProfile.gender)}
+                  label='Gender'
+                  fullWidth
+                  disabled
+                />
+                <BaseInput
+                  value={userProfile.phoneNumber}
+                  label='Phone'
+                  fullWidth
+                  disabled
+                />
+              </div>
             </div>
           </div>
         </fieldset>

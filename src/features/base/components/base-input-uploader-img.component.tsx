@@ -110,13 +110,16 @@ export const BaseInputUploaderImg = memo(
       }
 
       const target = value ?? localValue;
-      const reader = new FileReader();
 
-      reader.onload = () => {
-        setCurrentImage(reader.result);
-      };
-
-      reader.readAsDataURL(target as any);
+      if (target instanceof File) {
+        const reader = new FileReader();
+        reader.readAsDataURL(target as any);
+        reader.onload = () => {
+          setCurrentImage(reader.result);
+        };
+      } else {
+        setCurrentImage(target || null);
+      }
     }, [value, localValue]);
 
     return (
@@ -198,11 +201,32 @@ export function BaseControlledInputUploaderImage(
   props: Props & UseControllerProps<any>,
 ) {
   const {
-    field,
+    field: { onChange, ...moreField },
     fieldState: { error },
   } = useController(props);
 
+  const handleChange = useCallback(
+    (value: any) => {
+      if (!(value instanceof File)) {
+        onChange(value);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.readAsDataURL(value as any);
+      reader.onload = () => {
+        onChange(reader.result);
+      };
+    },
+    [onChange],
+  );
+
   return (
-    <BaseInputUploaderImg {...props} {...field} errorMessage={error?.message} />
+    <BaseInputUploaderImg
+      {...props}
+      onChange={handleChange}
+      {...moreField}
+      errorMessage={error?.message}
+    />
   );
 }

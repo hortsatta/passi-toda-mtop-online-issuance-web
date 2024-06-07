@@ -9,6 +9,7 @@ import { IssuerFranchiseSingle } from '../components/issuer-franchise-single.com
 export function IssuerFranchiseSinglePage() {
   const { franchise, loading, approvalLoading, approveFranchise } =
     useIssuerFranchiseSingle();
+
   const data: any = useLoaderData();
 
   return (

@@ -4,7 +4,9 @@ import { generateApiError } from '#/core/helpers/api.helper';
 import {
   transformToFranchise,
   transformToFranchiseUpsertDto,
+  transformToFranchiseValidateDto,
 } from '../helpers/franchise-transform.helper';
+import { generateImageFormData } from '../helpers/franchise-form.helper';
 
 import type {
   UseMutationOptions,
@@ -230,6 +232,41 @@ export function getFranchiseById(
   };
 }
 
+export function validateUpsertFranchise(
+  options?: Omit<
+    UseMutationOptions<
+      boolean,
+      Error,
+      { data: FranchiseUpsertFormData; id?: number },
+      any
+    >,
+    'mutationFn'
+  >,
+) {
+  const mutationFn = async ({
+    data,
+    id,
+  }: {
+    data: FranchiseUpsertFormData;
+    id?: number;
+  }): Promise<boolean> => {
+    const url = `${BASE_URL}/validate`;
+    const json = transformToFranchiseValidateDto(data);
+    const searchParams = generateSearchParams({
+      id: id?.toString(),
+    });
+
+    try {
+      return kyInstance.post(url, { json, searchParams }).json();
+    } catch (error: any) {
+      const apiError = await generateApiError(error);
+      throw apiError;
+    }
+  };
+
+  return { mutationFn, ...options };
+}
+
 export function createFranchise(
   options?: Omit<
     UseMutationOptions<Franchise, Error, FranchiseUpsertFormData, any>,
@@ -328,6 +365,27 @@ export function deleteFranchise(
     try {
       const success: boolean = await kyInstance.delete(url).json();
       return success;
+    } catch (error: any) {
+      const apiError = await generateApiError(error);
+      throw apiError;
+    }
+  };
+
+  return { mutationFn, ...options };
+}
+
+export function uploadFranchiseFiles(
+  options?: Omit<
+    UseMutationOptions<string[], Error, FranchiseUpsertFormData, any>,
+    'mutationFn'
+  >,
+) {
+  const mutationFn = async (data: FranchiseUpsertFormData): Promise<any> => {
+    const url = `upload/${BASE_URL}/docs`;
+    const formData = await generateImageFormData(data);
+
+    try {
+      return kyInstance.post(url, { body: formData }).json();
     } catch (error: any) {
       const apiError = await generateApiError(error);
       throw apiError;

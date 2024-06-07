@@ -33,7 +33,7 @@ const FranchiseSubGroupList = memo(function ({
   return (
     <div className='flex flex-col gap-4'>
       <h4>{headerText}</h4>
-      <div className='flex gap-4'>
+      <div className='flex flex-wrap gap-4'>
         {franchises.length ? (
           franchises.map((franchise) => (
             <IssuerFranchiseSingleCard
