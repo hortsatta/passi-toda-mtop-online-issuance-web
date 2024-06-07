@@ -75,6 +75,8 @@ export const MemberFranchiseSingleCard = memo(function ({
         return 'Active';
       case FranchiseApprovalStatus.Rejected:
         return 'Rejected';
+      case FranchiseApprovalStatus.Canceled:
+        return 'Canceled';
       default:
         return 'Pending';
     }
@@ -120,14 +122,16 @@ export const MemberFranchiseSingleCard = memo(function ({
               'text-yellow-500',
             approvalStatus === FranchiseApprovalStatus.Approved &&
               'text-green-600',
-            approvalStatus === FranchiseApprovalStatus.Rejected &&
+            (approvalStatus === FranchiseApprovalStatus.Rejected ||
+              approvalStatus === FranchiseApprovalStatus.Canceled) &&
               'text-red-600',
           )}
         >
           {approvalStatus === FranchiseApprovalStatus.Approved && (
             <BaseIcon name='check-circle' size={24} />
           )}
-          {approvalStatus === FranchiseApprovalStatus.Rejected && (
+          {(approvalStatus === FranchiseApprovalStatus.Rejected ||
+            approvalStatus === FranchiseApprovalStatus.Canceled) && (
             <BaseIcon name='x-circle' size={24} />
           )}
           {statusLabel}

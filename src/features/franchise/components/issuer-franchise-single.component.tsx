@@ -111,6 +111,8 @@ export const IssuerFranchiseSingle = memo(function ({
         return 'Active';
       case FranchiseApprovalStatus.Rejected:
         return 'Rejected';
+      case FranchiseApprovalStatus.Canceled:
+        return 'Canceled';
       default:
         return 'Pending Verification';
     }
@@ -137,6 +139,9 @@ export const IssuerFranchiseSingle = memo(function ({
           return;
         case FranchiseApprovalStatus.Approved:
           toast.success('Franchise approved and active');
+          return;
+        case FranchiseApprovalStatus.Canceled:
+          toast.success('Application canceled');
           return;
         default:
           toast.error('Application rejected');
@@ -176,23 +181,26 @@ export const IssuerFranchiseSingle = memo(function ({
                 'text-yellow-500',
               approvalStatus === FranchiseApprovalStatus.Approved &&
                 'text-green-600',
-              approvalStatus === FranchiseApprovalStatus.Rejected &&
+              (approvalStatus === FranchiseApprovalStatus.Rejected ||
+                approvalStatus === FranchiseApprovalStatus.Canceled) &&
                 'text-red-600',
             )}
           >
             {approvalStatus === FranchiseApprovalStatus.Approved && (
               <BaseIcon name='check-circle' size={24} />
             )}
-            {approvalStatus === FranchiseApprovalStatus.Rejected && (
+            {(approvalStatus === FranchiseApprovalStatus.Rejected ||
+              approvalStatus === FranchiseApprovalStatus.Canceled) && (
               <BaseIcon name='x-circle' size={24} />
             )}
             {statusLabel}
           </span>
           <small className='pl-8 text-xs uppercase'>status</small>
         </div>
-        {approvalStatus !== FranchiseApprovalStatus.Rejected && (
-          <CurrentStatus approvalStatus={approvalStatus} />
-        )}
+        {approvalStatus !== FranchiseApprovalStatus.Rejected &&
+          approvalStatus !== FranchiseApprovalStatus.Canceled && (
+            <CurrentStatus approvalStatus={approvalStatus} />
+          )}
       </div>
       <div
         className={cx(

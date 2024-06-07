@@ -92,6 +92,8 @@ export const MemberFranchiseSingle = memo(function ({
         return 'Active';
       case FranchiseApprovalStatus.Rejected:
         return 'Rejected';
+      case FranchiseApprovalStatus.Canceled:
+        return 'Canceled';
       default:
         return 'Pending';
     }
@@ -114,23 +116,26 @@ export const MemberFranchiseSingle = memo(function ({
                 'text-yellow-500',
               approvalStatus === FranchiseApprovalStatus.Approved &&
                 'text-green-600',
-              approvalStatus === FranchiseApprovalStatus.Rejected &&
+              (approvalStatus === FranchiseApprovalStatus.Rejected ||
+                approvalStatus === FranchiseApprovalStatus.Canceled) &&
                 'text-red-600',
             )}
           >
             {approvalStatus === FranchiseApprovalStatus.Approved && (
               <BaseIcon name='check-circle' size={24} />
             )}
-            {approvalStatus === FranchiseApprovalStatus.Rejected && (
+            {(approvalStatus === FranchiseApprovalStatus.Rejected ||
+              approvalStatus === FranchiseApprovalStatus.Canceled) && (
               <BaseIcon name='x-circle' size={24} />
             )}
             {statusLabel}
           </span>
           <small className='text-xs uppercase'>status</small>
         </div>
-        {approvalStatus !== FranchiseApprovalStatus.Rejected && (
-          <CurrentStatus approvalStatus={approvalStatus} />
-        )}
+        {approvalStatus !== FranchiseApprovalStatus.Rejected &&
+          approvalStatus !== FranchiseApprovalStatus.Canceled && (
+            <CurrentStatus approvalStatus={approvalStatus} />
+          )}
       </div>
       <div className='my-2.5 w-full border-b border-border' />
       <div className='flex w-full flex-col'>

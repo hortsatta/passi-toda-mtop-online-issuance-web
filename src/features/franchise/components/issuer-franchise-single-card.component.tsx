@@ -76,6 +76,8 @@ export const IssuerFranchiseSingleCard = memo(function ({
         return 'Active';
       case FranchiseApprovalStatus.Rejected:
         return 'Rejected';
+      case FranchiseApprovalStatus.Canceled:
+        return 'Canceled';
       default:
         return 'Pending Verification';
     }
@@ -119,12 +121,12 @@ export const IssuerFranchiseSingleCard = memo(function ({
       </div>
       <div className='flex w-full items-end justify-between'>
         <div className='flex flex-col gap-3'>
-          {approvalStatus !== FranchiseApprovalStatus.Rejected &&
-            approvalStatus !== FranchiseApprovalStatus.Approved && (
+          {approvalStatus === FranchiseApprovalStatus.PendingValidation ||
+            (approvalStatus === FranchiseApprovalStatus.PendingPayment && (
               <small className='text-xs text-green-600'>
                 select to review application
               </small>
-            )}
+            ))}
           <span
             className={cx(
               'flex items-center gap-1 text-xl font-bold',
@@ -133,14 +135,16 @@ export const IssuerFranchiseSingleCard = memo(function ({
                 'text-yellow-500',
               approvalStatus === FranchiseApprovalStatus.Approved &&
                 'text-green-600',
-              approvalStatus === FranchiseApprovalStatus.Rejected &&
+              (approvalStatus === FranchiseApprovalStatus.Rejected ||
+                approvalStatus === FranchiseApprovalStatus.Canceled) &&
                 'text-red-600',
             )}
           >
             {approvalStatus === FranchiseApprovalStatus.Approved && (
               <BaseIcon name='check-circle' size={24} />
             )}
-            {approvalStatus === FranchiseApprovalStatus.Rejected && (
+            {(approvalStatus === FranchiseApprovalStatus.Rejected ||
+              approvalStatus === FranchiseApprovalStatus.Canceled) && (
               <BaseIcon name='x-circle' size={24} />
             )}
             {statusLabel}

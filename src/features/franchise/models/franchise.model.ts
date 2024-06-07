@@ -8,6 +8,7 @@ export enum FranchiseApprovalStatus {
   PendingPayment = 'pending-payment',
   Approved = 'approved',
   Rejected = 'rejected',
+  Canceled = 'canceled',
 }
 
 export type Franchise = Partial<AuditTrail> & {
