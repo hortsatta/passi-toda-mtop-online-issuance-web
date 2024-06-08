@@ -6,6 +6,8 @@ import { transformToTodaAssociation } from './toda-association-transform.helper'
 import type { Franchise } from '../models/franchise.model';
 import type { FranchiseUpsertFormData } from '../models/franchise-form-data.model';
 
+const IMG_BASE_URL = import.meta.env.VITE_SUPABASE_BASE_URL;
+
 export function transformToFranchise({
   id,
   createdAt,
@@ -30,13 +32,12 @@ export function transformToFranchise({
     mvFileNo,
     plateNo,
     ownerDriverLicenseNo,
-    // TODO change img url to complete url from env
-    vehicleORImgUrl,
-    vehicleCRImgUrl,
-    todaAssocMembershipImgUrl,
-    ownerDriverLicenseNoImgUrl,
-    brgyClearanceImgUrl,
-    voterRegRecordImgUrl,
+    vehicleORImgUrl: `${IMG_BASE_URL}${vehicleORImgUrl}`,
+    vehicleCRImgUrl: `${IMG_BASE_URL}${vehicleCRImgUrl}`,
+    todaAssocMembershipImgUrl: `${IMG_BASE_URL}${todaAssocMembershipImgUrl}`,
+    ownerDriverLicenseNoImgUrl: `${IMG_BASE_URL}${ownerDriverLicenseNoImgUrl}`,
+    brgyClearanceImgUrl: `${IMG_BASE_URL}${brgyClearanceImgUrl}`,
+    voterRegRecordImgUrl: `${IMG_BASE_URL}${voterRegRecordImgUrl}`,
     approvalStatus,
     approvalDate: approvalDate ? dayjs(approvalDate).toDate() : null,
     expiryDate: expiryDate ? dayjs(expiryDate).toDate() : null,
