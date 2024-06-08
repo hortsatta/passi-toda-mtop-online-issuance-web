@@ -3,10 +3,9 @@ import cx from 'classix';
 
 import { BaseButton } from '#/base/components/base-button.component';
 import { BaseIcon } from '#/base/components/base-icon.component';
-import { BaseFieldText } from '#/base/components/base-field-text.component';
-import { BaseFieldImg } from '#/base/components/base-field-img.component';
 import { FranchiseApprovalStatus } from '../models/franchise.model';
 import { FranchiseDocsModal } from './franchise-docs-modal.component';
+import { FranchiseRecord } from './franchise-record.component';
 
 import type { ComponentProps } from 'react';
 import type { Franchise } from '../models/franchise.model';
@@ -88,46 +87,7 @@ export const MemberFranchiseSingle = memo(function ({
     title: '',
   });
 
-  const [
-    mvFileNo,
-    plateNo,
-    approvalStatus,
-    expiryDate,
-    todaAssociationName,
-    vehicleORImgUrl,
-    vehicleCRImgUrl,
-    todaAssocMembershipImgUrl,
-    ownerDriverLicenseNoImgUrl,
-    brgyClearanceImgUrl,
-    voterRegRecordImgUrl,
-  ] = useMemo(
-    () => [
-      franchise.mvFileNo,
-      franchise.plateNo,
-      franchise.approvalStatus,
-      franchise.expiryDate,
-      franchise.todaAssociation.name,
-      franchise.vehicleORImgUrl,
-      franchise.vehicleCRImgUrl,
-      franchise.todaAssocMembershipImgUrl,
-      franchise.ownerDriverLicenseNoImgUrl,
-      franchise.brgyClearanceImgUrl,
-      franchise.voterRegRecordImgUrl,
-    ],
-    [franchise],
-  );
-
-  const handleImgClick = useCallback(
-    (src: string | null, title = '') =>
-      () => {
-        setCurrentImg({ src, title });
-      },
-    [],
-  );
-
-  const handleModalClose = useCallback(() => {
-    setCurrentImg((prev) => ({ ...prev, src: null }));
-  }, []);
+  const approvalStatus = useMemo(() => franchise.approvalStatus, [franchise]);
 
   const statusLabel = useMemo(() => {
     switch (approvalStatus) {
@@ -143,6 +103,10 @@ export const MemberFranchiseSingle = memo(function ({
         return 'Pending';
     }
   }, [approvalStatus]);
+
+  const handleModalClose = useCallback(() => {
+    setCurrentImg((prev) => ({ ...prev, src: null }));
+  }, []);
 
   return (
     <>
@@ -221,73 +185,10 @@ export const MemberFranchiseSingle = memo(function ({
         </div>
         <div className='my-2.5 w-full border-b border-border' />
         <div className='flex w-full flex-col'>
-          <div className='flex flex-1 flex-col items-start gap-6'>
-            <div className='flex w-full flex-1 flex-col gap-4'>
-              <h4>Vehicle Info</h4>
-              <div className='flex flex-1 gap-4'>
-                <BaseFieldText label='Plate No'>{plateNo}</BaseFieldText>
-                <BaseFieldText label='MV File No'>{mvFileNo}</BaseFieldText>
-                <BaseFieldText label='TODA Association'>
-                  {todaAssociationName}
-                </BaseFieldText>
-              </div>
-            </div>
-            <div className='flex w-full flex-1 flex-col gap-4'>
-              <h4>Documents</h4>
-              <div className='grid grid-cols-3 gap-4'>
-                <BaseFieldImg
-                  src={vehicleORImgUrl}
-                  label='Vehicle Official Receipt (OR)'
-                  onClick={handleImgClick(
-                    vehicleORImgUrl,
-                    'Vehicle Official Receipt (OR)',
-                  )}
-                />
-                <BaseFieldImg
-                  src={vehicleCRImgUrl}
-                  label='Vehicle Certificate of Registration (CR)'
-                  onClick={handleImgClick(
-                    vehicleCRImgUrl,
-                    'Vehicle Certificate of Registration (CR)',
-                  )}
-                />
-                <BaseFieldImg
-                  src={todaAssocMembershipImgUrl}
-                  label='TODA Association Membership'
-                  onClick={handleImgClick(
-                    todaAssocMembershipImgUrl,
-                    'TODA Association Membership',
-                  )}
-                />
-              </div>
-              <div className='grid grid-cols-3 gap-4'>
-                <BaseFieldImg
-                  src={ownerDriverLicenseNoImgUrl}
-                  label={`Driver's License No`}
-                  onClick={handleImgClick(
-                    ownerDriverLicenseNoImgUrl,
-                    `Driver's License No`,
-                  )}
-                />
-                <BaseFieldImg
-                  src={brgyClearanceImgUrl}
-                  label='Barangay Clearance'
-                  onClick={handleImgClick(
-                    brgyClearanceImgUrl,
-                    'Barangay Clearance',
-                  )}
-                />
-                <BaseFieldImg
-                  src={voterRegRecordImgUrl}
-                  label={`Voter's Registration Record`}
-                  onClick={handleImgClick(
-                    voterRegRecordImgUrl || null,
-                    `Voter's Registration Record`,
-                  )}
-                />
-              </div>
-            </div>
-          </div>
+          <FranchiseRecord
+            franchise={franchise}
+            setCurrentImg={setCurrentImg}
+          />
         </div>
       </div>
       <FranchiseDocsModal

@@ -22,14 +22,14 @@ export const BaseFieldImg = memo(function ({
   return (
     <div
       className={cx(
-        'flex h-fit flex-1 flex-col gap-2.5 rounded bg-backdrop-input px-4 py-2.5',
+        'flex h-fit flex-1 flex-col gap-2.5 rounded bg-backdrop-input p-4',
         wrapperClassName,
       )}
       {...moreWrapperProps}
     >
       <img
         className={cx(
-          'inline-block h-60 overflow-hidden rounded border border-gray-700 bg-backdrop-surface object-contain',
+          'inline-block h-60 overflow-hidden rounded bg-backdrop-surface object-contain',
           onClick && 'cursor-pointer',
           className,
         )}
@@ -39,7 +39,10 @@ export const BaseFieldImg = memo(function ({
         {...moreProps}
       />
       {label && (
-        <small className='text-xs uppercase leading-tight'>{label}</small>
+        <>
+          <div className='border-b border-border' />
+          <small className='text-xs uppercase leading-tight'>{label}</small>
+        </>
       )}
     </div>
   );
