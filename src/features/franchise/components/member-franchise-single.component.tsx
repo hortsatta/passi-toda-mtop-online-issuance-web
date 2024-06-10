@@ -1,17 +1,25 @@
 import { memo, useCallback, useMemo, useState } from 'react';
+import toast from 'react-hot-toast';
 import cx from 'classix';
 
+import { CENTAVOS } from '#/core/helpers/core.helper';
 import { BaseButton } from '#/base/components/base-button.component';
 import { BaseIcon } from '#/base/components/base-icon.component';
+import { FeeType } from '#/rate-sheet/models/rate-sheet.model';
 import { FranchiseApprovalStatus } from '../models/franchise.model';
 import { FranchiseDocsModal } from './franchise-docs-modal.component';
 import { FranchiseRecord } from './franchise-record.component';
 
 import type { ComponentProps } from 'react';
+import type { RateSheet } from '#/rate-sheet/models/rate-sheet.model';
 import type { Franchise } from '../models/franchise.model';
+import { BaseModal } from '#/base/components/base-modal.component';
+import { RateSheetDetails } from '#/rate-sheet/components/rate-sheet-details.component';
+import { FranchiseApplicationActions } from './franchise-application-actions.component';
 
 type Props = ComponentProps<'div'> & {
   franchise: Franchise;
+  rateSheet: RateSheet;
   onCancelApplication: () => Promise<Franchise>;
   loading?: boolean;
 };
@@ -74,11 +82,15 @@ const CurrentStatus = memo(function ({ approvalStatus }: CurrentStatusProps) {
 
 export const MemberFranchiseSingle = memo(function ({
   className,
-  franchise,
   loading,
+  franchise,
+  rateSheet,
   onCancelApplication,
   ...moreProps
 }: Props) {
+  const [openDetails, setOpenDetails] = useState(false);
+  const [openActions, setOpenActions] = useState(false);
+
   const [currentImg, setCurrentImg] = useState<{
     src: string | null;
     title?: string;
@@ -103,6 +115,68 @@ export const MemberFranchiseSingle = memo(function ({
         return 'Pending';
     }
   }, [approvalStatus]);
+
+  const modalTitle = useMemo(() => {
+    if (openDetails) {
+      return rateSheet.feeType === FeeType.FranchiseRenewal
+        ? 'Renewal Details'
+        : 'Registration Details';
+    } else if (openActions) {
+      return 'Confirm';
+    }
+
+    return '';
+  }, [openDetails, openActions, rateSheet]);
+
+  const detailButtonLabel = useMemo(
+    () =>
+      rateSheet.feeType === FeeType.FranchiseRenewal
+        ? 'View Renewal Details'
+        : 'View Registration Details',
+    [rateSheet],
+  );
+
+  const totalAmountText = useMemo(() => {
+    const amount = (
+      rateSheet.rateSheetFees.reduce(
+        (total, current) => current.amount + total,
+        0,
+      ) / CENTAVOS
+    ).toFixed(2);
+
+    return `₱${amount}`;
+  }, [rateSheet]);
+
+  const handleDetailsActionsModalClose = useCallback(() => {
+    setOpenActions(false);
+    setOpenDetails(false);
+  }, []);
+
+  const handleCancelApplication = useCallback(async () => {
+    try {
+      await onCancelApplication();
+      handleDetailsActionsModalClose();
+      toast.error('Application canceled');
+    } catch (error: any) {
+      toast.error(error.message);
+    }
+  }, [onCancelApplication, handleDetailsActionsModalClose]);
+
+  const handleDetailsOpen = useCallback(
+    (open: boolean) => () => {
+      setOpenDetails(open);
+      setOpenActions(false);
+    },
+    [],
+  );
+
+  const handleActionsOpen = useCallback(
+    (open: boolean) => () => {
+      setOpenActions(open);
+      setOpenDetails(false);
+    },
+    [],
+  );
 
   const handleModalClose = useCallback(() => {
     setCurrentImg((prev) => ({ ...prev, src: null }));
@@ -157,32 +231,43 @@ export const MemberFranchiseSingle = memo(function ({
               <CurrentStatus approvalStatus={approvalStatus} />
             )}
         </div>
-        <div
-          className={cx(
-            'flex h-0 w-full items-center justify-end gap-2.5 overflow-hidden transition-[height]',
-            (approvalStatus === FranchiseApprovalStatus.PendingValidation ||
-              approvalStatus === FranchiseApprovalStatus.PendingPayment) &&
-              'h-12',
-          )}
-        >
-          <BaseButton
-            className={cx(
-              'h-full !text-base opacity-0 transition-opacity',
-              (approvalStatus === FranchiseApprovalStatus.PendingValidation ||
-                approvalStatus === FranchiseApprovalStatus.PendingPayment) &&
-                'opacity-100',
-            )}
-            variant='warn'
-            loading={loading}
-            disabled={
-              approvalStatus !== FranchiseApprovalStatus.PendingValidation &&
-              approvalStatus !== FranchiseApprovalStatus.PendingPayment
-            }
-            onClick={onCancelApplication}
-          >
-            Cancel Application
-          </BaseButton>
-        </div>
+        {(approvalStatus === FranchiseApprovalStatus.PendingValidation ||
+          approvalStatus === FranchiseApprovalStatus.PendingPayment) && (
+          <>
+            <div className='my-2.5 w-full border-b border-border' />
+            <div className='flex w-full items-start justify-between gap-2.5'>
+              <div className='flex h-full flex-col items-start gap-2.5 transition-opacity'>
+                {approvalStatus === FranchiseApprovalStatus.PendingPayment && (
+                  <>
+                    <span className='text-base'>
+                      Awaiting{' '}
+                      <i className='text-2xl font-bold not-italic underline'>
+                        {totalAmountText}
+                      </i>{' '}
+                      {rateSheet.feeType === FeeType.FranchiseRegistration
+                        ? 'Registration'
+                        : 'Renewal'}{' '}
+                      Fee Payment
+                    </span>
+                    <button
+                      className='w-full max-w-[210px] rounded border border-blue-500 py-1.5 text-blue-500 transition-[filter] hover:brightness-150'
+                      onClick={handleDetailsOpen(true)}
+                    >
+                      {detailButtonLabel}
+                    </button>
+                  </>
+                )}
+              </div>
+              <BaseButton
+                variant='warn'
+                loading={loading}
+                onClick={handleActionsOpen(true)}
+              >
+                Cancel Application
+              </BaseButton>
+            </div>
+          </>
+        )}
         <div className='my-2.5 w-full border-b border-border' />
         <div className='flex w-full flex-col'>
           <FranchiseRecord
@@ -196,6 +281,28 @@ export const MemberFranchiseSingle = memo(function ({
         title={currentImg.title}
         onClose={handleModalClose}
       />
+      <BaseModal
+        open={openDetails || openActions}
+        title={modalTitle}
+        onClose={handleDetailsActionsModalClose}
+      >
+        {openDetails && (
+          <RateSheetDetails rateSheet={rateSheet}>
+            Please pay the exact amount at the cashier.
+            <br />
+            Franchise status will be updated shortly if payment has been made.
+          </RateSheetDetails>
+        )}
+        {openActions && (
+          <FranchiseApplicationActions
+            loading={loading}
+            franchise={franchise}
+            rateSheet={rateSheet}
+            onApproveFranchise={handleCancelApplication}
+            isUserClient
+          />
+        )}
+      </BaseModal>
     </>
   );
 });

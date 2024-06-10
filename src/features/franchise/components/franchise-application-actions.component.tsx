@@ -11,12 +11,12 @@ import type { RateSheet } from '#/rate-sheet/models/rate-sheet.model';
 import type { Franchise } from '../models/franchise.model';
 
 type Props = ComponentProps<'div'> & {
-  isApprove: boolean;
   franchise: Franchise;
   rateSheet: RateSheet;
   onApproveFranchise: () => void;
   isUserClient?: boolean;
   loading?: boolean;
+  isApprove?: boolean;
 };
 
 export const FranchiseApplicationActions = memo(function ({

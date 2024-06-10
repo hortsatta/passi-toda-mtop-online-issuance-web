@@ -11,7 +11,9 @@ export function IssuerFranchiseSinglePage() {
   const { franchise, loading, approvalLoading, approveFranchise } =
     useIssuerFranchiseSingle();
 
-  const { rateSheet, loading: rateSheetLoading } = useRateSheetLatestSingle();
+  const { rateSheet, loading: rateSheetLoading } = useRateSheetLatestSingle(
+    franchise?.approvalStatus,
+  );
 
   const data: any = useLoaderData();
 

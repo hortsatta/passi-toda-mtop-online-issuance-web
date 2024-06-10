@@ -1,4 +1,5 @@
 import { memo, useMemo } from 'react';
+import cx from 'classix';
 
 import { CENTAVOS } from '#/core/helpers/core.helper';
 
@@ -11,7 +12,9 @@ type Props = ComponentProps<'div'> & {
 };
 
 export const RateSheetDetails = memo(function ({
+  className,
   rateSheet,
+  children,
   ...moreProps
 }: Props) {
   const [headerTitle, fees, totalFees] = useMemo(
@@ -32,8 +35,11 @@ export const RateSheetDetails = memo(function ({
   );
 
   return (
-    <div {...moreProps}>
-      <h4 className='mb-2.5'>{headerTitle}</h4>
+    <div
+      className={cx('mb-2.5 flex flex-col gap-2.5', className)}
+      {...moreProps}
+    >
+      <h4>{headerTitle}</h4>
       <div className='flex flex-col gap-2.5 rounded border border-border p-4 text-base'>
         {fees.map(({ name, amount }, index) => (
           <div key={index} className='flex w-full items-center justify-between'>
@@ -47,6 +53,7 @@ export const RateSheetDetails = memo(function ({
           <span className='text-lg'>₱{totalFees}</span>
         </div>
       </div>
+      {children && <div className='mt-5'>{children}</div>}
     </div>
   );
 });

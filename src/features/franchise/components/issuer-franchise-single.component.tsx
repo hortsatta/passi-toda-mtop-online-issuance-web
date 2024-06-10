@@ -181,7 +181,7 @@ export const IssuerFranchiseSingle = memo(function ({
     [onApproveFranchise, generateApprovalToast, handleDetailsActionsModalClose],
   );
 
-  const handleOpenDetails = useCallback(
+  const handleDetailsOpen = useCallback(
     (open: boolean) => () => {
       setOpenDetails(open);
       setOpenActions(false);
@@ -189,7 +189,7 @@ export const IssuerFranchiseSingle = memo(function ({
     [],
   );
 
-  const handleOpenActions = useCallback(
+  const handleActionsOpen = useCallback(
     (open: boolean, isApprove: boolean) => () => {
       setIsActionApprove(isApprove);
       setOpenActions(open);
@@ -267,13 +267,13 @@ export const IssuerFranchiseSingle = memo(function ({
                   }
                   loading={loading}
                   disabled={!buttonLabel}
-                  onClick={handleOpenActions(true, true)}
+                  onClick={handleActionsOpen(true, true)}
                 >
                   {buttonLabel}
                 </BaseButton>
                 <button
                   className='w-full rounded border border-blue-500 py-1.5 text-blue-500 transition-[filter] hover:brightness-150'
-                  onClick={handleOpenDetails(true)}
+                  onClick={handleDetailsOpen(true)}
                 >
                   {detailButtonLabel}
                 </button>
@@ -282,7 +282,7 @@ export const IssuerFranchiseSingle = memo(function ({
                 variant='warn'
                 loading={loading}
                 disabled={!buttonLabel}
-                onClick={handleOpenActions(true, false)}
+                onClick={handleActionsOpen(true, false)}
               >
                 Reject Application
               </BaseButton>

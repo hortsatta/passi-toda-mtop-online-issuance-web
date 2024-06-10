@@ -1,6 +1,7 @@
 import { memo, useMemo } from 'react';
 import cx from 'classix';
 
+import dayjs from '#/config/dayjs.config';
 import { BaseIcon } from '#/base/components/base-icon.component';
 import { FranchiseApprovalStatus } from '../models/franchise.model';
 
@@ -82,6 +83,17 @@ export const MemberFranchiseSingleCard = memo(function ({
     }
   }, [approvalStatus]);
 
+  const moreStatusInfoText = useMemo(() => {
+    if (approvalStatus === FranchiseApprovalStatus.Approved) {
+      const expiryDateText = dayjs(expiryDate).format('YYYY-MM-DD');
+      return `valid until ${expiryDateText}`;
+    } else if (approvalStatus === FranchiseApprovalStatus.PendingPayment) {
+      return 'select to view payment details';
+    }
+
+    return null;
+  }, [approvalStatus, expiryDate]);
+
   return (
     <button
       className={cx(
@@ -115,27 +127,40 @@ export const MemberFranchiseSingleCard = memo(function ({
         <div className='mt-5 w-full border-b border-border' />
       </div>
       <div className='flex w-full items-end justify-between'>
-        <span
-          className={cx(
-            'flex items-center gap-1 text-xl font-bold',
-            approvalStatus === FranchiseApprovalStatus.PendingPayment &&
-              'text-yellow-500',
-            approvalStatus === FranchiseApprovalStatus.Approved &&
-              'text-green-600',
-            (approvalStatus === FranchiseApprovalStatus.Rejected ||
-              approvalStatus === FranchiseApprovalStatus.Canceled) &&
-              'text-red-600',
+        <div className='flex flex-col gap-3'>
+          {moreStatusInfoText && (
+            <small
+              className={cx(
+                'text-xs',
+                approvalStatus !== FranchiseApprovalStatus.Approved &&
+                  'text-green-600',
+              )}
+            >
+              {moreStatusInfoText}
+            </small>
           )}
-        >
-          {approvalStatus === FranchiseApprovalStatus.Approved && (
-            <BaseIcon name='check-circle' size={24} />
-          )}
-          {(approvalStatus === FranchiseApprovalStatus.Rejected ||
-            approvalStatus === FranchiseApprovalStatus.Canceled) && (
-            <BaseIcon name='x-circle' size={24} />
-          )}
-          {statusLabel}
-        </span>
+          <span
+            className={cx(
+              'flex items-center gap-1 text-xl font-bold',
+              approvalStatus === FranchiseApprovalStatus.PendingPayment &&
+                'text-yellow-500',
+              approvalStatus === FranchiseApprovalStatus.Approved &&
+                'text-green-600',
+              (approvalStatus === FranchiseApprovalStatus.Rejected ||
+                approvalStatus === FranchiseApprovalStatus.Canceled) &&
+                'text-red-600',
+            )}
+          >
+            {approvalStatus === FranchiseApprovalStatus.Approved && (
+              <BaseIcon name='check-circle' size={24} />
+            )}
+            {(approvalStatus === FranchiseApprovalStatus.Rejected ||
+              approvalStatus === FranchiseApprovalStatus.Canceled) && (
+              <BaseIcon name='x-circle' size={24} />
+            )}
+            {statusLabel}
+          </span>
+        </div>
         <CurrentStatus approvalStatus={approvalStatus} />
       </div>
     </button>
