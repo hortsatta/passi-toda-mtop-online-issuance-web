@@ -42,6 +42,12 @@ export default defineConfig({
           new URL('./src/features/franchise', import.meta.url),
         ),
       },
+      {
+        find: '#/rate-sheet',
+        replacement: fileURLToPath(
+          new URL('./src/features/rate-sheet', import.meta.url),
+        ),
+      },
     ],
   },
 });

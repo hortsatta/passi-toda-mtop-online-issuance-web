@@ -19,3 +19,9 @@ export const queryTodaAssociationKey = {
   list: ['toda-associations', 'list'],
   single: ['toda-associations', 'single'],
 };
+
+export const queryRateSheetKey = {
+  list: ['rate-sheets', 'list'],
+  single: ['rate-sheets', 'single'],
+  latestSingle: ['rate-sheets', 'latest-single'],
+};

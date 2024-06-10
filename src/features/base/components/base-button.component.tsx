@@ -26,10 +26,10 @@ export const BaseButton = memo(
 
       switch (variant) {
         case 'warn':
-          className = 'border-[#c33636] bg-[#cf5151]';
+          className = 'border-[#c33636] bg-[#c94141]';
           break;
         case 'accept':
-          className = 'border-[#3aae3d] bg-[#4dc450]';
+          className = 'border-[#349c37] bg-[#43ad46]';
           break;
         case 'accent':
           className = 'border-accent-button-hover bg-accent';

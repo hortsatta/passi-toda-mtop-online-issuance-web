@@ -1,5 +1,7 @@
 import dayjs from '#/config/dayjs.config';
 
+export const CENTAVOS = 100;
+
 export function transformAuditTrail(
   id: number,
   createdAt: string,

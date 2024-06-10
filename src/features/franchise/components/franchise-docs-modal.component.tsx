@@ -33,6 +33,7 @@ export const FranchiseDocsModal = memo(function ({
           Download File
         </BaseButton>
       }
+      fullSize
       {...moreProps}
     >
       {!!localSrc && (

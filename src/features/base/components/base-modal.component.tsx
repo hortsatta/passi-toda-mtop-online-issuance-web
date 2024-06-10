@@ -6,6 +6,7 @@ import {
   Transition,
   TransitionChild,
 } from '@headlessui/react';
+import cx from 'classix';
 
 import { BaseIcon } from './base-icon.component';
 
@@ -15,6 +16,7 @@ type Props = Omit<ComponentProps<typeof Dialog>, 'children'> & {
   open: boolean;
   title?: string;
   description?: string;
+  fullSize?: boolean;
   children?: ReactNode;
   onClose?: () => void;
   rightComponent?: ReactNode;
@@ -24,6 +26,7 @@ export const BaseModal = memo(function ({
   open,
   title,
   description,
+  fullSize,
   children,
   onClose,
   onKeyDown,
@@ -59,7 +62,14 @@ export const BaseModal = memo(function ({
               leaveFrom='opacity-100 scale-100'
               leaveTo='opacity-0 scale-95'
             >
-              <DialogPanel className='flex h-[calc(100vh-5rem)] w-full max-w-[860px] transform flex-col overflow-hidden rounded bg-backdrop-surface px-8 py-6 text-left align-middle transition-all'>
+              <DialogPanel
+                className={cx(
+                  'flex w-full transform flex-col overflow-hidden rounded bg-[#222226] px-8 py-6 text-left align-middle transition-all',
+                  fullSize
+                    ? 'h-[calc(100vh-5rem)] max-w-[860px]'
+                    : 'max-w-[500px]',
+                )}
+              >
                 <div className='flex items-center justify-between'>
                   <div>
                     <DialogTitle

@@ -70,7 +70,7 @@ export function getTodaAssociationById(
       const todaAssociation = await kyInstance
         .get(url, { searchParams })
         .json();
-      return todaAssociation;
+      return transformToTodaAssociation(todaAssociation);
     } catch (error: any) {
       const apiError = await generateApiError(error);
       throw apiError;
