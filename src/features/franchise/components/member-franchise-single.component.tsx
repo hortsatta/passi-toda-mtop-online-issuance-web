@@ -5,17 +5,17 @@ import cx from 'classix';
 import { CENTAVOS } from '#/core/helpers/core.helper';
 import { BaseButton } from '#/base/components/base-button.component';
 import { BaseIcon } from '#/base/components/base-icon.component';
+import { BaseModal } from '#/base/components/base-modal.component';
 import { FeeType } from '#/rate-sheet/models/rate-sheet.model';
+import { RateSheetDetails } from '#/rate-sheet/components/rate-sheet-details.component';
 import { FranchiseApprovalStatus } from '../models/franchise.model';
 import { FranchiseDocsModal } from './franchise-docs-modal.component';
 import { FranchiseRecord } from './franchise-record.component';
+import { FranchiseApplicationActions } from './franchise-application-actions.component';
 
 import type { ComponentProps } from 'react';
 import type { RateSheet } from '#/rate-sheet/models/rate-sheet.model';
 import type { Franchise } from '../models/franchise.model';
-import { BaseModal } from '#/base/components/base-modal.component';
-import { RateSheetDetails } from '#/rate-sheet/components/rate-sheet-details.component';
-import { FranchiseApplicationActions } from './franchise-application-actions.component';
 
 type Props = ComponentProps<'div'> & {
   franchise: Franchise;

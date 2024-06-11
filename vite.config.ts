@@ -48,6 +48,12 @@ export default defineConfig({
           new URL('./src/features/rate-sheet', import.meta.url),
         ),
       },
+      {
+        find: '#/toda-association',
+        replacement: fileURLToPath(
+          new URL('./src/features/toda-association', import.meta.url),
+        ),
+      },
     ],
   },
 });

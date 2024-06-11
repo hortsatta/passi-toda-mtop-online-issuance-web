@@ -6,7 +6,7 @@ import { FeeType } from '#/rate-sheet/models/rate-sheet.model';
 import { FranchiseApprovalStatus } from '../models/franchise.model';
 
 import type { ComponentProps } from 'react';
-import type { ButtonVariant } from '#/core/models/core.model';
+import type { ButtonVariant } from '#/base/models/base.model';
 import type { RateSheet } from '#/rate-sheet/models/rate-sheet.model';
 import type { Franchise } from '../models/franchise.model';
 

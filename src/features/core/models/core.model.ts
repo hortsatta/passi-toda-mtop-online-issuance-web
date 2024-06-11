@@ -21,13 +21,6 @@ export type QuerySort = {
   order: 'asc' | 'desc';
 };
 
-export type SelectItem = {
-  value: string | number;
-  label?: string;
-};
-
-export type ButtonVariant = 'primary' | 'accent' | 'accept' | 'warn';
-
 // export type QueryPagination = {
 //   take: number;
 //   skip: number;

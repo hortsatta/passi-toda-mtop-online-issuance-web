@@ -14,8 +14,7 @@ import { BaseIcon } from './base-icon.component';
 
 import type { ChangeEvent, ComponentProps } from 'react';
 import type { UseControllerProps } from 'react-hook-form';
-import type { SelectItem } from '#/core/models/core.model';
-import type { IconName } from '../models/base.model';
+import type { IconName, SelectItem } from '../models/base.model';
 
 type Props = ComponentProps<'select'> & {
   items: SelectItem[];

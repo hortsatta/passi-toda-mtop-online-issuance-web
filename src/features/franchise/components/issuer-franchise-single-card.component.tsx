@@ -11,6 +11,7 @@ import type { Franchise } from '../models/franchise.model';
 type Props = ComponentProps<'button'> & {
   franchise: Franchise;
   isDashboard?: boolean;
+  viewOnly?: boolean;
   onDetails?: () => void;
 };
 
@@ -47,6 +48,7 @@ const CurrentStatus = memo(function ({ approvalStatus }: CurrentStatusProps) {
 export const IssuerFranchiseSingleCard = memo(function ({
   className,
   franchise,
+  viewOnly,
   onDetails,
   ...moreProps
 }: Props) {
@@ -85,6 +87,8 @@ export const IssuerFranchiseSingleCard = memo(function ({
   }, [approvalStatus]);
 
   const moreStatusInfoText = useMemo(() => {
+    if (viewOnly) return null;
+
     if (approvalStatus === FranchiseApprovalStatus.Approved) {
       const expiryDateText = dayjs(expiryDate).format('YYYY-MM-DD');
       return `valid until ${expiryDateText}`;
@@ -96,7 +100,7 @@ export const IssuerFranchiseSingleCard = memo(function ({
     }
 
     return null;
-  }, [approvalStatus, expiryDate]);
+  }, [viewOnly, approvalStatus, expiryDate]);
 
   return (
     <button

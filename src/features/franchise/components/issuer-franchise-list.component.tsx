@@ -9,18 +9,21 @@ import type { FranchiseDigest, Franchise } from '../models/franchise.model';
 
 type Props = ComponentProps<'div'> & {
   franchiseDigest: FranchiseDigest;
+  viewOnly?: boolean;
   onFranchiseDetails?: (id: number) => void;
 };
 
 type FranchiseSubGroupListProps = {
   headerText: string;
   franchises: Franchise[];
+  viewOnly?: boolean;
   onFranchiseDetails?: (id: number) => void;
 };
 
 const FranchiseSubGroupList = memo(function ({
   headerText,
   franchises,
+  viewOnly,
   onFranchiseDetails,
 }: FranchiseSubGroupListProps) {
   const handleFranchiseDetails = useCallback(
@@ -41,6 +44,7 @@ const FranchiseSubGroupList = memo(function ({
               franchise={franchise}
               onDetails={handleFranchiseDetails(franchise.id)}
               role='row'
+              viewOnly={viewOnly}
             />
           ))
         ) : (
@@ -54,6 +58,7 @@ const FranchiseSubGroupList = memo(function ({
 export const IssuerFranchiseList = memo(function ({
   className,
   franchiseDigest,
+  viewOnly,
   onFranchiseDetails,
   ...moreProps
 }: Props) {
@@ -92,18 +97,21 @@ export const IssuerFranchiseList = memo(function ({
             headerText='Pending Applications'
             franchises={[...pendingValidations, ...pendingPayments]}
             onFranchiseDetails={onFranchiseDetails}
+            viewOnly={viewOnly}
           />
           <div className='w-full border-b border-border' />
           <FranchiseSubGroupList
             headerText='Recent Approvals'
             franchises={recentApprovals}
             onFranchiseDetails={onFranchiseDetails}
+            viewOnly={viewOnly}
           />
           <div className='w-full border-b border-border' />
           <FranchiseSubGroupList
             headerText='Recent Rejections'
             franchises={recentRejections}
             onFranchiseDetails={onFranchiseDetails}
+            viewOnly={viewOnly}
           />
         </div>
       )}

@@ -7,6 +7,7 @@ import {
   Eye,
   EyeSlash,
   Image,
+  PencilSimple,
   SignOut,
   User,
   UserCirclePlus,
@@ -16,6 +17,7 @@ import {
 
 import type { Icon as PhosphorIcon, IconProps } from '@phosphor-icons/react';
 import type { IconName } from '../models/base.model';
+import { Trash } from '@phosphor-icons/react/dist/ssr';
 
 type Props = IconProps & {
   name: IconName;
@@ -39,8 +41,12 @@ export const BaseIcon = memo(
           return EyeSlash;
         case 'image':
           return Image;
+        case 'pencil-simple':
+          return PencilSimple;
         case 'sign-out':
           return SignOut;
+        case 'trash':
+          return Trash;
         case 'user':
           return User;
         case 'user-circle-plus':

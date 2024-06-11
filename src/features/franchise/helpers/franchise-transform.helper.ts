@@ -1,7 +1,7 @@
 import dayjs from '#/config/dayjs.config';
 import { transformAuditTrail } from '#/core/helpers/core.helper';
 import { transformToUser } from '#/user/helpers/user-transform.helper';
-import { transformToTodaAssociation } from './toda-association-transform.helper';
+import { transformToTodaAssociation } from '#/toda-association/helpers/toda-association-transform.helper';
 
 import type { Franchise } from '../models/franchise.model';
 import type { FranchiseUpsertFormData } from '../models/franchise-form-data.model';

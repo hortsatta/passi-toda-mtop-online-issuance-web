@@ -22,8 +22,7 @@ import { BaseControlledInputUploaderImage } from '#/base/components/base-input-u
 import { BaseControlledInputSelect } from '#/base/components/base-input-select.component';
 
 import type { FieldErrors } from 'react-hook-form';
-import type { SelectItem } from '#/core/models/core.model';
-import type { FormProps } from '#/base/models/base.model';
+import type { FormProps, SelectItem } from '#/base/models/base.model';
 import type { UserProfile } from '#/user/models/user.model';
 import type { Franchise } from '../models/franchise.model';
 import type { FranchiseUpsertFormData } from '../models/franchise-form-data.model';
@@ -332,11 +331,12 @@ export const FranchiseUpsertForm = memo(function ({
         </fieldset>
         <div className='w-full border-b border-border' />
         <div className='flex w-full items-center justify-between'>
-          <div className='flex items-center'>
+          <div className='flex items-center gap-4'>
             {onDelete && (
               <BaseButtonIcon
-                iconName='arrow-counter-clockwise'
+                iconName='trash'
                 loading={loading}
+                variant='warn'
                 disabled={isDone || isTodaAssociationFetching}
                 onClick={onDelete}
               />

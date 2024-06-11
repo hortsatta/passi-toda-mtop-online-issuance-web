@@ -2,6 +2,7 @@ import { transformAuditTrail } from '#/core/helpers/core.helper';
 import { generateFullNames } from '#/user/helpers/user-helper';
 
 import type { TodaAssociation } from '../models/toda-association.model';
+import type { TodaAssociationUpsertFormData } from '../models/toda-association-form-data.model';
 
 export function transformToTodaAssociation({
   id,
@@ -32,5 +33,21 @@ export function transformToTodaAssociation({
     presidentFullName,
     presidentReverseFullName,
     ...transformAuditTrail(id, createdAt, updatedAt, deletedAt),
+  };
+}
+
+export function transformToTodaAssociationFormData({
+  name,
+  authorizedRoute,
+  presidentFirstName,
+  presidentLastName,
+  presidentMiddleName,
+}: any): TodaAssociationUpsertFormData {
+  return {
+    name,
+    authorizedRoute,
+    presidentFirstName,
+    presidentLastName,
+    presidentMiddleName,
   };
 }

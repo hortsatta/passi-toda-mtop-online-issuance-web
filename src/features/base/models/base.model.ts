@@ -8,11 +8,20 @@ export type IconName =
   | 'eye'
   | 'eye-slash'
   | 'image'
+  | 'pencil-simple'
   | 'sign-out'
+  | 'trash'
   | 'user'
   | 'user-circle-plus'
   | 'x'
   | 'x-circle';
+
+export type SelectItem = {
+  value: string | number;
+  label?: string;
+};
+
+export type ButtonVariant = 'primary' | 'accent' | 'accept' | 'warn';
 
 export type FormProps<
   TProps extends keyof JSX.IntrinsicElements | JSXElementConstructor<any>,

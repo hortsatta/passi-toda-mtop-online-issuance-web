@@ -29,7 +29,8 @@
       "#/core/*": ["./src/features/core/*"],
       "#/user/*": ["./src/features/user/*"],
       "#/franchise/*": ["./src/features/franchise/*"],
-      "#/rate-sheet/*": ["./src/features/rate-sheet/*"]
+      "#/rate-sheet/*": ["./src/features/rate-sheet/*"],
+      "#/toda-association/*": ["./src/features/toda-association/*"]
     }
   },
   "include": ["src"],

@@ -1,7 +1,7 @@
 import type { AuditTrail } from '#/core/models/core.model';
 import type { User } from '#/user/models/user.model';
+import type { TodaAssociation } from '#/toda-association/models/toda-association.model';
 import type { FranchiseUpsertFormData } from './franchise-form-data.model';
-import type { TodaAssociation } from './toda-association.model';
 
 export enum FranchiseApprovalStatus {
   PendingValidation = 'pending-validation',

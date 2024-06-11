@@ -6,6 +6,7 @@ import { routeConfig } from '#/config/routes.config';
 import { useAuth } from '#/user/hooks/use-auth.hook';
 import { AuthSignInFormCompact } from '#/user/components/auth-sign-in-form-compact.component';
 import { CurrentUserCard } from '#/user/components/current-user-card.component';
+import { BaseLoading } from '#/base/components/base-loading.component';
 import { useBoundStore } from '../hooks/use-store.hook';
 import { CoreNavMenu } from './core-nav-menu.component';
 
@@ -45,7 +46,7 @@ export const CoreHeader = memo(function ({
         </div>
       </Link>
       {children}
-      {user !== undefined && (
+      {user !== undefined ? (
         <div className='flex h-full items-center gap-5'>
           {!isSignInPage && !user && <AuthSignInFormCompact />}
           {user && (
@@ -55,6 +56,10 @@ export const CoreHeader = memo(function ({
               <CurrentUserCard user={user} signOut={signOut} />
             </>
           )}
+        </div>
+      ) : (
+        <div className='mr-10 flex h-full items-center'>
+          <BaseLoading compact />
         </div>
       )}
     </header>

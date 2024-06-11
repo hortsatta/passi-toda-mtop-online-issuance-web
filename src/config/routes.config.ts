@@ -1,6 +1,6 @@
 export const baseMemberRoute = 'm';
-
 export const baseIssuerRoute = 'i';
+export const baseAdminRoute = 'a';
 
 export const routeConfig = {
   authSignIn: {
@@ -29,6 +29,22 @@ export const routeConfig = {
     },
     edit: {
       to: 'edit',
+    },
+  },
+  todaAssociation: {
+    name: 'toda-associations',
+    to: 'toda-associations',
+    label: 'Toda Association',
+    list: {
+      label: 'List',
+    },
+    create: {
+      to: 'add',
+      label: 'Add New',
+    },
+    edit: {
+      to: 'edit',
+      label: 'Edit',
     },
   },
   user: {

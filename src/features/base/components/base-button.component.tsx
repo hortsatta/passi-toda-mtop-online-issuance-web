@@ -2,7 +2,7 @@ import { forwardRef, memo, useMemo } from 'react';
 import cx from 'classix';
 
 import type { ComponentProps } from 'react';
-import type { ButtonVariant } from '#/core/models/core.model';
+import type { ButtonVariant } from '#/base/models/base.model';
 
 type Props = ComponentProps<'button'> & {
   variant?: ButtonVariant;

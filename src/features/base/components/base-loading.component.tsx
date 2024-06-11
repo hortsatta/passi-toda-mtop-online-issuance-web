@@ -3,29 +3,46 @@ import cx from 'classix';
 
 import type { ComponentProps } from 'react';
 
-const CLASSNAME_ORB = 'relative w-5 h-5 bg-text/50 rounded-full';
+const CLASSNAME_ORB_BASE = 'relative bg-text/50 rounded-full';
+const CLASSNAME_ORB = `${CLASSNAME_ORB_BASE} w-5 h-5`;
+const CLASSNAME_ORB_COMPACT = `${CLASSNAME_ORB_BASE} w-2.5 h-2.5`;
+
+type Props = ComponentProps<'div'> & {
+  compact?: boolean;
+};
 
 export const BaseLoading = memo(function ({
   className,
+  compact,
   ...moreProps
-}: ComponentProps<'div'>) {
+}: Props) {
   return (
     <div
       className={cx(
-        'flex h-screen w-full items-center justify-center',
+        'flex w-full items-center justify-center',
+        compact ? 'h-auto' : 'h-screen',
         className,
       )}
       {...moreProps}
     >
-      <div className='-mt-40 flex items-center gap-2.5'>
+      <div className={cx('flex items-center gap-2.5', !compact && '-mt-40')}>
         <div
-          className={`${CLASSNAME_ORB} animate-[bounce_1s_linear_infinite]`}
+          className={cx(
+            'animate-[bounce_1s_linear_infinite]',
+            compact ? CLASSNAME_ORB_COMPACT : CLASSNAME_ORB,
+          )}
         />
         <div
-          className={`${CLASSNAME_ORB} animate-[bounce_1s_linear_0.2s_infinite]`}
+          className={cx(
+            'animate-[bounce_1s_linear_0.2s_infinite]',
+            compact ? CLASSNAME_ORB_COMPACT : CLASSNAME_ORB,
+          )}
         />
         <div
-          className={`${CLASSNAME_ORB} animate-[bounce_1s_linear_0.4s_infinite]`}
+          className={cx(
+            'animate-[bounce_1s_linear_0.4s_infinite]',
+            compact ? CLASSNAME_ORB_COMPACT : CLASSNAME_ORB,
+          )}
         />
       </div>
     </div>

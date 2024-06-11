@@ -20,7 +20,7 @@ import type { Franchise } from '../models/franchise.model';
 type Props = ComponentProps<'div'> & {
   franchise: Franchise;
   rateSheet: RateSheet;
-  onApproveFranchise: (
+  onApproveFranchise?: (
     approvalStatus?: FranchiseApprovalStatus,
   ) => Promise<Franchise>;
   loading?: boolean;
@@ -170,6 +170,8 @@ export const IssuerFranchiseSingle = memo(function ({
 
   const handleApproveFranchise = useCallback(
     (status?: FranchiseApprovalStatus) => async () => {
+      if (!onApproveFranchise) return;
+
       try {
         const result = await onApproveFranchise(status);
         handleDetailsActionsModalClose();
@@ -257,35 +259,39 @@ export const IssuerFranchiseSingle = memo(function ({
             <div className='my-2.5 w-full border-b border-border' />
             <div className='flex w-full items-start justify-between gap-2.5'>
               <div className='flex h-full flex-col items-start gap-2.5 transition-opacity'>
-                <BaseButton
-                  className='h-16 min-w-[210px] !text-base'
-                  variant={
-                    franchise.approvalStatus ===
-                    FranchiseApprovalStatus.PendingPayment
-                      ? 'accept'
-                      : 'primary'
-                  }
-                  loading={loading}
-                  disabled={!buttonLabel}
-                  onClick={handleActionsOpen(true, true)}
-                >
-                  {buttonLabel}
-                </BaseButton>
+                {onApproveFranchise && (
+                  <BaseButton
+                    className='h-16 min-w-[210px] !text-base'
+                    variant={
+                      franchise.approvalStatus ===
+                      FranchiseApprovalStatus.PendingPayment
+                        ? 'accept'
+                        : 'primary'
+                    }
+                    loading={loading}
+                    disabled={!buttonLabel}
+                    onClick={handleActionsOpen(true, true)}
+                  >
+                    {buttonLabel}
+                  </BaseButton>
+                )}
                 <button
-                  className='w-full rounded border border-blue-500 py-1.5 text-blue-500 transition-[filter] hover:brightness-150'
+                  className='w-full min-w-[210px] rounded border border-blue-500 py-1.5 text-blue-500 transition-[filter] hover:brightness-150'
                   onClick={handleDetailsOpen(true)}
                 >
                   {detailButtonLabel}
                 </button>
               </div>
-              <BaseButton
-                variant='warn'
-                loading={loading}
-                disabled={!buttonLabel}
-                onClick={handleActionsOpen(true, false)}
-              >
-                Reject Application
-              </BaseButton>
+              {onApproveFranchise && (
+                <BaseButton
+                  variant='warn'
+                  loading={loading}
+                  disabled={!buttonLabel}
+                  onClick={handleActionsOpen(true, false)}
+                >
+                  Reject Application
+                </BaseButton>
+              )}
             </div>
           </>
         )}
@@ -309,7 +315,7 @@ export const IssuerFranchiseSingle = memo(function ({
         onClose={handleDetailsActionsModalClose}
       >
         {openDetails && <RateSheetDetails rateSheet={rateSheet} />}
-        {openActions && (
+        {openActions && handleApproveFranchise && (
           <FranchiseApplicationActions
             loading={loading}
             isApprove={isActionApprove}
