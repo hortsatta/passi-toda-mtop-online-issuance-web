@@ -53,7 +53,10 @@ export function TodaAssociationEditPage() {
   return (
     <>
       <BaseDataSuspense resolve={data?.main}>
-        <BaseScene pageTitle='Edit Toda Association'>
+        <BaseScene
+          pageTitle='Edit Toda Association'
+          backTo={TODA_ASSOCIATION_LIST_PATH}
+        >
           {loading && <BaseLoading />}
           {todaAssociationFormData && (
             <TodaAssociationUpsertForm

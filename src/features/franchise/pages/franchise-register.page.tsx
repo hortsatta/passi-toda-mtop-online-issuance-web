@@ -1,11 +1,14 @@
+import { baseMemberRoute, routeConfig } from '#/config/routes.config';
 import { useBoundStore } from '#/core/hooks/use-store.hook';
 import { BaseScene } from '#/base/components/base-scene.component';
 import { useTodaAssociationList } from '#/toda-association/hooks/use-toda-association-list.hook';
 import { useFranchiseCreate } from '../hooks/use-franchise-create.hook';
 import { FranchiseUpsertForm } from '../components/franchise-upsert-form.component';
 
+const FRANCHISE_LIST_PATH = `/${baseMemberRoute}/${routeConfig.franchise.to}`;
+
 export function FranchiseRegisterPage() {
-  const userProfile = useBoundStore((state) => state.user?.userProfile);
+  const user = useBoundStore((state) => state.user);
 
   const { loading, isDone, setIsDone, createFranchise } = useFranchiseCreate();
 
@@ -13,13 +16,13 @@ export function FranchiseRegisterPage() {
     useTodaAssociationList();
 
   return (
-    <BaseScene pageTitle='Franchise Registration'>
-      {userProfile && (
+    <BaseScene pageTitle='Franchise Registration' backTo={FRANCHISE_LIST_PATH}>
+      {user && (
         <FranchiseUpsertForm
           loading={loading}
           isTodaAssociationFetching={todaAssociationLoading}
           isDone={isDone}
-          userProfile={userProfile}
+          userProfile={user.userProfile}
           todaAssociationSelectItems={todaAssociationSelectItems}
           onDone={setIsDone}
           onSubmit={createFranchise}
