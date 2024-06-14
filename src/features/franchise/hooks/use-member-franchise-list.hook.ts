@@ -20,7 +20,7 @@ type Result = {
   handleFranchiseDetails: (id: number) => void;
 };
 
-const FRANCHISE_LIST_PATH = `/${baseMemberRoute}/${routeConfig.franchise.to}`;
+const FRANCHISE_LIST_TO = `/${baseMemberRoute}/${routeConfig.franchise.to}`;
 
 export const defaultSort = {
   field: 'createdAt',
@@ -69,14 +69,14 @@ export function useMemberFranchiseList(): Result {
 
   const handleFranchiseDetails = useCallback(
     (id: number) => {
-      navigate(`${FRANCHISE_LIST_PATH}/${id}`);
+      navigate(`${FRANCHISE_LIST_TO}/${id}`);
     },
     [navigate],
   );
 
   const handleFranchiseEdit = useCallback(
     (id: number) => {
-      navigate(`${FRANCHISE_LIST_PATH}/${id}/${routeConfig.franchise.edit.to}`);
+      navigate(`${FRANCHISE_LIST_TO}/${id}/${routeConfig.franchise.edit.to}`);
     },
     [navigate],
   );

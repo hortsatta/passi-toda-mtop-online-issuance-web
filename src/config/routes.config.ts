@@ -6,15 +6,11 @@ export const routeConfig = {
   authSignIn: {
     name: 'sign-in',
     to: 'sign-in',
-    // iconName: 'chalkboard-teacher',
-    // createTo: 'create',
-    // editTo: 'edit',
-    // previewTo: 'preview',
-    // schedule: {
-    //   to: 'schedules',
-    //   createTo: 'create',
-    //   editTo: 'edit',
-    // },
+    pageTitle: 'Sign In',
+  },
+  franchiseChecker: {
+    to: 'franchise-checker',
+    pageTitle: 'Franchise Checker',
   },
   franchise: {
     name: 'franchises',
@@ -22,10 +18,15 @@ export const routeConfig = {
     label: 'Franchise',
     list: {
       label: 'List',
+      pageTitle: 'Franchises',
+    },
+    single: {
+      pageTitle: 'Franchise',
     },
     create: {
       to: 'register',
       label: 'Registration',
+      pageTitle: 'Franchise Registration',
     },
     edit: {
       to: 'edit',
@@ -37,19 +38,28 @@ export const routeConfig = {
     label: 'Toda Association',
     list: {
       label: 'List',
+      pageTitle: 'TODA Associations',
+    },
+    single: {
+      pageTitle: 'Franchise',
     },
     create: {
       to: 'add',
       label: 'Add New',
+      pageTitle: 'Add New TODA Association',
     },
     edit: {
       to: 'edit',
       label: 'Edit',
+      pageTitle: 'Edit TODA Association',
     },
   },
   user: {
     name: 'users',
     to: 'users',
-    createTo: 'register',
+    create: {
+      to: 'register',
+      pageTitle: 'Sign Up',
+    },
   },
 };

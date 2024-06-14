@@ -7,7 +7,7 @@ import { BaseScene } from '#/base/components/base-scene.component';
 import { useTodaAssociationSingle } from '../hooks/use-toda-association-single.hook';
 import { TodaAssociationSingle } from '../components/toda-association-single.component';
 
-const TODA_ASSOCIATION_LIST_PATH = `/${baseAdminRoute}/${routeConfig.todaAssociation.to}`;
+const TODA_ASSOCIATION_LIST_TO = `/${baseAdminRoute}/${routeConfig.todaAssociation.to}`;
 
 export function AdminTodaAssociationSinglePage() {
   const { todaAssociation, loading } = useTodaAssociationSingle();
@@ -16,8 +16,8 @@ export function AdminTodaAssociationSinglePage() {
   return (
     <BaseDataSuspense resolve={data?.main}>
       <BaseScene
-        pageTitle='TODA Association'
-        backTo={TODA_ASSOCIATION_LIST_PATH}
+        pageTitle={routeConfig.todaAssociation.single.pageTitle}
+        backTo={TODA_ASSOCIATION_LIST_TO}
       >
         {loading && <BaseLoading />}
         {todaAssociation && (

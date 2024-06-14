@@ -24,8 +24,8 @@ type Result = {
   loading?: boolean;
 };
 
-const ADMIN_TODA_ASSOCIATION_LIST_PATH = `/${baseAdminRoute}/${routeConfig.todaAssociation.to}`;
-const ISSUER_TODA_ASSOCIATION_LIST_PATH = `/${baseIssuerRoute}/${routeConfig.todaAssociation.to}`;
+const ADMIN_TODA_ASSOCIATION_LIST_TO = `/${baseAdminRoute}/${routeConfig.todaAssociation.to}`;
+const ISSUER_TODA_ASSOCIATION_LIST_TO = `/${baseIssuerRoute}/${routeConfig.todaAssociation.to}`;
 
 export const defaultSort = {
   field: 'name',
@@ -69,7 +69,7 @@ export function useTodaAssociationList(): Result {
   const handleTodaAssociationDetails = useCallback(
     (id: number) => {
       navigate(
-        `${user?.role === UserRole.Issuer ? ISSUER_TODA_ASSOCIATION_LIST_PATH : ADMIN_TODA_ASSOCIATION_LIST_PATH}/${id}`,
+        `${user?.role === UserRole.Issuer ? ISSUER_TODA_ASSOCIATION_LIST_TO : ADMIN_TODA_ASSOCIATION_LIST_TO}/${id}`,
       );
     },
     [user, navigate],
@@ -78,7 +78,7 @@ export function useTodaAssociationList(): Result {
   const handleTodaAssociationEdit = useCallback(
     (id: number) => {
       navigate(
-        `${ADMIN_TODA_ASSOCIATION_LIST_PATH}/${id}/${routeConfig.todaAssociation.edit.to}`,
+        `${ADMIN_TODA_ASSOCIATION_LIST_TO}/${id}/${routeConfig.todaAssociation.edit.to}`,
       );
     },
     [navigate],

@@ -4,24 +4,31 @@ import cx from 'classix';
 
 import { BaseIcon } from './base-icon.component';
 
-import type { ComponentProps } from 'react';
+import type { ComponentProps, ReactNode } from 'react';
 
 type Props = ComponentProps<'div'> & {
   pageTitle?: string;
   backTo?: string;
+  rightComponent?: ReactNode;
 };
 
 export const BaseScene = memo(function ({
   className,
   pageTitle,
   backTo,
+  rightComponent,
   children,
   ...moreProps
 }: Props) {
   return (
     <div className={cx('w-full pt-10', className)} {...moreProps}>
-      {(pageTitle || backTo) && (
-        <div className='mb-5 flex items-center gap-5'>
+      <div
+        className={cx(
+          'mb-5 flex w-full items-center justify-between gap-5',
+          (pageTitle || backTo || !!rightComponent) && 'mb-5',
+        )}
+      >
+        <div className='flex items-center gap-5'>
           {backTo && (
             <Link to={backTo} className='pl-0 transition-[padding] hover:pl-5'>
               <BaseIcon
@@ -34,7 +41,10 @@ export const BaseScene = memo(function ({
           )}
           {pageTitle && <h2>{pageTitle}</h2>}
         </div>
-      )}
+        {!!rightComponent && (
+          <div className='flex items-center'>{rightComponent}</div>
+        )}
+      </div>
       {children}
     </div>
   );

@@ -21,7 +21,7 @@ export const CoreHeader = memo(function ({
 }: ComponentProps<'header'>) {
   const { pathname } = useLocation();
   const user = useBoundStore((state) => state.user);
-  const { signOut } = useAuth();
+  const { signIn, signOut } = useAuth();
 
   const isSignInPage = useMemo(
     () => pathname.slice(1) === routeConfig.authSignIn.to,
@@ -48,7 +48,9 @@ export const CoreHeader = memo(function ({
       {children}
       {user !== undefined ? (
         <div className='flex h-full items-center gap-5'>
-          {!isSignInPage && !user && <AuthSignInFormCompact />}
+          {!isSignInPage && !user && (
+            <AuthSignInFormCompact onSubmit={signIn} />
+          )}
           {user && (
             <>
               <CoreNavMenu role={user.role} />

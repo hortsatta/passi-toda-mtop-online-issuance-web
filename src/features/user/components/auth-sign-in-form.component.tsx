@@ -1,36 +1,31 @@
 import { memo, useCallback, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import toast from 'react-hot-toast';
 import cx from 'classix';
 
-import {
-  baseIssuerRoute,
-  baseMemberRoute,
-  routeConfig,
-} from '#/config/routes.config';
+import { routeConfig } from '#/config/routes.config';
 import { BaseButton } from '#/base/components/base-button.component';
 import { BaseControlledInput } from '#/base/components/base-input.component';
 import { BaseControlledInputPassword } from '#/base/components/base-input-password.component';
 import { defaultValues, schema } from '../helpers/auth-sign-in-schema.helper';
-import { UserRole } from '../models/user.model';
-import { useAuth } from '../hooks/use-auth.hook';
 
-import type { ComponentProps } from 'react';
+import type { FormProps } from '#/base/models/base.model';
 import type { AuthCredentials } from '../models/auth.model';
 
-type Props = ComponentProps<'form'> & {
+type Props = FormProps<'form', AuthCredentials, Promise<void>> & {
   email?: string;
 };
+
+const USER_REGISTER_TO = `/${routeConfig.user.to}/${routeConfig.user.create.to}`;
 
 export const AuthSignInForm = memo(function ({
   className,
   email,
+  onSubmit,
   ...moreProps
 }: Props) {
-  const navigate = useNavigate();
-  const { signIn } = useAuth();
   const [isDone, setIsDone] = useState(false);
 
   const transformDefaultValues = useMemo(() => {
@@ -56,20 +51,14 @@ export const AuthSignInForm = memo(function ({
   const submitForm = useCallback(
     async (data: AuthCredentials) => {
       try {
-        const user = await signIn(data);
-        const baseTo =
-          user.role === UserRole.Member
-            ? `/${baseMemberRoute}`
-            : `/${baseIssuerRoute}`;
-        // Set is done and navigate to user role's dashboard
         setIsDone(true);
-        navigate(`${baseTo}/${routeConfig.franchise.to}`);
+        onSubmit && onSubmit(data);
       } catch (error: any) {
         reset({ email: getValues('email'), password: '' });
         toast.error(error.message);
       }
     },
-    [signIn, reset, getValues, navigate],
+    [onSubmit, getValues, reset],
   );
 
   return (
@@ -108,6 +97,7 @@ export const AuthSignInForm = memo(function ({
       >
         Sign In
       </BaseButton>
+      <Link to={USER_REGISTER_TO}>Not yet registered? Sign up</Link>
     </form>
   );
 });

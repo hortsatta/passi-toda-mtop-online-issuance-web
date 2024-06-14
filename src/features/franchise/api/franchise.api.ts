@@ -232,6 +232,34 @@ export function getFranchiseById(
   };
 }
 
+export function checkFranchiseByMvPlateNo(
+  keys: { mvPlateNo: string },
+  options?: Omit<
+    UseQueryOptions<Franchise | null, Error, Franchise | null, any>,
+    'queryKey' | 'queryFn'
+  >,
+) {
+  const { mvPlateNo } = keys;
+
+  const queryFn = async (): Promise<any> => {
+    const url = `${BASE_URL}/check/${mvPlateNo}`;
+
+    try {
+      const franchise = await kyInstance.get(url).json();
+      return franchise ? transformToFranchise(franchise) : null;
+    } catch (error: any) {
+      const apiError = await generateApiError(error);
+      throw apiError;
+    }
+  };
+
+  return {
+    queryKey: [...queryFranchiseKey.checkSingle, { mvPlateNo }],
+    queryFn,
+    ...options,
+  };
+}
+
 export function validateUpsertFranchise(
   options?: Omit<
     UseMutationOptions<

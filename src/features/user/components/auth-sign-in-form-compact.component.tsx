@@ -16,20 +16,22 @@ import { BaseControlledInput } from '#/base/components/base-input.component';
 import { BaseControlledInputPassword } from '#/base/components/base-input-password.component';
 import { defaultValues, schema } from '../helpers/auth-sign-in-schema.helper';
 import { UserRole } from '../models/user.model';
-import { useAuth } from '../hooks/use-auth.hook';
 
-import type { ComponentProps } from 'react';
 import type { AuthCredentials } from '../models/auth.model';
+import type { FormProps } from '#/base/models/base.model';
+import type { User } from '../models/user.model';
 
-const USER_REGISTER_TO = `/${routeConfig.user.to}/${routeConfig.user.createTo}`;
+const USER_REGISTER_TO = `/${routeConfig.user.to}/${routeConfig.user.create.to}`;
+
+type Props = FormProps<'form', AuthCredentials, Promise<User>>;
 
 export const AuthSignInFormCompact = memo(function ({
   className,
+  onSubmit,
   ...moreProps
-}: ComponentProps<'form'>) {
+}: Props) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const { signIn } = useAuth();
   const [isDone, setIsDone] = useState(false);
 
   const {
@@ -50,8 +52,10 @@ export const AuthSignInFormCompact = memo(function ({
 
   const submitForm = useCallback(
     async (data: AuthCredentials) => {
+      if (!onSubmit) return;
+
       try {
-        const user = await signIn(data);
+        const user = await onSubmit(data);
         const baseTo =
           user.role === UserRole.Member
             ? `/${baseMemberRoute}`
@@ -67,7 +71,7 @@ export const AuthSignInFormCompact = memo(function ({
         navigate(`/${routeConfig.authSignIn.to}`, { state: { email } });
       }
     },
-    [signIn, reset, getValues, navigate],
+    [onSubmit, reset, getValues, navigate],
   );
 
   return (

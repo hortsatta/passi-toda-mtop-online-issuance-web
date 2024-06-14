@@ -1,5 +1,5 @@
 import { BaseScene } from '#/base/components/base-scene.component';
-import { FranchiseCheckerForm } from '#/franchise/components/franchise-checker-form.component';
+import { FranchiseInitialCheckerForm } from '#/franchise/components/franchise-initial-checker-form.component';
 
 export function CoreHomePage() {
   return (
@@ -18,7 +18,7 @@ export function CoreHomePage() {
             process.
           </p>
         </div>
-        <FranchiseCheckerForm className='min-h-[360px]' />
+        <FranchiseInitialCheckerForm className='min-h-[360px]' />
       </div>
     </BaseScene>
   );

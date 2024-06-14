@@ -23,7 +23,7 @@ type Props = FormProps<
   Promise<TodaAssociation>
 >;
 
-const TODA_ASSOCIATION_LIST_PATH = `/${baseAdminRoute}/${routeConfig.todaAssociation.to}`;
+const TODA_ASSOCIATION_LIST_TO = `/${baseAdminRoute}/${routeConfig.todaAssociation.to}`;
 
 const schema = z.object({
   name: z.string().max(225, 'Invalid Association Name'),
@@ -102,7 +102,7 @@ export const TodaAssociationUpsertForm = memo(function ({
 
         toast.success(successText);
         onDone && onDone(true);
-        navigate(TODA_ASSOCIATION_LIST_PATH);
+        navigate(TODA_ASSOCIATION_LIST_TO);
       } catch (error: any) {
         toast.error(error.message);
       }

@@ -8,7 +8,7 @@ import { useRateSheetLatestSingle } from '#/rate-sheet/hooks/use-rate-sheet-late
 import { useIssuerFranchiseSingle } from '../hooks/use-issuer-franchise-single.hook';
 import { IssuerFranchiseSingle } from '../components/issuer-franchise-single.component';
 
-const FRANCHISE_LIST_PATH = `/${baseAdminRoute}/${routeConfig.franchise.to}`;
+const FRANCHISE_LIST_TO = `/${baseAdminRoute}/${routeConfig.franchise.to}`;
 
 export function AdminFranchiseSinglePage() {
   const { franchise, loading } = useIssuerFranchiseSingle();
@@ -21,7 +21,10 @@ export function AdminFranchiseSinglePage() {
 
   return (
     <BaseDataSuspense resolve={data?.main}>
-      <BaseScene pageTitle='Franchise' backTo={FRANCHISE_LIST_PATH}>
+      <BaseScene
+        pageTitle={routeConfig.franchise.single.pageTitle}
+        backTo={FRANCHISE_LIST_TO}
+      >
         {(loading || rateSheetLoading) && <BaseLoading />}
         {franchise && rateSheet && (
           <IssuerFranchiseSingle franchise={franchise} rateSheet={rateSheet} />

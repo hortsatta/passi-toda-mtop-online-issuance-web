@@ -11,7 +11,7 @@ import { BaseButton } from '#/base/components/base-button.component';
 import { TodaAssociationUpsertForm } from '../components/toda-association-upsert-form.component';
 import { useTodaAssociationEdit } from '../hooks/use-toda-association-edit.hook';
 
-const TODA_ASSOCIATION_LIST_PATH = `/${baseAdminRoute}/${routeConfig.todaAssociation.to}`;
+const TODA_ASSOCIATION_LIST_TO = `/${baseAdminRoute}/${routeConfig.todaAssociation.to}`;
 
 export function TodaAssociationEditPage() {
   const { id } = useParams();
@@ -44,7 +44,7 @@ export function TodaAssociationEditPage() {
     try {
       await deleteTodaAssociation();
       toast.success('TODA Association deleted');
-      navigate(TODA_ASSOCIATION_LIST_PATH);
+      navigate(TODA_ASSOCIATION_LIST_TO);
     } catch (error: any) {
       toast.error(error.message);
     }
@@ -54,8 +54,8 @@ export function TodaAssociationEditPage() {
     <>
       <BaseDataSuspense resolve={data?.main}>
         <BaseScene
-          pageTitle='Edit Toda Association'
-          backTo={TODA_ASSOCIATION_LIST_PATH}
+          pageTitle={routeConfig.todaAssociation.edit.pageTitle}
+          backTo={TODA_ASSOCIATION_LIST_TO}
         >
           {loading && <BaseLoading />}
           {todaAssociationFormData && (

@@ -33,6 +33,12 @@ export function useFranchiseEdit(id?: number): Result {
             queryKey: queryFranchiseKey.list,
           }),
           queryClient.invalidateQueries({
+            queryKey: queryFranchiseKey.digestList,
+          }),
+          queryClient.invalidateQueries({
+            queryKey: queryFranchiseKey.checkSingle,
+          }),
+          queryClient.invalidateQueries({
             queryKey: [
               ...queryFranchiseKey.single,
               { id: data?.id ? +data?.id : undefined },
@@ -49,6 +55,12 @@ export function useFranchiseEdit(id?: number): Result {
           Promise.all([
             queryClient.invalidateQueries({
               queryKey: queryFranchiseKey.list,
+            }),
+            queryClient.invalidateQueries({
+              queryKey: queryFranchiseKey.digestList,
+            }),
+            queryClient.invalidateQueries({
+              queryKey: queryFranchiseKey.checkSingle,
             }),
             queryClient.invalidateQueries({
               queryKey: [

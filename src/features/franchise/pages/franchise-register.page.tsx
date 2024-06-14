@@ -5,7 +5,7 @@ import { useTodaAssociationList } from '#/toda-association/hooks/use-toda-associ
 import { useFranchiseCreate } from '../hooks/use-franchise-create.hook';
 import { FranchiseUpsertForm } from '../components/franchise-upsert-form.component';
 
-const FRANCHISE_LIST_PATH = `/${baseMemberRoute}/${routeConfig.franchise.to}`;
+const FRANCHISE_LIST_TO = `/${baseMemberRoute}/${routeConfig.franchise.to}`;
 
 export function FranchiseRegisterPage() {
   const user = useBoundStore((state) => state.user);
@@ -16,7 +16,10 @@ export function FranchiseRegisterPage() {
     useTodaAssociationList();
 
   return (
-    <BaseScene pageTitle='Franchise Registration' backTo={FRANCHISE_LIST_PATH}>
+    <BaseScene
+      pageTitle={routeConfig.franchise.create.pageTitle}
+      backTo={FRANCHISE_LIST_TO}
+    >
       {user && (
         <FranchiseUpsertForm
           loading={loading}

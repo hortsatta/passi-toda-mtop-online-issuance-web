@@ -3,6 +3,8 @@ import type { ComponentProps, JSXElementConstructor } from 'react';
 export type IconName =
   | 'arrow-counter-clockwise'
   | 'arrow-left'
+  | 'arrow-right'
+  | 'arrows-clockwise'
   | 'calendar'
   | 'caret-circle-down'
   | 'check-circle'
@@ -11,6 +13,7 @@ export type IconName =
   | 'image'
   | 'pencil-simple'
   | 'sign-out'
+  | 'tire'
   | 'trash'
   | 'user'
   | 'user-circle-plus'

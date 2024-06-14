@@ -33,7 +33,7 @@ type Props = FormProps<'div', FranchiseUpsertFormData, Promise<Franchise>> & {
   isTodaAssociationFetching?: boolean;
 };
 
-const FRANCHISE_LIST_PATH = `/${baseMemberRoute}/${routeConfig.franchise.to}`;
+const FRANCHISE_LIST_TO = `/${baseMemberRoute}/${routeConfig.franchise.to}`;
 
 const schema = z.object({
   mvFileNo: z.string().length(15, 'Invalid MV file number'),
@@ -159,7 +159,7 @@ export const FranchiseUpsertForm = memo(function ({
 
         toast.success(successText);
         onDone && onDone(true);
-        navigate(FRANCHISE_LIST_PATH);
+        navigate(FRANCHISE_LIST_TO);
       } catch (error: any) {
         toast.error(error.message);
       }

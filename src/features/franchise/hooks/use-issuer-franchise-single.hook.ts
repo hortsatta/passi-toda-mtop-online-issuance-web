@@ -45,6 +45,12 @@ export function useIssuerFranchiseSingle(): Result {
             queryKey: queryFranchiseKey.list,
           }),
           queryClient.invalidateQueries({
+            queryKey: queryFranchiseKey.digestList,
+          }),
+          queryClient.invalidateQueries({
+            queryKey: queryFranchiseKey.checkSingle,
+          }),
+          queryClient.invalidateQueries({
             queryKey: [
               ...queryFranchiseKey.single,
               { id: id ? +id : undefined },

@@ -33,6 +33,7 @@ import { CoreLayout } from './core/components/core-layout.component';
 import { AuthProtectedRoute } from './user/components/auth-protected-route.component';
 import { CoreHomePage } from './core/pages/core-home.page';
 import { AuthSignInPage } from './user/pages/auth-sign-in.page';
+import { FranchiseCheckerPage } from './franchise/pages/franchise-checker.page';
 import { FranchiseRegisterPage } from './franchise/pages/franchise-register.page';
 import { MemberUserRegisterPage } from './user/pages/member-user-register.page';
 import { MemberFranchiseSinglePage } from './franchise/pages/member-franchise-single.page';
@@ -173,7 +174,7 @@ const routes = createRoutesFromElements(
     </Route>
     <Route path={routeConfig.user.to} element={<Outlet />}>
       <Route
-        path={routeConfig.user.createTo}
+        path={routeConfig.user.create.to}
         element={
           <AuthProtectedRoute reverse>
             <MemberUserRegisterPage />
@@ -181,6 +182,10 @@ const routes = createRoutesFromElements(
         }
       />
     </Route>
+    <Route
+      path={routeConfig.franchiseChecker.to}
+      element={<FranchiseCheckerPage />}
+    />
   </Route>,
 );
 

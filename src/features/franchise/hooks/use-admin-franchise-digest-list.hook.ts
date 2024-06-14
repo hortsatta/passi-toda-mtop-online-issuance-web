@@ -14,7 +14,7 @@ type Result = {
   handleFranchiseDetails: (id: number) => void;
 };
 
-const FRANCHISE_LIST_PATH = `/${baseAdminRoute}/${routeConfig.franchise.to}`;
+const FRANCHISE_LIST_TO = `/${baseAdminRoute}/${routeConfig.franchise.to}`;
 
 export function useAdminFranchiseDigestList(): Result {
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ export function useAdminFranchiseDigestList(): Result {
 
   const handleFranchiseDetails = useCallback(
     (id: number) => {
-      navigate(`${FRANCHISE_LIST_PATH}/${id}`);
+      navigate(`${FRANCHISE_LIST_TO}/${id}`);
     },
     [navigate],
   );

@@ -41,6 +41,12 @@ export function useFranchiseCreate(): Result {
         queryClient.invalidateQueries({
           queryKey: queryFranchiseKey.list,
         });
+        queryClient.invalidateQueries({
+          queryKey: queryFranchiseKey.digestList,
+        });
+        queryClient.invalidateQueries({
+          queryKey: queryFranchiseKey.checkSingle,
+        });
       },
     }),
   );
