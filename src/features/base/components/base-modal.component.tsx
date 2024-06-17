@@ -8,7 +8,7 @@ import {
 } from '@headlessui/react';
 import cx from 'classix';
 
-import { BaseIcon } from './base-icon.component';
+import { BaseButtonSimple } from './base-button-simple.component';
 
 import type { ComponentProps, ReactNode } from 'react';
 
@@ -86,9 +86,11 @@ export const BaseModal = memo(function ({
                   </div>
                   <div className='flex items-center gap-2.5'>
                     {rightComponent}
-                    <button onClick={onClose}>
-                      <BaseIcon name='x' size={20} />
-                    </button>
+                    <BaseButtonSimple
+                      iconName='x'
+                      iconSize={20}
+                      onClick={onClose}
+                    />
                   </div>
                 </div>
                 {(title || description) && (

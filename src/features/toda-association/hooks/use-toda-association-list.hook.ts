@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
@@ -18,6 +18,7 @@ import type { TodaAssociation } from '../models/toda-association.model';
 type Result = {
   todaAssociations: TodaAssociation[];
   todaAssociationSelectItems: SelectItem[];
+  setKeyword: (keyword: string | null) => void;
   refresh: () => void;
   handleTodaAssociationEdit: (id: number) => void;
   handleTodaAssociationDetails: (id: number) => void;
@@ -42,6 +43,7 @@ export const defaultParamKeys = {
 export function useTodaAssociationList(): Result {
   const user = useBoundStore((state) => state.user);
   const navigate = useNavigate();
+  const [keyword, setKeyword] = useState<string | null>(null);
 
   const {
     data: todaAssociations,
@@ -50,7 +52,7 @@ export function useTodaAssociationList(): Result {
     refetch,
   } = useQuery(
     getAllTodaAssociations(
-      {},
+      { q: keyword || undefined },
       {
         refetchOnWindowFocus: false,
         initialData: [],
@@ -88,6 +90,7 @@ export function useTodaAssociationList(): Result {
     loading: isFetching || isLoading,
     todaAssociations: todaAssociations || [],
     todaAssociationSelectItems,
+    setKeyword,
     refresh: refetch,
     handleTodaAssociationDetails,
     handleTodaAssociationEdit,

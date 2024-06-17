@@ -11,6 +11,7 @@ import { useController } from 'react-hook-form';
 import mergeRefs from 'merge-refs';
 import cx from 'classix';
 
+import { BaseButtonSimple } from './base-button-simple.component';
 import { BaseIcon } from './base-icon.component';
 
 import type { ChangeEvent, ComponentProps, MouseEvent } from 'react';
@@ -155,13 +156,12 @@ export const BaseInputUploaderImg = memo(
           </div>
         ) : (
           <div className='relative flex h-full w-full items-center justify-center'>
-            <button
+            <BaseButtonSimple
               type='button'
               className='absolute right-2.5 top-2.5'
+              iconName='x'
               onClick={handleRemove}
-            >
-              <BaseIcon name='x' size={24} />
-            </button>
+            />
             <img
               src={currentImage.toString()}
               className='h-full w-full object-contain'

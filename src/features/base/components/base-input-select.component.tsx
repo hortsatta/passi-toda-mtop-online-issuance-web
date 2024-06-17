@@ -10,6 +10,7 @@ import { useController } from 'react-hook-form';
 import mergeRefs from 'merge-refs';
 import cx from 'classix';
 
+import { BaseButtonSimple } from './base-button-simple.component';
 import { BaseIcon } from './base-icon.component';
 
 import type { ChangeEvent, ComponentProps } from 'react';
@@ -122,14 +123,14 @@ export const BaseInputSelect = memo(
             </option>
           ))}
         </select>
-        <button
+        <BaseButtonSimple
           className='absolute right-3 opacity-70 hover:opacity-100'
           type='button'
           tabIndex={-1}
+          iconName='caret-circle-down'
+          iconSize={20}
           onClick={handlePickerClick}
-        >
-          <BaseIcon name='caret-circle-down' size={20} />
-        </button>
+        />
         {iconName && (
           <div
             className={cx(

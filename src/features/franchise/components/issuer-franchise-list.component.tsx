@@ -8,14 +8,16 @@ import type { ComponentProps } from 'react';
 import type { FranchiseDigest, Franchise } from '../models/franchise.model';
 
 type Props = ComponentProps<'div'> & {
+  franchises: Franchise[];
   franchiseDigest: FranchiseDigest;
   viewOnly?: boolean;
+  isFiltered?: boolean;
   onFranchiseDetails?: (id: number) => void;
 };
 
 type FranchiseSubGroupListProps = {
-  headerText: string;
   franchises: Franchise[];
+  headerText?: string;
   viewOnly?: boolean;
   onFranchiseDetails?: (id: number) => void;
 };
@@ -35,7 +37,7 @@ const FranchiseSubGroupList = memo(function ({
 
   return (
     <div className='flex flex-col gap-4'>
-      <h4>{headerText}</h4>
+      {!!headerText?.length && <h4>{headerText}</h4>}
       <div className='flex flex-wrap gap-4'>
         {franchises.length ? (
           franchises.map((franchise) => (
@@ -57,7 +59,9 @@ const FranchiseSubGroupList = memo(function ({
 
 export const IssuerFranchiseList = memo(function ({
   className,
+  franchises,
   franchiseDigest,
+  isFiltered,
   viewOnly,
   onFranchiseDetails,
   ...moreProps
@@ -93,26 +97,36 @@ export const IssuerFranchiseList = memo(function ({
         <BaseDataEmptyMessage message='No franchises to show' />
       ) : (
         <div className='flex flex-col gap-10'>
-          <FranchiseSubGroupList
-            headerText='Pending Applications'
-            franchises={[...pendingValidations, ...pendingPayments]}
-            onFranchiseDetails={onFranchiseDetails}
-            viewOnly={viewOnly}
-          />
-          <div className='w-full border-b border-border' />
-          <FranchiseSubGroupList
-            headerText='Recent Approvals'
-            franchises={recentApprovals}
-            onFranchiseDetails={onFranchiseDetails}
-            viewOnly={viewOnly}
-          />
-          <div className='w-full border-b border-border' />
-          <FranchiseSubGroupList
-            headerText='Recent Rejections'
-            franchises={recentRejections}
-            onFranchiseDetails={onFranchiseDetails}
-            viewOnly={viewOnly}
-          />
+          {!isFiltered ? (
+            <>
+              <FranchiseSubGroupList
+                headerText='Pending Applications'
+                franchises={[...pendingValidations, ...pendingPayments]}
+                onFranchiseDetails={onFranchiseDetails}
+                viewOnly={viewOnly}
+              />
+              <div className='w-full border-b border-border' />
+              <FranchiseSubGroupList
+                headerText='Recent Approvals'
+                franchises={recentApprovals}
+                onFranchiseDetails={onFranchiseDetails}
+                viewOnly={viewOnly}
+              />
+              <div className='w-full border-b border-border' />
+              <FranchiseSubGroupList
+                headerText='Recent Rejections'
+                franchises={recentRejections}
+                onFranchiseDetails={onFranchiseDetails}
+                viewOnly={viewOnly}
+              />
+            </>
+          ) : (
+            <FranchiseSubGroupList
+              franchises={franchises}
+              onFranchiseDetails={onFranchiseDetails}
+              viewOnly={viewOnly}
+            />
+          )}
         </div>
       )}
     </div>

@@ -1,8 +1,8 @@
 import { memo, forwardRef, useState, useCallback, useMemo } from 'react';
 import { useController } from 'react-hook-form';
 
+import { BaseButtonSimple } from './base-button-simple.component';
 import { BaseInput } from './base-input.component';
-import { BaseIcon } from './base-icon.component';
 
 import type { ComponentProps } from 'react';
 import type { UseControllerProps } from 'react-hook-form';
@@ -36,14 +36,14 @@ export const BaseInputPassword = memo(
         className='!pr-11'
         {...moreProps}
       >
-        <button
+        <BaseButtonSimple
           className='absolute right-3 opacity-70 hover:opacity-100'
           type='button'
           tabIndex={-1}
+          iconName={!finalShowPassword ? 'eye-slash' : 'eye'}
+          iconSize={20}
           onClick={handlePasswordClick}
-        >
-          <BaseIcon name={!finalShowPassword ? 'eye-slash' : 'eye'} size={20} />
-        </button>
+        />
       </BaseInput>
     );
   }),
