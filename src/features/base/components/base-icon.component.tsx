@@ -6,16 +6,21 @@ import {
   ArrowsClockwise,
   Calendar,
   CaretCircleDown,
+  CaretDown,
+  CaretUp,
+  CaretUpDown,
   Check,
   CheckCircle,
   CheckSquare,
   CheckSquareOffset,
+  Circle,
   Eye,
   EyeSlash,
   FunnelSimple,
   Image,
   MagnifyingGlass,
   PencilSimple,
+  Printer,
   SignOut,
   Square,
   Tire,
@@ -49,6 +54,12 @@ export const BaseIcon = memo(
           return Calendar;
         case 'caret-circle-down':
           return CaretCircleDown;
+        case 'caret-down':
+          return CaretDown;
+        case 'caret-up':
+          return CaretUp;
+        case 'caret-up-down':
+          return CaretUpDown;
         case 'check':
           return Check;
         case 'check-circle':
@@ -57,6 +68,8 @@ export const BaseIcon = memo(
           return CheckSquare;
         case 'check-square-offset':
           return CheckSquareOffset;
+        case 'circle':
+          return Circle;
         case 'eye':
           return Eye;
         case 'eye-slash':
@@ -69,6 +82,8 @@ export const BaseIcon = memo(
           return MagnifyingGlass;
         case 'pencil-simple':
           return PencilSimple;
+        case 'printer':
+          return Printer;
         case 'sign-out':
           return SignOut;
         case 'square':

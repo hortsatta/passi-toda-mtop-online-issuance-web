@@ -13,6 +13,7 @@ import {
 } from '#/config/routes.config';
 import { queryClient } from '#/config/react-query-client.config';
 import { UserRole } from './user/models/user.model';
+import { getReportFranchiseIssuanceLoader } from './report/loaders/report-franchise.loader';
 import {
   getFranchiseByIdLoader as getMemberFranchiseByIdLoader,
   getFranchisesLoader as getMemberFranchisesLoader,
@@ -35,6 +36,7 @@ import { CoreHomePage } from './core/pages/core-home.page';
 import { AuthSignInPage } from './user/pages/auth-sign-in.page';
 import { FranchiseCheckerPage } from './franchise/pages/franchise-checker.page';
 import { FranchiseRegisterPage } from './franchise/pages/franchise-register.page';
+import { ReportFranchisesPage } from './report/pages/report-franchises.page';
 import { MemberUserRegisterPage } from './user/pages/member-user-register.page';
 import { MemberFranchiseSinglePage } from './franchise/pages/member-franchise-single.page';
 import { MemberFranchiseListPage } from './franchise/pages/member-franchise-list.page';
@@ -60,6 +62,34 @@ const routes = createRoutesFromElements(
         </AuthProtectedRoute>
       }
     />
+    <Route path={routeConfig.user.to} element={<Outlet />}>
+      <Route
+        path={routeConfig.user.create.to}
+        element={
+          <AuthProtectedRoute reverse>
+            <MemberUserRegisterPage />
+          </AuthProtectedRoute>
+        }
+      />
+    </Route>
+    <Route
+      path={routeConfig.franchiseChecker.to}
+      element={<FranchiseCheckerPage />}
+    />
+    <Route
+      path={routeConfig.reports.to}
+      element={
+        <AuthProtectedRoute roles={[UserRole.Issuer, UserRole.Admin]}>
+          <Outlet />
+        </AuthProtectedRoute>
+      }
+    >
+      <Route
+        path={routeConfig.reports.franchises.to}
+        element={<ReportFranchisesPage />}
+        loader={getReportFranchiseIssuanceLoader(queryClient)}
+      />
+    </Route>
     {/* ROLE MEMBER */}
     <Route
       path={baseMemberRoute}
@@ -172,20 +202,6 @@ const routes = createRoutesFromElements(
         />
       </Route>
     </Route>
-    <Route path={routeConfig.user.to} element={<Outlet />}>
-      <Route
-        path={routeConfig.user.create.to}
-        element={
-          <AuthProtectedRoute reverse>
-            <MemberUserRegisterPage />
-          </AuthProtectedRoute>
-        }
-      />
-    </Route>
-    <Route
-      path={routeConfig.franchiseChecker.to}
-      element={<FranchiseCheckerPage />}
-    />
   </Route>,
 );
 

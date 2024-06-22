@@ -30,7 +30,7 @@ export const BaseCheckbox = memo(
       <Checkbox
         ref={ref}
         className={cx(
-          'group flex cursor-pointer items-center gap-2 text-base transition-colors hover:text-primary',
+          'flex cursor-pointer items-center gap-2 text-base transition-colors hover:text-primary',
           className,
         )}
         checked={checked ?? localChecked}

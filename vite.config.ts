@@ -54,6 +54,12 @@ export default defineConfig({
           new URL('./src/features/toda-association', import.meta.url),
         ),
       },
+      {
+        find: '#/reports',
+        replacement: fileURLToPath(
+          new URL('./src/features/reports', import.meta.url),
+        ),
+      },
     ],
   },
 });

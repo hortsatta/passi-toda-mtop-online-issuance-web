@@ -49,6 +49,7 @@ export const TodaAssociationList = memo(function ({
       {isEmpty ? (
         <BaseDataEmptyMessage
           message='No associations to show'
+          linkLabel='Add New'
           linkTo={routeConfig.todaAssociation.create.to}
         />
       ) : (

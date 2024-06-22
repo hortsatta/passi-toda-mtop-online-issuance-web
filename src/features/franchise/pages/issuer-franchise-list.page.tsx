@@ -31,7 +31,7 @@ export function IssuerFranchiseListPage() {
         pageTitle={routeConfig.franchise.list.pageTitle}
         rightComponent={
           <FranchiseListActions
-            options={filterOptions}
+            filterOptions={filterOptions}
             onSearchChange={setKeyword}
             onFilter={setFilters}
             onRefresh={refresh}

@@ -11,8 +11,8 @@ import type { ComponentProps } from 'react';
 import type { QueryFilterOption } from '#/core/models/core.model';
 
 type Props = ComponentProps<'div'> & {
-  options: QueryFilterOption[];
-  defaultSelectedtOptions?: QueryFilterOption[];
+  filterOptions: QueryFilterOption[];
+  defaultSelectedtFilterOptions?: QueryFilterOption[];
   onSearchChange?: (value: string | null) => void;
   onFilter?: (options: QueryFilterOption[]) => void;
   onRefresh?: () => void;
@@ -20,8 +20,8 @@ type Props = ComponentProps<'div'> & {
 
 export const FranchiseListActions = memo(function ({
   className,
-  options,
-  defaultSelectedtOptions,
+  filterOptions,
+  defaultSelectedtFilterOptions,
   onSearchChange,
   onRefresh,
   onFilter,
@@ -29,21 +29,23 @@ export const FranchiseListActions = memo(function ({
 }: Props) {
   const [open, setOpen] = useState(false);
 
-  const [selectedOptions, setSelectedOptions] = useState<QueryFilterOption[]>(
-    defaultSelectedtOptions || [],
-  );
+  const [selectedFilterOptions, setSelectedFilterOptions] = useState<
+    QueryFilterOption[]
+  >(defaultSelectedtFilterOptions || []);
 
-  const [currentSelectedOptions, setCurrentSelectedOptions] =
-    useState<QueryFilterOption[]>(selectedOptions);
+  const [currentSelectedFilterOptions, setCurrentSelectedFilterOptions] =
+    useState<QueryFilterOption[]>(selectedFilterOptions);
 
-  const isChecked = useCallback(
+  const isFilterChecked = useCallback(
     (option: QueryFilterOption) => {
-      if (!selectedOptions.length) {
+      if (!selectedFilterOptions.length) {
         return false;
       }
-      return selectedOptions.some((sOption) => sOption.key === option.key);
+      return selectedFilterOptions.some(
+        (selectedOption) => selectedOption.key === option.key,
+      );
     },
-    [selectedOptions],
+    [selectedFilterOptions],
   );
 
   const handleOpenModal = useCallback(
@@ -53,7 +55,7 @@ export const FranchiseListActions = memo(function ({
 
   const handleOptionSelect = useCallback(
     (option: QueryFilterOption) => (checked: boolean) =>
-      setSelectedOptions((prev) => {
+      setSelectedFilterOptions((prev) => {
         return !checked
           ? prev.filter((op) => op.key !== option.key)
           : [...prev, option];
@@ -62,17 +64,19 @@ export const FranchiseListActions = memo(function ({
   );
 
   const handleSelectClearAll = useCallback(() => {
-    setSelectedOptions(options.length <= selectedOptions.length ? [] : options);
-  }, [options, selectedOptions]);
+    setSelectedFilterOptions(
+      filterOptions.length <= selectedFilterOptions.length ? [] : filterOptions,
+    );
+  }, [filterOptions, selectedFilterOptions]);
 
   const handleSubmit = useCallback(() => {
-    setCurrentSelectedOptions(selectedOptions);
-    onFilter && onFilter(selectedOptions);
+    setCurrentSelectedFilterOptions(selectedFilterOptions);
+    onFilter && onFilter(selectedFilterOptions);
     handleOpenModal(false)();
-  }, [selectedOptions, onFilter, handleOpenModal]);
+  }, [selectedFilterOptions, onFilter, handleOpenModal]);
 
   useEffect(() => {
-    setSelectedOptions(currentSelectedOptions);
+    setSelectedFilterOptions(currentSelectedFilterOptions);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
@@ -99,10 +103,10 @@ export const FranchiseListActions = memo(function ({
         <BaseModal title='Filters' open={open} onClose={handleOpenModal(false)}>
           <div className='flex flex-col items-center gap-5'>
             <div className='flex w-full max-w-52 flex-col gap-2.5 px-4'>
-              {options.map((option) => (
+              {filterOptions.map((option) => (
                 <BaseCheckbox
                   key={option.key}
-                  checked={isChecked(option)}
+                  checked={isFilterChecked(option)}
                   onChange={handleOptionSelect(option)}
                 >
                   {option.label}

@@ -67,3 +67,28 @@ select:-internal-autofill-selected:hover + label,
 select:-internal-autofill-selected:focus + label {
   @apply !text-black;
 }
+
+.print-table .print-hidden {
+  @apply !hidden;
+}
+
+.print-table .table-wrapper {
+  @apply !p-10;
+}
+
+.print-table .table-wrapper,
+.print-table .table-wrapper > div {
+  @apply !rounded-none !bg-white !text-black;
+}
+
+.print-table table th {
+  @apply !border !border-gray-400 !bg-black/20 !px-3 !py-1.5;
+}
+
+.print-table table tr {
+  @apply even:!bg-black/10;
+}
+
+.print-table table td {
+  @apply !border !border-gray-400 !px-3 !py-1.5;
+}

@@ -26,3 +26,7 @@ export const queryRateSheetKey = {
   single: ['rate-sheets', 'single'],
   latestSingle: ['rate-sheets', 'latest-single'],
 };
+
+export const queryReportKey = {
+  franchiseIssuance: ['reports', 'franchise-issuance'],
+};

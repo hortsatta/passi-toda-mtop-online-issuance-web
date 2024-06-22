@@ -197,7 +197,6 @@ export const UserCreateForm = memo(function ({
                 fullWidth
               />
               <BaseControlledInputDate
-                type='date'
                 name='birthDate'
                 label='Date of Birth'
                 control={control}

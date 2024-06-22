@@ -4,11 +4,16 @@ export type AuditTrail = {
   deletedAt: Date;
 };
 
+export type DateRange = {
+  startDate: Date;
+  endDate: Date;
+};
+
 export type QueryFilterOption = {
   key: string;
   name: string;
-  value: string;
   label: string;
+  value: any;
 };
 
 export type QuerySortOption = {

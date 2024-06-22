@@ -31,6 +31,11 @@ export const routeConfig = {
     edit: {
       to: 'edit',
     },
+    reports: {
+      to: 'reports',
+      label: 'Reports',
+      pageTitle: 'Franchise Report',
+    },
   },
   todaAssociation: {
     name: 'toda-associations',
@@ -52,6 +57,16 @@ export const routeConfig = {
       to: 'edit',
       label: 'Edit',
       pageTitle: 'Edit TODA Association',
+    },
+  },
+  reports: {
+    name: 'reports',
+    to: 'reports',
+    label: 'Reports',
+    franchises: {
+      to: 'franchises',
+      label: 'Franchises',
+      pageTitle: 'Franchise Report',
     },
   },
   user: {

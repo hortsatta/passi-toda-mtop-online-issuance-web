@@ -22,7 +22,7 @@ export default {
           surface: '#18181c',
           'surface-accent': '#d98f00',
           input: 'rgba(217,217,217, 0.05)',
-          'input-primary': '#855800',
+          'input-accent': '#855800',
           'input-hover': 'rgba(217,217,217, 0.1)',
         },
         text: 'rgba(255,255,255, 0.8)',

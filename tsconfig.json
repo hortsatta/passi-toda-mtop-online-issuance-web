@@ -30,7 +30,8 @@
       "#/user/*": ["./src/features/user/*"],
       "#/franchise/*": ["./src/features/franchise/*"],
       "#/rate-sheet/*": ["./src/features/rate-sheet/*"],
-      "#/toda-association/*": ["./src/features/toda-association/*"]
+      "#/toda-association/*": ["./src/features/toda-association/*"],
+      "#/reports/*": ["./src/features/reports/*"]
     }
   },
   "include": ["src"],
