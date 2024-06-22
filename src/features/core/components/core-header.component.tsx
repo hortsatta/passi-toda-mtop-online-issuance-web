@@ -14,6 +14,9 @@ import logoPng from '#/assets/images/logo.png';
 
 import type { ComponentProps } from 'react';
 
+const appTitle = import.meta.env.VITE_APP_TITLE;
+const appDescription = import.meta.env.VITE_APP_DESCRIPTION;
+
 export const CoreHeader = memo(function ({
   className,
   children,
@@ -36,13 +39,14 @@ export const CoreHeader = memo(function ({
       )}
       {...moreProps}
     >
-      <Link to='/' className='flex items-center gap-3 hover:no-underline'>
+      <Link to='/' className='flex h-10 items-center gap-3 hover:no-underline'>
         <img src={logoPng} alt='logo' />
-        <div className='text-text'>
-          <span className='font-medium uppercase leading-none'>Passi City</span>
-          <h1 className='text-2xl font-medium leading-none'>
-            MTOP Online Issuance
-          </h1>
+        <div className='flex h-full items-center gap-2.5 pt-1 text-text'>
+          <h1 className='text-2xl font-medium leading-none'>{appTitle}</h1>
+          <div className='h-full border border-text/40' />
+          <span className='inline-block w-56 text-xs font-medium leading-normal text-text/60'>
+            {appDescription}
+          </span>
         </div>
       </Link>
       {children}
