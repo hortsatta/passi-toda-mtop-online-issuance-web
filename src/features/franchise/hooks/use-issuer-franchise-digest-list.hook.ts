@@ -40,7 +40,8 @@ export function useIssuerFranchiseDigestList(): Result {
   return {
     franchiseDigest: franchiseDigest || {
       pendingValidations: [],
-      pendingPayments: [],
+      validatedList: [],
+      paidList: [],
       recentApprovals: [],
       recentRejections: [],
     },

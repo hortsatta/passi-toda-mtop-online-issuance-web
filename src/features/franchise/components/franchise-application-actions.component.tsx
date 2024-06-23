@@ -17,12 +17,14 @@ type Props = ComponentProps<'div'> & {
   isUserClient?: boolean;
   loading?: boolean;
   isApprove?: boolean;
+  isTreasurer?: boolean;
 };
 
 export const FranchiseApplicationActions = memo(function ({
   loading,
   isUserClient,
   isApprove,
+  isTreasurer,
   franchise,
   rateSheet,
   onApproveFranchise,
@@ -37,14 +39,15 @@ export const FranchiseApplicationActions = memo(function ({
         ) / CENTAVOS
       ).toFixed(2);
 
-      if (
-        franchise.approvalStatus === FranchiseApprovalStatus.PendingValidation
-      ) {
-        return `Mark client's application for franchise ${rateSheet.feeType === FeeType.FranchiseRegistration ? 'registration' : 'renewal'} as verified and invoice the client with a total amount of ₱${total}?`;
-      } else if (
-        franchise.approvalStatus === FranchiseApprovalStatus.PendingPayment
-      ) {
-        return `Mark client's application as paid and approve franchise?`;
+      const baseMessage = `Mark client's application for franchise ${rateSheet.feeType === FeeType.FranchiseRegistration ? 'registration' : 'renewal'} as`;
+
+      switch (franchise.approvalStatus) {
+        case FranchiseApprovalStatus.PendingValidation:
+          return `${baseMessage} verified and invoice the client with a total amount of ₱${total}?`;
+        case FranchiseApprovalStatus.Validated:
+          return `${baseMessage} paid?`;
+        case FranchiseApprovalStatus.Paid:
+          return `Approve franchise?`;
       }
     } else {
       return isUserClient
@@ -57,14 +60,13 @@ export const FranchiseApplicationActions = memo(function ({
 
   const [buttonVariant, buttonLabel] = useMemo(() => {
     if (isApprove) {
-      if (
-        franchise.approvalStatus === FranchiseApprovalStatus.PendingValidation
-      ) {
-        return ['primary', 'Verify Application'];
-      } else if (
-        franchise.approvalStatus === FranchiseApprovalStatus.PendingPayment
-      ) {
-        return ['accept', 'Approve Franchise'];
+      switch (franchise.approvalStatus) {
+        case FranchiseApprovalStatus.PendingValidation:
+          return ['primary', 'Verify Application'];
+        case FranchiseApprovalStatus.Validated:
+          return [isTreasurer ? 'accept' : 'primary', 'Confirm Payment'];
+        case FranchiseApprovalStatus.Paid:
+          return ['accept', 'Approve Franchise'];
       }
     } else {
       return isUserClient
@@ -73,7 +75,7 @@ export const FranchiseApplicationActions = memo(function ({
     }
 
     return [];
-  }, [isApprove, isUserClient, franchise]);
+  }, [isApprove, isUserClient, isTreasurer, franchise]);
 
   return (
     <div className='flex flex-col justify-between gap-10' {...moreProps}>

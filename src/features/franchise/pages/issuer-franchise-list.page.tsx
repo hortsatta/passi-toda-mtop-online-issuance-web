@@ -4,10 +4,7 @@ import { routeConfig } from '#/config/routes.config';
 import { BaseDataSuspense } from '#/base/components/base-data-suspense.component';
 import { BaseLoading } from '#/base/components/base-loading.component';
 import { BaseScene } from '#/base/components/base-scene.component';
-import {
-  filterOptions,
-  useIssuerAdminFranchiseList,
-} from '../hooks/use-issuer-admin-franchise-list.hook';
+import { useTIAFranchiseList } from '../hooks/use-tia-franchise-list.hook';
 import { IssuerFranchiseList } from '../components/issuer-franchise-list.component';
 import { FranchiseListActions } from '../components/franchise-list-actions.component';
 
@@ -17,11 +14,12 @@ export function IssuerFranchiseListPage() {
     franchiseDigest,
     franchises,
     isFiltered,
+    filterOptions,
     setKeyword,
     setFilters,
     refresh,
     handleFranchiseDetails,
-  } = useIssuerAdminFranchiseList();
+  } = useTIAFranchiseList();
 
   const data: any = useLoaderData();
 

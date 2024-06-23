@@ -40,9 +40,11 @@ export function getAllTodaAssociations(
     });
 
     try {
-      const franchises = await kyInstance.get(url, { searchParams }).json();
-      return (franchises as any[]).map((franchise) =>
-        transformToTodaAssociation(franchise),
+      const todaAssociations = await kyInstance
+        .get(url, { searchParams })
+        .json();
+      return (todaAssociations as any[]).map((toda) =>
+        transformToTodaAssociation(toda),
       );
     } catch (error: any) {
       const apiError = await generateApiError(error);
@@ -144,8 +146,8 @@ export function editTodaAssociation(
     const json = transformToTodaAssociationFormData(data);
 
     try {
-      const franchise = await kyInstance.patch(url, { json }).json();
-      return transformToTodaAssociation(franchise);
+      const todaAssociation = await kyInstance.patch(url, { json }).json();
+      return transformToTodaAssociation(todaAssociation);
     } catch (error: any) {
       const apiError = await generateApiError(error);
       throw apiError;

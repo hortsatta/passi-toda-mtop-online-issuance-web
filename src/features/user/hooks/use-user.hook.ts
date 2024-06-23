@@ -4,8 +4,9 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useBoundStore } from '#/core/hooks/use-store.hook';
 import {
   getCurrentUser,
-  registerIssuerUser,
   registerMemberUser,
+  registerTreasurerUser,
+  registerIssuerUser,
 } from '../api/user.api';
 import { UserRole } from '../models/user.model';
 
@@ -32,21 +33,31 @@ export function useUser(): Result {
     }),
   );
 
-  const { mutateAsync: mutateRegisterIssuerUser } =
-    useMutation(registerIssuerUser());
-
   const { mutateAsync: mutateRegisterMemberUser } =
     useMutation(registerMemberUser());
+
+  const { mutateAsync: mutateRegisterTreasurerUser } = useMutation(
+    registerTreasurerUser(),
+  );
+
+  const { mutateAsync: mutateRegisterIssuerUser } =
+    useMutation(registerIssuerUser());
 
   const register = useCallback(
     async (data: UserCreateFormData, role: UserRole) => {
       try {
         let newUser = null;
 
-        if (role === UserRole.Issuer) {
-          newUser = await mutateRegisterIssuerUser(data);
-        } else if (role === UserRole.Member) {
-          newUser = await mutateRegisterMemberUser(data);
+        switch (role) {
+          case UserRole.Member:
+            newUser = await mutateRegisterMemberUser(data);
+            break;
+          case UserRole.Treasurer:
+            newUser = await mutateRegisterTreasurerUser(data);
+            break;
+          case UserRole.Issuer:
+            newUser = await mutateRegisterIssuerUser(data);
+            break;
         }
 
         return newUser;
@@ -54,7 +65,11 @@ export function useUser(): Result {
         throw new Error(error.message);
       }
     },
-    [mutateRegisterIssuerUser, mutateRegisterMemberUser],
+    [
+      mutateRegisterMemberUser,
+      mutateRegisterTreasurerUser,
+      mutateRegisterIssuerUser,
+    ],
   );
 
   const getUser = useCallback(async () => {

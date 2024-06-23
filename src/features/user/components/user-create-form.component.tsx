@@ -7,15 +7,17 @@ import { z } from 'zod';
 import toast from 'react-hot-toast';
 import cx from 'classix';
 
-import { genderSelectOptions } from '#/user/helpers/user-helper';
+import {
+  civilStatusSelectOptions,
+  genderSelectOptions,
+} from '#/user/helpers/user-helper';
 import { BaseButtonIcon } from '#/base/components/base-button-icon.component';
 import { BaseButton } from '#/base/components/base-button.component';
 import { BaseControlledInput } from '#/base/components/base-input.component';
 import { BaseControlledInputPassword } from '#/base/components/base-input-password.component';
 import { BaseControlledInputDate } from '#/base/components/base-input-date.component';
 import { BaseControlledInputSelect } from '#/base/components/base-input-select.component';
-import { UserRole } from '../models/user.model';
-import { UserGender } from '../models/user.model';
+import { UserCivilStatus, UserGender, UserRole } from '../models/user.model';
 
 import type { FormProps } from '#/base/models/base.model';
 import type { User } from '../models/user.model';
@@ -62,6 +64,14 @@ const schema = z
     gender: z.nativeEnum(UserGender, {
       required_error: 'Provide your gender',
     }),
+    civilStatus: z.nativeEnum(UserCivilStatus, {
+      required_error: 'Provide your gender',
+    }),
+    religion: z
+      .string()
+      .min(2, 'Religion name is too short')
+      .max(255, 'Religion name is too long'),
+    address: z.string(),
     driverLicenseNo: z
       .string()
       .length(11, `Invalid driver's license`)
@@ -82,6 +92,9 @@ const defaultValues: Partial<UserCreateFormData> = {
   birthDate: undefined,
   phoneNumber: '',
   gender: undefined,
+  civilStatus: undefined,
+  religion: '',
+  address: '',
   driverLicenseNo: '',
 };
 
@@ -209,6 +222,22 @@ export const UserCreateForm = memo(function ({
                 items={genderSelectOptions}
                 control={control}
                 fullWidth
+                asterisk
+              />
+              <BaseControlledInputSelect
+                name='civilStatus'
+                label='Civil Status'
+                items={civilStatusSelectOptions}
+                control={control}
+                fullWidth
+                asterisk
+              />
+              <BaseControlledInput
+                name='religion'
+                label='Religion'
+                control={control}
+                fullWidth
+                asterisk
               />
               <BaseControlledInput
                 name='phoneNumber'
@@ -218,11 +247,17 @@ export const UserCreateForm = memo(function ({
                 asterisk
               />
               <BaseControlledInput
+                name='address'
+                label='Address'
+                control={control}
+                fullWidth
+                asterisk
+              />
+              <BaseControlledInput
                 name='driverLicenseNo'
                 label={`Driver's License No`}
                 control={control}
                 fullWidth
-                asterisk
               />
             </div>
           </div>

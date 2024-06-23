@@ -57,7 +57,7 @@ export function useFranchiseCreate(): Result {
         data.vehicleCRImgUrl,
         data.vehicleORImgUrl,
         data.todaAssocMembershipImgUrl,
-        data.ownerDriverLicenseNoImgUrl,
+        data.driverLicenseNoImgUrl,
         data.brgyClearanceImgUrl,
         data.voterRegRecordImgUrl,
       ].some(

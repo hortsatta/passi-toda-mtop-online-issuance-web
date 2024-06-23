@@ -1,6 +1,11 @@
 import dayjs from '#/config/dayjs.config';
 import { transformAuditTrail } from '#/core/helpers/core.helper';
 import { transformToUser } from '#/user/helpers/user-transform.helper';
+import {
+  transformToDriverProfile,
+  transformToDriverProfileFormData,
+  transformToDriverProfileUpsertDto,
+} from '#/user/helpers/driver-profile-transform.helper';
 import { transformToTodaAssociation } from '#/toda-association/helpers/toda-association-transform.helper';
 
 import type { Franchise } from '../models/franchise.model';
@@ -15,33 +20,39 @@ export function transformToFranchise({
   deletedAt,
   mvFileNo,
   plateNo,
-  ownerDriverLicenseNo,
   vehicleORImgUrl,
   vehicleCRImgUrl,
   todaAssocMembershipImgUrl,
-  ownerDriverLicenseNoImgUrl,
+  driverLicenseNoImgUrl,
   brgyClearanceImgUrl,
   voterRegRecordImgUrl,
   approvalStatus,
   approvalDate,
   expiryDate,
   todaAssociation,
+  isDriverOwner,
+  driverProfile,
   user,
 }: any): Franchise {
   return {
     mvFileNo,
     plateNo,
-    ownerDriverLicenseNo,
     vehicleORImgUrl: `${IMG_BASE_URL}${vehicleORImgUrl}`,
     vehicleCRImgUrl: `${IMG_BASE_URL}${vehicleCRImgUrl}`,
     todaAssocMembershipImgUrl: `${IMG_BASE_URL}${todaAssocMembershipImgUrl}`,
-    ownerDriverLicenseNoImgUrl: `${IMG_BASE_URL}${ownerDriverLicenseNoImgUrl}`,
+    driverLicenseNoImgUrl: `${IMG_BASE_URL}${driverLicenseNoImgUrl}`,
     brgyClearanceImgUrl: `${IMG_BASE_URL}${brgyClearanceImgUrl}`,
-    voterRegRecordImgUrl: `${IMG_BASE_URL}${voterRegRecordImgUrl}`,
+    voterRegRecordImgUrl: voterRegRecordImgUrl?.trim()
+      ? `${IMG_BASE_URL}${voterRegRecordImgUrl}`
+      : undefined,
     approvalStatus,
     approvalDate: approvalDate ? dayjs(approvalDate).toDate() : null,
     expiryDate: expiryDate ? dayjs(expiryDate).toDate() : null,
     todaAssociation: transformToTodaAssociation(todaAssociation),
+    isDriverOwner,
+    driverProfile: driverProfile
+      ? transformToDriverProfile(driverProfile)
+      : undefined,
     user: user ? transformToUser(user) : undefined,
     ...transformAuditTrail(id, createdAt, updatedAt, deletedAt),
   };
@@ -50,71 +61,95 @@ export function transformToFranchise({
 export function transformToFranchiseFormData({
   mvFileNo,
   plateNo,
-  ownerDriverLicenseNo,
+  isDriverOwner,
   vehicleORImgUrl,
   vehicleCRImgUrl,
   todaAssocMembershipImgUrl,
-  ownerDriverLicenseNoImgUrl,
+  driverLicenseNoImgUrl,
   brgyClearanceImgUrl,
   voterRegRecordImgUrl,
   todaAssociationId,
+  driverProfileId,
+  driverProfile,
 }: any): FranchiseUpsertFormData {
+  const transformedDriverProfile = driverProfile
+    ? transformToDriverProfileFormData(driverProfile)
+    : undefined;
+
   return {
     mvFileNo,
     plateNo,
-    ownerDriverLicenseNo,
+    isDriverOwner,
     vehicleORImgUrl,
     vehicleCRImgUrl,
     todaAssocMembershipImgUrl,
-    ownerDriverLicenseNoImgUrl,
+    driverLicenseNoImgUrl,
     brgyClearanceImgUrl,
-    todaAssociationId,
     voterRegRecordImgUrl,
+    todaAssociationId,
+    driverProfileId,
+    driverProfile: transformedDriverProfile,
   };
 }
 
 export function transformToFranchiseValidateDto({
   mvFileNo,
   plateNo,
-  ownerDriverLicenseNo,
+  isDriverOwner,
   todaAssociationId,
+  driverProfileId,
+  driverProfile,
 }: any) {
+  const transformedDriverProfile = driverProfile
+    ? transformToDriverProfileUpsertDto(driverProfile)
+    : undefined;
+
   return {
     mvFileNo,
     plateNo,
-    ownerDriverLicenseNo,
+    isDriverOwner,
     vehicleORImgUrl: '',
     vehicleCRImgUrl: '',
     todaAssocMembershipImgUrl: '',
-    ownerDriverLicenseNoImgUrl: '',
+    driverLicenseNoImgUrl: '',
     brgyClearanceImgUrl: '',
-    todaAssociationId,
     voterRegRecordImgUrl: '',
+    todaAssociationId: +todaAssociationId,
+    driverProfileId: +driverProfileId,
+    driverProfile: transformedDriverProfile,
   };
 }
 
 export function transformToFranchiseUpsertDto({
   mvFileNo,
   plateNo,
-  ownerDriverLicenseNo,
+  isDriverOwner,
   vehicleORImgUrl,
   vehicleCRImgUrl,
   todaAssocMembershipImgUrl,
-  ownerDriverLicenseNoImgUrl,
+  driverLicenseNoImgUrl,
   brgyClearanceImgUrl,
   todaAssociationId,
   voterRegRecordImgUrl,
+  driverProfileId,
+  driverProfile,
 }: any) {
+  const transformedDriverProfile = driverProfile
+    ? transformToDriverProfileUpsertDto(driverProfile)
+    : undefined;
+
   return {
     mvFileNo,
     plateNo,
-    ownerDriverLicenseNo,
+    isDriverOwner,
     vehicleORImgUrl,
     vehicleCRImgUrl,
     todaAssocMembershipImgUrl,
-    ownerDriverLicenseNoImgUrl,
+    driverLicenseNoImgUrl,
     brgyClearanceImgUrl,
     voterRegRecordImgUrl,
     todaAssociationId: +todaAssociationId,
+    driverProfileId: +driverProfileId,
+    driverProfile: transformedDriverProfile,
   };
 }

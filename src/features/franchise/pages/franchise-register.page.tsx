@@ -2,6 +2,7 @@ import { baseMemberRoute, routeConfig } from '#/config/routes.config';
 import { useBoundStore } from '#/core/hooks/use-store.hook';
 import { BaseScene } from '#/base/components/base-scene.component';
 import { useTodaAssociationList } from '#/toda-association/hooks/use-toda-association-list.hook';
+import { useDriverProfileList } from '#/user/hooks/use-driver-profile-list.hook';
 import { useFranchiseCreate } from '../hooks/use-franchise-create.hook';
 import { FranchiseUpsertForm } from '../components/franchise-upsert-form.component';
 
@@ -15,6 +16,9 @@ export function FranchiseRegisterPage() {
   const { loading: todaAssociationLoading, todaAssociationSelectItems } =
     useTodaAssociationList();
 
+  const { loading: driverProfilesLoading, driverProfiles } =
+    useDriverProfileList();
+
   return (
     <BaseScene
       pageTitle={routeConfig.franchise.create.pageTitle}
@@ -23,10 +27,11 @@ export function FranchiseRegisterPage() {
       {user && (
         <FranchiseUpsertForm
           loading={loading}
-          isTodaAssociationFetching={todaAssociationLoading}
+          isFetching={todaAssociationLoading || driverProfilesLoading}
           isDone={isDone}
-          userProfile={user.userProfile}
+          user={user}
           todaAssociationSelectItems={todaAssociationSelectItems}
+          driverProfiles={driverProfiles}
           onDone={setIsDone}
           onSubmit={createFranchise}
         />

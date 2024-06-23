@@ -3,10 +3,11 @@ import cx from 'classix';
 
 import dayjs from '#/config/dayjs.config';
 import { capitalize } from '#/core/helpers/string.helper';
+import { BaseFieldText } from '#/base/components/base-field-text.component';
+import { UserCivilStatus } from '#/user/models/user.model';
 
 import type { ComponentProps } from 'react';
 import type { Franchise } from '../models/franchise.model';
-import { BaseFieldText } from '#/base/components/base-field-text.component';
 
 type Props = ComponentProps<'div'> & {
   franchise: Franchise;
@@ -21,15 +22,26 @@ export const FranchiseOwnerInfo = memo(function ({
     ownerReverseFullName,
     ownerBirthDate,
     ownerGender,
+    ownerCivilStatus,
+    ownerReligion,
+    ownerAddress,
     ownerPhoneNumber,
-    ownerDriverLicenseNo,
+    ownerLicenseNo,
+    ownerEmail,
   ] = useMemo(
     () => [
       franchise.user?.userProfile.reverseFullName || '',
       dayjs(franchise.user?.userProfile.birthDate || '').format('MMM DD, YYYY'),
       capitalize(franchise.user?.userProfile.gender || ''),
+      franchise.user?.userProfile.civilStatus ===
+      UserCivilStatus.LegallySeparated
+        ? 'Legally Separated'
+        : capitalize(franchise.user?.userProfile.civilStatus || ''),
+      franchise.user?.userProfile.religion || '',
+      franchise.user?.userProfile.address || '',
       franchise.user?.userProfile.phoneNumber || '',
-      franchise.ownerDriverLicenseNo,
+      franchise.user?.userProfile.driverLicenseNo || '',
+      franchise.user?.email || '',
     ],
     [franchise],
   );
@@ -44,10 +56,14 @@ export const FranchiseOwnerInfo = memo(function ({
         <BaseFieldText label='Name'>{ownerReverseFullName}</BaseFieldText>
         <BaseFieldText label='Date of Birth'>{ownerBirthDate}</BaseFieldText>
         <BaseFieldText label='Gender'>{ownerGender}</BaseFieldText>
+        <BaseFieldText label='Civil Status'>{ownerCivilStatus}</BaseFieldText>
+        <BaseFieldText label='Religion'>{ownerReligion}</BaseFieldText>
+        <BaseFieldText label='Address'>{ownerAddress}</BaseFieldText>
         <BaseFieldText label='Phone Number'>{ownerPhoneNumber}</BaseFieldText>
         <BaseFieldText label={`Driver's License`}>
-          {ownerDriverLicenseNo}
+          {ownerLicenseNo}
         </BaseFieldText>
+        <BaseFieldText label='Email'>{ownerEmail}</BaseFieldText>
       </div>
     </div>
   );

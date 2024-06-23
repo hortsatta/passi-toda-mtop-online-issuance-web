@@ -21,6 +21,7 @@ export type IconName =
   | 'image'
   | 'magnifying-glass'
   | 'pencil-simple'
+  | 'placeholder'
   | 'printer'
   | 'sign-out'
   | 'square'

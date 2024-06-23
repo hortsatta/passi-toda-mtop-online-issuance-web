@@ -51,6 +51,17 @@ const menuList = {
       ],
     },
   ],
+  [UserRole.Treasurer]: [
+    {
+      label: routeConfig.franchise.label,
+      items: [
+        {
+          to: `/${baseIssuerRoute}/${routeConfig.franchise.to}`,
+          label: routeConfig.franchise.list.label,
+        },
+      ],
+    },
+  ],
   [UserRole.Issuer]: [
     {
       label: routeConfig.franchise.label,

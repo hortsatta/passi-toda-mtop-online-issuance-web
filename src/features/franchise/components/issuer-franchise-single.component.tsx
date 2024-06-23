@@ -36,7 +36,8 @@ const CurrentStatus = memo(function ({ approvalStatus }: CurrentStatusProps) {
       <small
         className={cx(
           'flex items-center gap-1 text-base uppercase',
-          approvalStatus === FranchiseApprovalStatus.PendingPayment ||
+          approvalStatus === FranchiseApprovalStatus.Validated ||
+            approvalStatus === FranchiseApprovalStatus.Paid ||
             approvalStatus === FranchiseApprovalStatus.Approved
             ? 'text-green-500'
             : 'text-text/40',
@@ -49,7 +50,8 @@ const CurrentStatus = memo(function ({ approvalStatus }: CurrentStatusProps) {
       <small
         className={cx(
           'flex items-center gap-1 text-base uppercase',
-          approvalStatus === FranchiseApprovalStatus.Approved
+          approvalStatus === FranchiseApprovalStatus.Paid ||
+            approvalStatus === FranchiseApprovalStatus.Approved
             ? 'text-green-500'
             : 'text-text/40',
         )}
@@ -97,8 +99,10 @@ export const IssuerFranchiseSingle = memo(function ({
 
   const statusLabel = useMemo(() => {
     switch (approvalStatus) {
-      case FranchiseApprovalStatus.PendingPayment:
+      case FranchiseApprovalStatus.Validated:
         return 'Pending Payment';
+      case FranchiseApprovalStatus.Paid:
+        return 'Pending Approval';
       case FranchiseApprovalStatus.Approved:
         return 'Active';
       case FranchiseApprovalStatus.Rejected:
@@ -114,7 +118,7 @@ export const IssuerFranchiseSingle = memo(function ({
     switch (approvalStatus) {
       case FranchiseApprovalStatus.PendingValidation:
         return 'Verify Application';
-      case FranchiseApprovalStatus.PendingPayment:
+      case FranchiseApprovalStatus.Paid:
         return 'Approve Franchise';
       default:
         return null;
@@ -144,7 +148,7 @@ export const IssuerFranchiseSingle = memo(function ({
   const generateApprovalToast = useCallback(
     (status: FranchiseApprovalStatus) => {
       switch (status) {
-        case FranchiseApprovalStatus.PendingPayment:
+        case FranchiseApprovalStatus.Validated:
           toast.success(
             'Application verified and awaiting payment from client',
           );
@@ -219,7 +223,8 @@ export const IssuerFranchiseSingle = memo(function ({
               className={cx(
                 'flex items-center gap-1 text-2xl font-bold',
                 (approvalStatus === FranchiseApprovalStatus.PendingValidation ||
-                  approvalStatus === FranchiseApprovalStatus.PendingPayment) &&
+                  approvalStatus === FranchiseApprovalStatus.Validated ||
+                  approvalStatus === FranchiseApprovalStatus.Paid) &&
                   'text-yellow-500',
                 approvalStatus === FranchiseApprovalStatus.Approved &&
                   'text-green-600',
@@ -263,8 +268,7 @@ export const IssuerFranchiseSingle = memo(function ({
                   <BaseButton
                     className='h-16 min-w-[210px] !text-base'
                     variant={
-                      franchise.approvalStatus ===
-                      FranchiseApprovalStatus.PendingPayment
+                      franchise.approvalStatus === FranchiseApprovalStatus.Paid
                         ? 'accept'
                         : 'primary'
                     }
@@ -301,7 +305,9 @@ export const IssuerFranchiseSingle = memo(function ({
             franchise={franchise}
             setCurrentImg={setCurrentImg}
           />
-          <FranchiseOwnerInfo franchise={franchise} />
+          {!franchise.isDriverOwner && (
+            <FranchiseOwnerInfo franchise={franchise} />
+          )}
         </div>
       </div>
       <FranchiseDocsModal

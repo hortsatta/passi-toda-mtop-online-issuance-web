@@ -9,6 +9,11 @@ export const queryUserKey = {
   // allStudentList: ['users', 'all-student-list'],
 };
 
+export const queryDriverProfileKey = {
+  list: ['driver-profile', 'list'],
+  single: ['driver-profile', 'single'],
+};
+
 export const queryFranchiseKey = {
   list: ['franchises', 'list'],
   digestList: ['franchises', 'digest-list'],

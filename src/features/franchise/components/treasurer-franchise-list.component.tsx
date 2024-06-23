@@ -2,7 +2,7 @@ import { memo, useCallback, useMemo } from 'react';
 import cx from 'classix';
 
 import { BaseDataEmptyMessage } from '#/base/components/base-data-empty-message.component';
-import { IssuerFranchiseSingleCard } from './issuer-franchise-single-card.component';
+import { TreasurerFranchiseSingleCard } from './treasurer-franchise-single-card.component';
 
 import type { ComponentProps } from 'react';
 import type { FranchiseDigest, Franchise } from '../models/franchise.model';
@@ -10,7 +10,6 @@ import type { FranchiseDigest, Franchise } from '../models/franchise.model';
 type Props = ComponentProps<'div'> & {
   franchises: Franchise[];
   franchiseDigest: FranchiseDigest;
-  viewOnly?: boolean;
   isFiltered?: boolean;
   onFranchiseDetails?: (id: number) => void;
 };
@@ -18,14 +17,12 @@ type Props = ComponentProps<'div'> & {
 type FranchiseSubGroupListProps = {
   franchises: Franchise[];
   headerText?: string;
-  viewOnly?: boolean;
   onFranchiseDetails?: (id: number) => void;
 };
 
 const FranchiseSubGroupList = memo(function ({
   headerText,
   franchises,
-  viewOnly,
   onFranchiseDetails,
 }: FranchiseSubGroupListProps) {
   const handleFranchiseDetails = useCallback(
@@ -41,12 +38,11 @@ const FranchiseSubGroupList = memo(function ({
       <div className='flex flex-wrap gap-4'>
         {franchises.length ? (
           franchises.map((franchise) => (
-            <IssuerFranchiseSingleCard
+            <TreasurerFranchiseSingleCard
               key={franchise.id}
               franchise={franchise}
               onDetails={handleFranchiseDetails(franchise.id)}
               role='row'
-              viewOnly={viewOnly}
             />
           ))
         ) : (
@@ -57,12 +53,11 @@ const FranchiseSubGroupList = memo(function ({
   );
 });
 
-export const IssuerFranchiseList = memo(function ({
+export const TreasurerFranchiseList = memo(function ({
   className,
   franchises,
   franchiseDigest,
   isFiltered,
-  viewOnly,
   onFranchiseDetails,
   ...moreProps
 }: Props) {
@@ -108,35 +103,21 @@ export const IssuerFranchiseList = memo(function ({
           {!isFiltered ? (
             <>
               <FranchiseSubGroupList
-                headerText='Pending Applications'
-                franchises={[
-                  ...pendingValidations,
-                  ...validatedList,
-                  ...paidList,
-                ]}
+                headerText='Pending Payments'
+                franchises={validatedList}
                 onFranchiseDetails={onFranchiseDetails}
-                viewOnly={viewOnly}
               />
               <div className='w-full border-b border-border' />
               <FranchiseSubGroupList
-                headerText='Recent Approvals'
-                franchises={recentApprovals}
+                headerText='Recent Confirmed Payments'
+                franchises={paidList}
                 onFranchiseDetails={onFranchiseDetails}
-                viewOnly={viewOnly}
-              />
-              <div className='w-full border-b border-border' />
-              <FranchiseSubGroupList
-                headerText='Recent Rejections'
-                franchises={recentRejections}
-                onFranchiseDetails={onFranchiseDetails}
-                viewOnly={viewOnly}
               />
             </>
           ) : (
             <FranchiseSubGroupList
               franchises={franchises}
               onFranchiseDetails={onFranchiseDetails}
-              viewOnly={viewOnly}
             />
           )}
         </div>

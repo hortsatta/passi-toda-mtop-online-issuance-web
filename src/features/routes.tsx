@@ -9,6 +9,7 @@ import {
   baseAdminRoute,
   baseIssuerRoute,
   baseMemberRoute,
+  baseTreasurerRoute,
   routeConfig,
 } from '#/config/routes.config';
 import { queryClient } from '#/config/react-query-client.config';
@@ -18,6 +19,10 @@ import {
   getFranchiseByIdLoader as getMemberFranchiseByIdLoader,
   getFranchisesLoader as getMemberFranchisesLoader,
 } from './franchise/loaders/member-franchise.loader';
+import {
+  getFranchiseByIdLoader as getTreasurerFranchiseByIdLoader,
+  getFranchiseDigestLoader as getTreasurerFranchiseDigestLoader,
+} from './franchise/loaders/treasurer-franchise.loader';
 import {
   getFranchiseDigestLoader as getIssuerFranchiseDigestLoader,
   getFranchiseByIdLoader as getIssuerFranchiseByIdLoader,
@@ -40,6 +45,8 @@ import { ReportFranchisesPage } from './report/pages/report-franchises.page';
 import { MemberUserRegisterPage } from './user/pages/member-user-register.page';
 import { MemberFranchiseSinglePage } from './franchise/pages/member-franchise-single.page';
 import { MemberFranchiseListPage } from './franchise/pages/member-franchise-list.page';
+import { TreasurerFranchiseListPage } from './franchise/pages/treasurer-franchise-list.page';
+import { TreasurerFranchiseSinglePage } from './franchise/pages/treasurer-franchise-single.page';
 import { IssuerFranchiseListPage } from './franchise/pages/issuer-franchise-list.page';
 import { IssuerFranchiseSinglePage } from './franchise/pages/issuer-franchise-single.page';
 import { IssuerTodaAssociationListPage } from './toda-association/pages/issuer-toda-association-list.page';
@@ -116,6 +123,30 @@ const routes = createRoutesFromElements(
           path={routeConfig.franchise.create.to}
           element={<FranchiseRegisterPage />}
         />
+      </Route>
+    </Route>
+    {/* ROLE TREASURER */}
+    <Route
+      path={baseTreasurerRoute}
+      element={
+        <AuthProtectedRoute roles={[UserRole.Treasurer]}>
+          <Outlet />
+        </AuthProtectedRoute>
+      }
+    >
+      <Route path={routeConfig.franchise.to} element={<Outlet />}>
+        <Route
+          index
+          element={<TreasurerFranchiseListPage />}
+          loader={getTreasurerFranchiseDigestLoader(queryClient)}
+        />
+        <Route path=':id' element={<Outlet />}>
+          <Route
+            index
+            element={<TreasurerFranchiseSinglePage />}
+            loader={getTreasurerFranchiseByIdLoader(queryClient)}
+          />
+        </Route>
       </Route>
     </Route>
     {/* ROLE ISSUER */}

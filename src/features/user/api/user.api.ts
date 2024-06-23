@@ -15,8 +15,9 @@ import type { User } from '../models/user.model';
 import type { UserCreateFormData } from '../models/user-form-data.model';
 
 const BASE_URL = 'users';
-const ISSUER_URL = `${BASE_URL}/issuers`;
 const MEMBER_URL = `${BASE_URL}/members`;
+const TREASURER_URL = `${BASE_URL}/treasurers`;
+const ISSUER_URL = `${BASE_URL}/issuers`;
 
 export function getCurrentUser(
   options?: Omit<
@@ -43,14 +44,14 @@ export function getCurrentUser(
   };
 }
 
-export function registerIssuerUser(
+export function registerMemberUser(
   options?: Omit<
     UseMutationOptions<User | null, Error, UserCreateFormData, any>,
     'mutationFn'
   >,
 ) {
   const mutationFn = async (data: UserCreateFormData): Promise<any> => {
-    const url = `${ISSUER_URL}/register`;
+    const url = `${MEMBER_URL}/register`;
     const json = transformToUserCreateDto(data);
 
     try {
@@ -65,14 +66,36 @@ export function registerIssuerUser(
   return { mutationFn, ...options };
 }
 
-export function registerMemberUser(
+export function registerTreasurerUser(
   options?: Omit<
     UseMutationOptions<User | null, Error, UserCreateFormData, any>,
     'mutationFn'
   >,
 ) {
   const mutationFn = async (data: UserCreateFormData): Promise<any> => {
-    const url = `${MEMBER_URL}/register`;
+    const url = `${TREASURER_URL}/register`;
+    const json = transformToUserCreateDto(data);
+
+    try {
+      const user = await kyInstance.post(url, { json }).json();
+      return transformToUser(user);
+    } catch (error: any) {
+      const apiError = await generateApiError(error);
+      throw apiError;
+    }
+  };
+
+  return { mutationFn, ...options };
+}
+
+export function registerIssuerUser(
+  options?: Omit<
+    UseMutationOptions<User | null, Error, UserCreateFormData, any>,
+    'mutationFn'
+  >,
+) {
+  const mutationFn = async (data: UserCreateFormData): Promise<any> => {
+    const url = `${ISSUER_URL}/register`;
     const json = transformToUserCreateDto(data);
 
     try {

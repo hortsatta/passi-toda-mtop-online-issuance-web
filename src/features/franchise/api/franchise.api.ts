@@ -21,6 +21,7 @@ import type { FranchiseUpsertFormData } from '../models/franchise-form-data.mode
 
 const BASE_URL = 'franchises';
 const ISSUER_URL = 'issuer';
+const TREASURER_URL = 'treasurer';
 
 // TODO pagination
 
@@ -133,7 +134,10 @@ export function getFranchiseDigest(
         pendingValidations: (data.pendingValidations as any[]).map(
           (franchise) => transformToFranchise(franchise),
         ),
-        pendingPayments: (data.pendingPayments as any[]).map((franchise) =>
+        validatedList: (data.validatedList as any[]).map((franchise) =>
+          transformToFranchise(franchise),
+        ),
+        paidList: (data.paidList as any[]).map((franchise) =>
           transformToFranchise(franchise),
         ),
         recentApprovals: (data.recentApprovals as any[]).map((franchise) =>
@@ -232,6 +236,35 @@ export function getFranchiseById(
   };
 }
 
+export function getFranchiseByIdAsTreasurer(
+  keys: { id: number; status?: string; exclude?: string; include?: string },
+  options?: Omit<
+    UseQueryOptions<Franchise, Error, Franchise, any>,
+    'queryKey' | 'queryFn'
+  >,
+) {
+  const { id, status, exclude, include } = keys;
+
+  const queryFn = async (): Promise<any> => {
+    const url = `${BASE_URL}/${TREASURER_URL}/${id}`;
+    const searchParams = generateSearchParams({ status, exclude, include });
+
+    try {
+      const franchise = await kyInstance.get(url, { searchParams }).json();
+      return transformToFranchise(franchise);
+    } catch (error: any) {
+      const apiError = await generateApiError(error);
+      throw apiError;
+    }
+  };
+
+  return {
+    queryKey: [...queryFranchiseKey.single, { id }],
+    queryFn,
+    ...options,
+  };
+}
+
 export function checkFranchiseByMvPlateNo(
   keys: { mvPlateNo: string },
   options?: Omit<
@@ -285,7 +318,8 @@ export function validateUpsertFranchise(
     });
 
     try {
-      return kyInstance.post(url, { json, searchParams }).json();
+      const result = await kyInstance.post(url, { json, searchParams }).json();
+      return result as boolean;
     } catch (error: any) {
       const apiError = await generateApiError(error);
       throw apiError;

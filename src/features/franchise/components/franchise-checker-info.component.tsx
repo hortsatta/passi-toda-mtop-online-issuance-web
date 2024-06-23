@@ -3,10 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import cx from 'classix';
 
 import {
-  baseAdminRoute,
-  baseIssuerRoute,
   baseMemberRoute,
   routeConfig,
+  userBaseTo,
 } from '#/config/routes.config';
 import { useBoundStore } from '#/core/hooks/use-store.hook';
 import { BaseButton } from '#/base/components/base-button.component';
@@ -51,17 +50,19 @@ const FranchiseInfo = memo(function ({
               franchise.plateNo,
               franchise.approvalStatus,
               franchise.user?.userProfile.reverseFullName,
-              franchise.user?.email === user?.email ||
-                user?.role === UserRole.Admin ||
-                user?.role === UserRole.Issuer,
+              (user?.role === UserRole.Member &&
+                franchise.user?.email === user?.email) ||
+                user?.role !== UserRole.Member,
             ],
       [franchise, user],
     );
 
   const statusLabel = useMemo(() => {
     switch (approvalStatus) {
-      case FranchiseApprovalStatus.PendingPayment:
+      case FranchiseApprovalStatus.Validated:
         return 'Pending Payment';
+      case FranchiseApprovalStatus.Paid:
+        return 'Pending Approval';
       case FranchiseApprovalStatus.Approved:
         return 'Active';
       case FranchiseApprovalStatus.Rejected:
@@ -86,13 +87,7 @@ const FranchiseInfo = memo(function ({
   const handleViewFranchiseClick = useCallback(() => {
     if (!user) return;
 
-    const baseTo = {
-      [UserRole.Member]: baseMemberRoute,
-      [UserRole.Issuer]: baseIssuerRoute,
-      [UserRole.Admin]: baseAdminRoute,
-    };
-
-    const to = `/${baseTo[user.role]}/${routeConfig.franchise.to}/${id}`;
+    const to = `${userBaseTo[user.role]}/${routeConfig.franchise.to}/${id}`;
 
     navigate(to);
   }, [user, id, navigate]);
@@ -130,7 +125,8 @@ const FranchiseInfo = memo(function ({
         <span
           className={cx(
             'flex items-center gap-1 bg-backdrop-input px-4 pb-4 pt-2.5 text-base',
-            approvalStatus === FranchiseApprovalStatus.PendingPayment &&
+            (approvalStatus === FranchiseApprovalStatus.Validated ||
+              approvalStatus === FranchiseApprovalStatus.Paid) &&
               'text-yellow-500',
             approvalStatus === FranchiseApprovalStatus.Approved &&
               'text-green-600',

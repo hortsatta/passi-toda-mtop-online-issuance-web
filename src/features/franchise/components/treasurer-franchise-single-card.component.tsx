@@ -11,7 +11,6 @@ import type { Franchise } from '../models/franchise.model';
 type Props = ComponentProps<'button'> & {
   franchise: Franchise;
   isDashboard?: boolean;
-  viewOnly?: boolean;
   onDetails?: () => void;
 };
 
@@ -47,10 +46,9 @@ const CurrentStatus = memo(function ({ approvalStatus }: CurrentStatusProps) {
   );
 });
 
-export const IssuerFranchiseSingleCard = memo(function ({
+export const TreasurerFranchiseSingleCard = memo(function ({
   className,
   franchise,
-  viewOnly,
   onDetails,
   ...moreProps
 }: Props) {
@@ -78,7 +76,7 @@ export const IssuerFranchiseSingleCard = memo(function ({
       case FranchiseApprovalStatus.Validated:
         return 'Pending Payment';
       case FranchiseApprovalStatus.Paid:
-        return 'Pending Approval';
+        return 'Paid';
       case FranchiseApprovalStatus.Approved:
         return 'Active';
       case FranchiseApprovalStatus.Rejected:
@@ -91,22 +89,15 @@ export const IssuerFranchiseSingleCard = memo(function ({
   }, [approvalStatus]);
 
   const moreStatusInfoText = useMemo(() => {
-    if (viewOnly) return null;
-
     if (approvalStatus === FranchiseApprovalStatus.Approved) {
       const expiryDateText = dayjs(expiryDate).format('YYYY-MM-DD');
       return `valid until ${expiryDateText}`;
     } else if (approvalStatus === FranchiseApprovalStatus.Validated) {
       return 'select to view payment details';
-    } else if (
-      approvalStatus === FranchiseApprovalStatus.PendingValidation ||
-      approvalStatus === FranchiseApprovalStatus.Paid
-    ) {
-      return 'select to view further actions';
     }
 
     return null;
-  }, [viewOnly, approvalStatus, expiryDate]);
+  }, [approvalStatus, expiryDate]);
 
   return (
     <button
@@ -161,17 +152,18 @@ export const IssuerFranchiseSingleCard = memo(function ({
             className={cx(
               'flex items-center gap-1 text-xl font-bold',
               (approvalStatus === FranchiseApprovalStatus.PendingValidation ||
-                approvalStatus === FranchiseApprovalStatus.Validated ||
-                approvalStatus === FranchiseApprovalStatus.Paid) &&
+                approvalStatus === FranchiseApprovalStatus.Validated) &&
                 'text-yellow-500',
-              approvalStatus === FranchiseApprovalStatus.Approved &&
+              (approvalStatus === FranchiseApprovalStatus.Paid ||
+                approvalStatus === FranchiseApprovalStatus.Approved) &&
                 'text-green-600',
               (approvalStatus === FranchiseApprovalStatus.Rejected ||
                 approvalStatus === FranchiseApprovalStatus.Canceled) &&
                 'text-red-600',
             )}
           >
-            {approvalStatus === FranchiseApprovalStatus.Approved && (
+            {(approvalStatus === FranchiseApprovalStatus.Paid ||
+              approvalStatus === FranchiseApprovalStatus.Approved) && (
               <BaseIcon name='check-circle' size={24} />
             )}
             {(approvalStatus === FranchiseApprovalStatus.Rejected ||

@@ -1,7 +1,6 @@
 import dayjs from '#/config/dayjs.config';
-import { generateFullNames } from './user-helper';
-
 import { transformAuditTrail } from '#/core/helpers/core.helper';
+import { generateFullNames } from './user-helper';
 
 import type { User, UserProfile } from '../models/user.model';
 
@@ -39,8 +38,11 @@ export function transformToUserProfile({
   lastName,
   middleName,
   birthDate,
-  phoneNumber,
   gender,
+  civilStatus,
+  religion,
+  address,
+  phoneNumber,
   driverLicenseNo,
 }: any): UserProfile {
   const { fullName, reverseFullName } = generateFullNames(
@@ -54,8 +56,11 @@ export function transformToUserProfile({
     lastName,
     middleName,
     birthDate: dayjs(birthDate).toDate(),
-    phoneNumber,
     gender,
+    civilStatus,
+    religion,
+    address,
+    phoneNumber,
     driverLicenseNo,
     fullName,
     reverseFullName,
@@ -72,6 +77,9 @@ export function transformToUserCreateDto({
   birthDate,
   phoneNumber,
   gender,
+  civilStatus,
+  religion,
+  address,
   driverLicenseNo,
   // approvalStatus = UserApprovalStatus.Approved,
 }: any) {
@@ -85,6 +93,9 @@ export function transformToUserCreateDto({
       birthDate,
       phoneNumber: phoneNumber.replace(/\D/g, ''),
       gender,
+      civilStatus,
+      religion,
+      address,
       driverLicenseNo,
     },
   };
@@ -98,6 +109,9 @@ export function transformToUserUpdateDto({
   birthDate,
   phoneNumber,
   gender,
+  civilStatus,
+  religion,
+  address,
   driverLicenseNo,
 }: any) {
   return {
@@ -109,6 +123,9 @@ export function transformToUserUpdateDto({
       birthDate,
       phoneNumber: phoneNumber.replace(/\D/g, ''),
       gender,
+      civilStatus,
+      religion,
+      address,
       driverLicenseNo,
     },
   };

@@ -1,4 +1,4 @@
-import { UserGender } from '../models/user.model';
+import { UserCivilStatus, UserGender } from '../models/user.model';
 import { capitalize } from '#/core/helpers/string.helper';
 
 export function generateFullNames(
@@ -36,5 +36,24 @@ export const genderSelectOptions = [
   {
     label: capitalize(UserGender.Female),
     value: UserGender.Female,
+  },
+];
+
+export const civilStatusSelectOptions = [
+  {
+    label: capitalize(UserCivilStatus.Single),
+    value: UserCivilStatus.Single,
+  },
+  {
+    label: capitalize(UserCivilStatus.Married),
+    value: UserCivilStatus.Married,
+  },
+  {
+    label: capitalize(UserCivilStatus.Widowed),
+    value: UserCivilStatus.Widowed,
+  },
+  {
+    label: 'Legally Separated',
+    value: UserCivilStatus.LegallySeparated,
   },
 ];

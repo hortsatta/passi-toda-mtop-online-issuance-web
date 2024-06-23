@@ -9,12 +9,20 @@ export enum UserApprovalStatus {
 export enum UserRole {
   Admin = 'admin',
   Issuer = 'issuer',
+  Treasurer = 'treasurer',
   Member = 'member',
 }
 
 export enum UserGender {
   Male = 'male',
   Female = 'female',
+}
+
+export enum UserCivilStatus {
+  Single = 'single',
+  Married = 'married',
+  Widowed = 'widowed',
+  LegallySeparated = 'legally-separated',
 }
 
 export type User = Partial<AuditTrail> & {
@@ -33,6 +41,9 @@ export type UserProfile = Partial<AuditTrail> & {
   lastName: string;
   birthDate: Date;
   gender: UserGender;
+  civilStatus: UserCivilStatus;
+  religion: string;
+  address: string;
   phoneNumber: string;
   driverLicenseNo: string;
   middleName?: string;

@@ -2,11 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
-import {
-  baseAdminRoute,
-  baseIssuerRoute,
-  routeConfig,
-} from '#/config/routes.config';
+import { routeConfig, userBaseTo } from '#/config/routes.config';
 import { useBoundStore } from '#/core/hooks/use-store.hook';
 import { UserRole } from '#/user/models/user.model';
 import { FranchiseApprovalStatus } from '../models/franchise.model';
@@ -20,6 +16,7 @@ type Result = {
   franchises: Franchise[];
   loading: boolean;
   isFiltered: boolean;
+  filterOptions: QueryFilterOption[];
   // pagination: QueryPagination;
   setKeyword: (keyword: string | null) => void;
   setFilters: (filter: QueryFilterOption[]) => void;
@@ -28,10 +25,7 @@ type Result = {
   handleFranchiseDetails: (id: number) => void;
 };
 
-const ISSUER_FRANCHISE_LIST_TO = `/${baseIssuerRoute}/${routeConfig.franchise.to}`;
-const ADMIN_FRANCHISE_LIST_TO = `/${baseAdminRoute}/${routeConfig.franchise.to}`;
-
-export const filterOptions = [
+export const issuerAdminFilterOptions = [
   {
     key: 'status-pending-validation',
     name: 'status',
@@ -39,10 +33,16 @@ export const filterOptions = [
     label: 'Pending Validation',
   },
   {
-    key: 'status-pending-payment',
+    key: 'status-validated',
     name: 'status',
-    value: FranchiseApprovalStatus.PendingPayment,
-    label: 'Pending Payment',
+    value: FranchiseApprovalStatus.Validated,
+    label: 'Validated',
+  },
+  {
+    key: 'status-paid',
+    name: 'status',
+    value: FranchiseApprovalStatus.Paid,
+    label: 'Paid',
   },
   {
     key: 'status-approved',
@@ -64,6 +64,11 @@ export const filterOptions = [
   },
 ];
 
+export const treasurerFilterOptions = [
+  issuerAdminFilterOptions.find((option) => option.key === 'status-validated'),
+  issuerAdminFilterOptions.find((option) => option.key === 'status-paid'),
+] as QueryFilterOption[];
+
 export const defaultSort = {
   field: 'createdAt',
   order: 'desc' as QuerySort['order'],
@@ -76,7 +81,7 @@ export const defaultParamKeys = {
   // pagination: { take: PAGINATION_TAKE, skip: 0 },
 };
 
-export function useIssuerAdminFranchiseList(): Result {
+export function useTIAFranchiseList(): Result {
   const navigate = useNavigate();
   const userRole = useBoundStore((state) => state.user?.role);
   const [keyword, setKeyword] = useState<string | null>(null);
@@ -123,15 +128,19 @@ export function useIssuerAdminFranchiseList(): Result {
     ),
   );
 
+  const filterOptions = useMemo(
+    () =>
+      userRole === UserRole.Treasurer
+        ? treasurerFilterOptions
+        : issuerAdminFilterOptions,
+    [userRole],
+  );
+
   const handleFranchiseDetails = useCallback(
     (id: number) => {
-      if (!userRole) return;
+      if (!userRole || userRole === UserRole.Member) return;
 
-      const to =
-        userRole === UserRole.Issuer
-          ? ISSUER_FRANCHISE_LIST_TO
-          : ADMIN_FRANCHISE_LIST_TO;
-      navigate(`${to}/${id}`);
+      navigate(`${userBaseTo[userRole]}/${routeConfig.franchise.to}/${id}`);
     },
     [userRole, navigate],
   );
@@ -143,7 +152,8 @@ export function useIssuerAdminFranchiseList(): Result {
   return {
     franchiseDigest: franchiseDigest || {
       pendingValidations: [],
-      pendingPayments: [],
+      validatedList: [],
+      paidList: [],
       recentApprovals: [],
       recentRejections: [],
     },
@@ -154,6 +164,7 @@ export function useIssuerAdminFranchiseList(): Result {
       isFranchiseListRefetching ||
       isFranchiseDigestRefetching,
     isFiltered: !!filters.length || !!keyword?.trim().length,
+    filterOptions,
     setKeyword,
     setFilters,
     setSort,

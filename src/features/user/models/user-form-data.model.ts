@@ -1,4 +1,4 @@
-import type { UserGender } from './user.model';
+import type { UserCivilStatus, UserGender } from './user.model';
 
 export type UserCreateFormData = {
   email: string;
@@ -9,7 +9,10 @@ export type UserCreateFormData = {
   birthDate: Date;
   phoneNumber: string;
   gender: UserGender;
-  driverLicenseNo: string;
+  civilStatus: UserCivilStatus;
+  religion: string;
+  address: string;
+  driverLicenseNo?: string;
   middleName?: string;
 };
 
@@ -20,6 +23,9 @@ export type UserUpdateFormData = {
   birthDate: Date;
   phoneNumber: string;
   gender: UserGender;
-  driverLicenseNo: string;
+  civilStatus: UserCivilStatus;
+  religion: string;
+  address: string;
+  driverLicenseNo?: string;
   middleName?: string;
 };

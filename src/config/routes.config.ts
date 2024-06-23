@@ -1,6 +1,16 @@
+import { UserRole } from '#/user/models/user.model';
+
 export const baseMemberRoute = 'm';
+export const baseTreasurerRoute = 't';
 export const baseIssuerRoute = 'i';
 export const baseAdminRoute = 'a';
+
+export const userBaseTo = {
+  [UserRole.Member]: `/${baseMemberRoute}`,
+  [UserRole.Treasurer]: `/${baseTreasurerRoute}`,
+  [UserRole.Issuer]: `/${baseIssuerRoute}`,
+  [UserRole.Admin]: `/${baseAdminRoute}`,
+};
 
 export const routeConfig = {
   authSignIn: {

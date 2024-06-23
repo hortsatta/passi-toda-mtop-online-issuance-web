@@ -3,6 +3,7 @@ import { memo } from 'react';
 
 import type { ComponentProps } from 'react';
 import isURL from 'validator/lib/isURL';
+import { BaseIcon } from './base-icon.component';
 
 type Props = ComponentProps<'img'> & {
   label?: string;
@@ -17,8 +18,6 @@ export const BaseFieldImg = memo(function ({
   wrapperProps: { className: wrapperClassName, ...moreWrapperProps } = {},
   ...moreProps
 }: Props) {
-  if (!isURL(src || '')) return null;
-
   return (
     <div
       className={cx(
@@ -27,17 +26,25 @@ export const BaseFieldImg = memo(function ({
       )}
       {...moreWrapperProps}
     >
-      <img
-        className={cx(
-          'inline-block h-60 overflow-hidden rounded bg-backdrop-surface object-contain',
-          onClick && 'cursor-pointer',
-          className,
+      <div className='inline-block h-60 overflow-hidden rounded bg-backdrop-surface'>
+        {isURL(src || '') ? (
+          <img
+            className={cx(
+              'inline-block h-full w-full object-contain',
+              onClick && 'cursor-pointer',
+              className,
+            )}
+            src={src}
+            alt={label}
+            onClick={onClick}
+            {...moreProps}
+          />
+        ) : (
+          <div className='flex h-full w-full items-center justify-center opacity-30'>
+            <BaseIcon name='placeholder' size={80} />
+          </div>
         )}
-        src={src}
-        alt={label}
-        onClick={onClick}
-        {...moreProps}
-      />
+      </div>
       {label && (
         <>
           <div className='border-b border-border' />

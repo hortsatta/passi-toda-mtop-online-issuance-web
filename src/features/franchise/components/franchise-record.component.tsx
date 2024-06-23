@@ -1,8 +1,11 @@
 import { memo, useCallback, useMemo } from 'react';
 import cx from 'classix';
 
+import dayjs from '#/config/dayjs.config';
+import { capitalize } from '#/core/helpers/string.helper';
 import { BaseFieldImg } from '#/base/components/base-field-img.component';
 import { BaseFieldText } from '#/base/components/base-field-text.component';
+import { UserCivilStatus } from '#/user/models/user.model';
 
 import type { ComponentProps } from 'react';
 import type { Franchise } from '../models/franchise.model';
@@ -30,9 +33,11 @@ export const FranchiseRecord = memo(function ({
     vehicleORImgUrl,
     vehicleCRImgUrl,
     todaAssocMembershipImgUrl,
-    ownerDriverLicenseNoImgUrl,
+    driverLicenseNoImgUrl,
     brgyClearanceImgUrl,
     voterRegRecordImgUrl,
+    driverInfoText,
+    driverProfile,
   ] = useMemo(
     () => [
       franchise.mvFileNo,
@@ -41,11 +46,42 @@ export const FranchiseRecord = memo(function ({
       franchise.vehicleORImgUrl,
       franchise.vehicleCRImgUrl,
       franchise.todaAssocMembershipImgUrl,
-      franchise.ownerDriverLicenseNoImgUrl,
+      franchise.driverLicenseNoImgUrl,
       franchise.brgyClearanceImgUrl,
       franchise.voterRegRecordImgUrl,
+      franchise.isDriverOwner ? 'Owner and Driver Info' : 'Driver Info',
+      franchise.isDriverOwner
+        ? { ...franchise.user?.userProfile, email: franchise.user?.email || '' }
+        : franchise.driverProfile,
     ],
     [franchise],
+  );
+
+  const [
+    driverReverseFullName,
+    driverBirthDate,
+    driverGender,
+    driverCivilStatus,
+    driverReligion,
+    driverAddress,
+    driverPhoneNumber,
+    driverLicenseNo,
+    driverEmail,
+  ] = useMemo(
+    () => [
+      driverProfile?.reverseFullName || '',
+      dayjs(driverProfile?.birthDate || '').format('MMM DD, YYYY'),
+      capitalize(driverProfile?.gender || ''),
+      driverProfile?.civilStatus === UserCivilStatus.LegallySeparated
+        ? 'Legally Separated'
+        : capitalize(driverProfile?.civilStatus || ''),
+      driverProfile?.religion || '',
+      driverProfile?.address || '',
+      driverProfile?.phoneNumber || '',
+      driverProfile?.driverLicenseNo || '',
+      driverProfile?.email || '',
+    ],
+    [driverProfile],
   );
 
   const handleImgClick = useCallback(
@@ -101,10 +137,10 @@ export const FranchiseRecord = memo(function ({
         </div>
         <div className='grid grid-cols-3 gap-4'>
           <BaseFieldImg
-            src={ownerDriverLicenseNoImgUrl}
+            src={driverLicenseNoImgUrl}
             label={`Driver's License No`}
             onClick={handleImgClick(
-              ownerDriverLicenseNoImgUrl,
+              driverLicenseNoImgUrl,
               `Driver's License No`,
             )}
           />
@@ -121,6 +157,26 @@ export const FranchiseRecord = memo(function ({
               `Voter's Registration Record`,
             )}
           />
+        </div>
+      </div>
+      <div className='flex w-full flex-1 flex-col gap-4'>
+        <h4>{driverInfoText}</h4>
+        <div className='grid w-full grid-cols-3 gap-4'>
+          <BaseFieldText label='Name'>{driverReverseFullName}</BaseFieldText>
+          <BaseFieldText label='Date of Birth'>{driverBirthDate}</BaseFieldText>
+          <BaseFieldText label='Gender'>{driverGender}</BaseFieldText>
+          <BaseFieldText label='Civil Status'>
+            {driverCivilStatus}
+          </BaseFieldText>
+          <BaseFieldText label='Religion'>{driverReligion}</BaseFieldText>
+          <BaseFieldText label='Address'>{driverAddress}</BaseFieldText>
+          <BaseFieldText label='Phone Number'>
+            {driverPhoneNumber}
+          </BaseFieldText>
+          <BaseFieldText label={`Driver's License`}>
+            {driverLicenseNo}
+          </BaseFieldText>
+          <BaseFieldText label='Email'>{driverEmail}</BaseFieldText>
         </div>
       </div>
     </div>

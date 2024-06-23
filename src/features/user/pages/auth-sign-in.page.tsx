@@ -2,10 +2,9 @@ import { useCallback, useMemo } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import {
-  baseAdminRoute,
-  baseIssuerRoute,
   baseMemberRoute,
   routeConfig,
+  userBaseTo,
 } from '#/config/routes.config';
 import { BaseScene } from '#/base/components/base-scene.component';
 import { UserRole } from '../models/user.model';
@@ -31,13 +30,7 @@ export function AuthSignInPage() {
 
         navigate(to, { state });
       } else {
-        const baseTo = {
-          [UserRole.Member]: baseMemberRoute,
-          [UserRole.Issuer]: baseIssuerRoute,
-          [UserRole.Admin]: baseAdminRoute,
-        };
-
-        navigate(`/${baseTo[user.role]}/${routeConfig.franchise.to}`);
+        navigate(`${userBaseTo[user.role]}/${routeConfig.franchise.to}`);
       }
     },
     [value, type, signIn, navigate],

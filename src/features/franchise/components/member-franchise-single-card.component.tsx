@@ -27,24 +27,26 @@ const CurrentStatus = memo(function ({ approvalStatus }: CurrentStatusProps) {
           verifying application
         </small>
       )}
-      {(approvalStatus === FranchiseApprovalStatus.PendingPayment ||
+      {(approvalStatus === FranchiseApprovalStatus.Validated ||
+        approvalStatus === FranchiseApprovalStatus.Paid ||
         approvalStatus === FranchiseApprovalStatus.Approved) && (
         <small className='flex items-center gap-1 text-xs uppercase text-green-500'>
           <BaseIcon name='check-circle' size={16} />
           verified
         </small>
       )}
+      {(approvalStatus === FranchiseApprovalStatus.Paid ||
+        approvalStatus === FranchiseApprovalStatus.Approved) && (
+        <small className='flex items-center gap-1 text-xs uppercase text-green-500'>
+          <BaseIcon name='check-circle' size={16} />
+          paid
+        </small>
+      )}
       {approvalStatus === FranchiseApprovalStatus.Approved && (
-        <>
-          <small className='flex items-center gap-1 text-xs uppercase text-green-500'>
-            <BaseIcon name='check-circle' size={16} />
-            paid
-          </small>
-          <small className='flex items-center gap-1 text-xs uppercase text-green-500'>
-            <BaseIcon name='check-circle' size={16} />
-            approved
-          </small>
-        </>
+        <small className='flex items-center gap-1 text-xs uppercase text-green-500'>
+          <BaseIcon name='check-circle' size={16} />
+          approved
+        </small>
       )}
     </div>
   );
@@ -70,8 +72,10 @@ export const MemberFranchiseSingleCard = memo(function ({
 
   const statusLabel = useMemo(() => {
     switch (approvalStatus) {
-      case FranchiseApprovalStatus.PendingPayment:
+      case FranchiseApprovalStatus.Validated:
         return 'Pending Payment';
+      case FranchiseApprovalStatus.Paid:
+        return 'Pending Approval';
       case FranchiseApprovalStatus.Approved:
         return 'Active';
       case FranchiseApprovalStatus.Rejected:
@@ -87,7 +91,7 @@ export const MemberFranchiseSingleCard = memo(function ({
     if (approvalStatus === FranchiseApprovalStatus.Approved) {
       const expiryDateText = dayjs(expiryDate).format('YYYY-MM-DD');
       return `valid until ${expiryDateText}`;
-    } else if (approvalStatus === FranchiseApprovalStatus.PendingPayment) {
+    } else if (approvalStatus === FranchiseApprovalStatus.Validated) {
       return 'select to view payment details';
     }
 
@@ -142,7 +146,8 @@ export const MemberFranchiseSingleCard = memo(function ({
           <span
             className={cx(
               'flex items-center gap-1 text-xl font-bold',
-              approvalStatus === FranchiseApprovalStatus.PendingPayment &&
+              (approvalStatus === FranchiseApprovalStatus.Validated ||
+                approvalStatus === FranchiseApprovalStatus.Paid) &&
                 'text-yellow-500',
               approvalStatus === FranchiseApprovalStatus.Approved &&
                 'text-green-600',

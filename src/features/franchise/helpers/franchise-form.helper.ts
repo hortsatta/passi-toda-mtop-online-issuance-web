@@ -15,8 +15,8 @@ export async function generateImageFormData(
       name: 'todaAssocMembershipImgUrl-toda_assoc_membership',
     },
     {
-      imageData: data.ownerDriverLicenseNoImgUrl,
-      name: 'ownerDriverLicenseNoImgUrl-owner_driver_license_no',
+      imageData: data.driverLicenseNoImgUrl,
+      name: 'driverLicenseNoImgUrl-owner_driver_license_no',
     },
     {
       imageData: data.brgyClearanceImgUrl,
@@ -47,3 +47,14 @@ export async function generateImageFormData(
 
   return formData;
 }
+
+export const driverProfileSelectOptions = [
+  {
+    label: 'Add New',
+    value: 'add-new',
+  },
+  {
+    label: 'Same as Owner',
+    value: 'driver-owner',
+  },
+];

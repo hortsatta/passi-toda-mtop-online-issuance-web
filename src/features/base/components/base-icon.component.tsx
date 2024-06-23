@@ -20,6 +20,7 @@ import {
   Image,
   MagnifyingGlass,
   PencilSimple,
+  Placeholder,
   Printer,
   SignOut,
   Square,
@@ -82,6 +83,8 @@ export const BaseIcon = memo(
           return MagnifyingGlass;
         case 'pencil-simple':
           return PencilSimple;
+        case 'placeholder':
+          return Placeholder;
         case 'printer':
           return Printer;
         case 'sign-out':
