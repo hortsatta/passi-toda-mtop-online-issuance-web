@@ -7,10 +7,12 @@ import { getFranchisesByCurrentMemberUser } from '../api/franchise.api';
 
 import type { Franchise } from '../models/franchise.model';
 import type { QueryFilterOption, QuerySort } from '#/core/models/core.model';
+import type { ListView } from '#/base/models/base.model';
 
 type Result = {
   franchises: Franchise[];
   loading: boolean;
+  listView: ListView;
   // pagination: QueryPagination;
   setKeyword: (keyword: string | null) => void;
   setFilters: (filter: QueryFilterOption[]) => void;
@@ -18,6 +20,7 @@ type Result = {
   refresh: () => void;
   handleFranchiseEdit: (id: number) => void;
   handleFranchiseDetails: (id: number) => void;
+  handleListViewChange: () => void;
 };
 
 const FRANCHISE_LIST_TO = `/${baseMemberRoute}/${routeConfig.franchise.to}`;
@@ -39,6 +42,7 @@ export function useMemberFranchiseList(): Result {
   const [keyword, setKeyword] = useState<string | null>(null);
   const [filters, setFilters] = useState<QueryFilterOption[]>([]);
   const [sort, setSort] = useState<QuerySort>(defaultSort);
+  const [listView, setListView] = useState<ListView>('strip');
 
   const status = useMemo(() => {
     if (!filters.length) {
@@ -74,6 +78,10 @@ export function useMemberFranchiseList(): Result {
     [navigate],
   );
 
+  const handleListViewChange = useCallback(() => {
+    setListView((prev) => (prev === 'strip' ? 'grid' : 'strip'));
+  }, []);
+
   const handleFranchiseEdit = useCallback(
     (id: number) => {
       navigate(`${FRANCHISE_LIST_TO}/${id}/${routeConfig.franchise.edit.to}`);
@@ -84,11 +92,13 @@ export function useMemberFranchiseList(): Result {
   return {
     franchises: franchises || [],
     loading: isLoading || isRefetching,
+    listView,
     setKeyword,
     setFilters,
     setSort,
     refresh: refetch,
     handleFranchiseDetails,
     handleFranchiseEdit,
+    handleListViewChange,
   };
 }

@@ -23,8 +23,10 @@ export type IconName =
   | 'pencil-simple'
   | 'placeholder'
   | 'printer'
+  | 'rows'
   | 'sign-out'
   | 'square'
+  | 'squares-four'
   | 'tire'
   | 'trash'
   | 'user'
@@ -38,6 +40,8 @@ export type SelectItem = {
 };
 
 export type ButtonVariant = 'primary' | 'accent' | 'accept' | 'warn';
+
+export type ListView = 'strip' | 'grid';
 
 export type FormProps<
   TProps extends keyof JSX.IntrinsicElements | JSXElementConstructor<any>,

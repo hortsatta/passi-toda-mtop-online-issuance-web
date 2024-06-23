@@ -11,6 +11,7 @@ import { FranchiseListActions } from '../components/franchise-list-actions.compo
 
 export function MemberFranchiseListPage() {
   const {
+    listView,
     franchises,
     loading,
     setKeyword,
@@ -18,6 +19,7 @@ export function MemberFranchiseListPage() {
     refresh,
     // handleFranchiseEdit,
     handleFranchiseDetails,
+    handleListViewChange,
   } = useMemberFranchiseList();
 
   const data: any = useLoaderData();
@@ -29,9 +31,11 @@ export function MemberFranchiseListPage() {
         rightComponent={
           <FranchiseListActions
             filterOptions={issuerAdminFilterOptions}
+            listView={listView}
             onSearchChange={setKeyword}
             onFilter={setFilters}
             onRefresh={refresh}
+            onListViewChange={handleListViewChange}
           />
         }
       >
@@ -40,6 +44,7 @@ export function MemberFranchiseListPage() {
         ) : (
           <MemberFranchiseList
             franchises={franchises}
+            listView={listView}
             onFranchiseDetails={handleFranchiseDetails}
           />
         )}

@@ -22,8 +22,10 @@ import {
   PencilSimple,
   Placeholder,
   Printer,
+  Rows,
   SignOut,
   Square,
+  SquaresFour,
   Tire,
   Trash,
   User,
@@ -87,10 +89,14 @@ export const BaseIcon = memo(
           return Placeholder;
         case 'printer':
           return Printer;
+        case 'rows':
+          return Rows;
         case 'sign-out':
           return SignOut;
         case 'square':
           return Square;
+        case 'squares-four':
+          return SquaresFour;
         case 'tire':
           return Tire;
         case 'trash':

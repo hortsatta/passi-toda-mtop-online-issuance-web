@@ -9,22 +9,27 @@ import { BaseModal } from '#/base/components/base-modal.component';
 
 import type { ComponentProps } from 'react';
 import type { QueryFilterOption } from '#/core/models/core.model';
+import type { ListView } from '#/base/models/base.model';
 
 type Props = ComponentProps<'div'> & {
+  listView: ListView;
   filterOptions: QueryFilterOption[];
   defaultSelectedtFilterOptions?: QueryFilterOption[];
   onSearchChange?: (value: string | null) => void;
   onFilter?: (options: QueryFilterOption[]) => void;
   onRefresh?: () => void;
+  onListViewChange?: () => void;
 };
 
 export const FranchiseListActions = memo(function ({
   className,
+  listView,
   filterOptions,
   defaultSelectedtFilterOptions,
   onSearchChange,
-  onRefresh,
   onFilter,
+  onRefresh,
+  onListViewChange,
   ...moreProps
 }: Props) {
   const [open, setOpen] = useState(false);
@@ -93,6 +98,12 @@ export const FranchiseListActions = memo(function ({
           <BaseButtonSimple
             iconName='funnel-simple'
             onClick={handleOpenModal(true)}
+          />
+        )}
+        {onListViewChange && (
+          <BaseButtonSimple
+            iconName={listView === 'strip' ? 'rows' : 'squares-four'}
+            onClick={onListViewChange}
           />
         )}
         {onRefresh && (

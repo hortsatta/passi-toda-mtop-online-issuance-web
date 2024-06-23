@@ -9,6 +9,7 @@ import { FranchiseApprovalStatus } from '../models/franchise.model';
 import { getAllFranchises, getFranchiseDigest } from '../api/franchise.api';
 
 import type { QueryFilterOption, QuerySort } from '#/core/models/core.model';
+import type { ListView } from '#/base/models/base.model';
 import type { Franchise, FranchiseDigest } from '../models/franchise.model';
 
 type Result = {
@@ -17,12 +18,14 @@ type Result = {
   loading: boolean;
   isFiltered: boolean;
   filterOptions: QueryFilterOption[];
+  listView: ListView;
   // pagination: QueryPagination;
   setKeyword: (keyword: string | null) => void;
   setFilters: (filter: QueryFilterOption[]) => void;
   setSort: (sort: QuerySort) => void;
   refresh: () => void;
   handleFranchiseDetails: (id: number) => void;
+  handleListViewChange: () => void;
 };
 
 export const issuerAdminFilterOptions = [
@@ -87,6 +90,7 @@ export function useTIAFranchiseList(): Result {
   const [keyword, setKeyword] = useState<string | null>(null);
   const [filters, setFilters] = useState<QueryFilterOption[]>([]);
   const [sort, setSort] = useState<QuerySort>(defaultSort);
+  const [listView, setListView] = useState<ListView>('strip');
 
   const status = useMemo(() => {
     if (!filters.length) {
@@ -145,6 +149,10 @@ export function useTIAFranchiseList(): Result {
     [userRole, navigate],
   );
 
+  const handleListViewChange = useCallback(() => {
+    setListView((prev) => (prev === 'strip' ? 'grid' : 'strip'));
+  }, []);
+
   const refresh = useCallback(() => {
     !filters.length ? franchiseDigestRefetch() : franchiseListRefetch();
   }, [filters, franchiseDigestRefetch, franchiseListRefetch]);
@@ -164,11 +172,13 @@ export function useTIAFranchiseList(): Result {
       isFranchiseListRefetching ||
       isFranchiseDigestRefetching,
     isFiltered: !!filters.length || !!keyword?.trim().length,
+    listView,
     filterOptions,
     setKeyword,
     setFilters,
     setSort,
     refresh,
     handleFranchiseDetails,
+    handleListViewChange,
   };
 }

@@ -3,12 +3,15 @@ import cx from 'classix';
 
 import { routeConfig } from '#/config/routes.config';
 import { BaseDataEmptyMessage } from '#/base/components/base-data-empty-message.component';
+import { MemberFranchiseSingleStrip } from './member-franchise-single-strip.component';
 import { MemberFranchiseSingleCard } from './member-franchise-single-card.component';
 
 import type { ComponentProps } from 'react';
+import type { ListView } from '#/base/models/base.model';
 import type { Franchise } from '../models/franchise.model';
 
 type Props = ComponentProps<'div'> & {
+  listView: ListView;
   franchises: Franchise[];
   onFranchiseDetails?: (id: number) => void;
   // onFranchiseEdit?: (id: number) => void;
@@ -16,6 +19,7 @@ type Props = ComponentProps<'div'> & {
 
 export const MemberFranchiseList = memo(function ({
   className,
+  listView,
   franchises,
   onFranchiseDetails,
   ...moreProps
@@ -39,7 +43,8 @@ export const MemberFranchiseList = memo(function ({
   return (
     <div
       className={cx(
-        'flex w-full flex-wrap gap-4 rounded bg-backdrop-surface px-16 py-12',
+        'flex w-full rounded bg-backdrop-surface px-16 py-12',
+        listView === 'strip' ? 'flex-col gap-2.5' : 'flex-wrap gap-4',
         className,
       )}
       role='table'
@@ -52,14 +57,23 @@ export const MemberFranchiseList = memo(function ({
           linkTo={routeConfig.franchise.create.to}
         />
       ) : (
-        franchises.map((franchise) => (
-          <MemberFranchiseSingleCard
-            key={franchise.id}
-            franchise={franchise}
-            onDetails={handleFranchiseDetails(franchise.id)}
-            role='row'
-          />
-        ))
+        franchises.map((franchise) =>
+          listView === 'strip' ? (
+            <MemberFranchiseSingleStrip
+              key={franchise.id}
+              franchise={franchise}
+              onDetails={handleFranchiseDetails(franchise.id)}
+              role='row'
+            />
+          ) : (
+            <MemberFranchiseSingleCard
+              key={franchise.id}
+              franchise={franchise}
+              onDetails={handleFranchiseDetails(franchise.id)}
+              role='row'
+            />
+          ),
+        )
       )}
     </div>
   );
