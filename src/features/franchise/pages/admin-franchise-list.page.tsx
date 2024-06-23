@@ -15,10 +15,12 @@ export function AdminFranchiseListPage() {
     franchises,
     isFiltered,
     filterOptions,
+    listView,
     setKeyword,
     setFilters,
     refresh,
     handleFranchiseDetails,
+    handleListViewChange,
   } = useTIAFranchiseList();
 
   const data: any = useLoaderData();
@@ -30,9 +32,11 @@ export function AdminFranchiseListPage() {
         rightComponent={
           <FranchiseListActions
             filterOptions={filterOptions}
+            listView={listView}
             onSearchChange={setKeyword}
             onFilter={setFilters}
             onRefresh={refresh}
+            onListViewChange={handleListViewChange}
           />
         }
       >
@@ -43,6 +47,7 @@ export function AdminFranchiseListPage() {
             franchises={franchises}
             franchiseDigest={franchiseDigest}
             isFiltered={isFiltered}
+            listView={listView}
             onFranchiseDetails={handleFranchiseDetails}
             viewOnly
           />
