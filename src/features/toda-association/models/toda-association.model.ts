@@ -11,10 +11,13 @@ export type TodaAssociation = Partial<AuditTrail> & {
   presidentMiddleName?: string;
   presidentFullName?: string;
   presidentReverseFullName?: string;
+  franchiseCount?: number;
   franchises?: Franchise[];
 };
 
 export type TodaAssociationSlice = {
   todaAssociationFormData?: TodaAssociationUpsertFormData | null;
-  setTodaAssociationFormData: (todaAssociationFormData?: TodaAssociationUpsertFormData) => void;
+  setTodaAssociationFormData: (
+    todaAssociationFormData?: TodaAssociationUpsertFormData,
+  ) => void;
 };

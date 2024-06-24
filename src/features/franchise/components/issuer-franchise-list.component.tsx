@@ -10,24 +10,24 @@ import type { ListView } from '#/base/models/base.model';
 import type { FranchiseDigest, Franchise } from '../models/franchise.model';
 
 type Props = ComponentProps<'div'> & {
-  listView: ListView;
   franchises: Franchise[];
-  franchiseDigest: FranchiseDigest;
+  franchiseDigest?: FranchiseDigest;
+  listView?: ListView;
   viewOnly?: boolean;
   isFiltered?: boolean;
   onFranchiseDetails?: (id: number) => void;
 };
 
 type FranchiseSubGroupListProps = {
-  listView: ListView;
   franchises: Franchise[];
+  listView?: ListView;
   headerText?: string;
   viewOnly?: boolean;
   onFranchiseDetails?: (id: number) => void;
 };
 
 const FranchiseSubGroupList = memo(function ({
-  listView,
+  listView = 'strip',
   headerText,
   franchises,
   viewOnly,
@@ -79,7 +79,7 @@ const FranchiseSubGroupList = memo(function ({
 
 export const IssuerFranchiseList = memo(function ({
   className,
-  listView,
+  listView = 'strip',
   franchises,
   franchiseDigest,
   isFiltered,
@@ -93,23 +93,33 @@ export const IssuerFranchiseList = memo(function ({
     paidList,
     recentApprovals,
     recentRejections,
-  } = franchiseDigest;
+  } = franchiseDigest || {
+    pendingValidations: [],
+    validatedList: [],
+    paidList: [],
+    recentApprovals: [],
+    recentRejections: [],
+  };
 
   const isEmpty = useMemo(
     () =>
-      ![
-        ...pendingValidations,
-        ...validatedList,
-        ...paidList,
-        ...recentApprovals,
-        ...recentRejections,
-      ].length,
+      !isFiltered
+        ? ![
+            ...pendingValidations,
+            ...validatedList,
+            ...paidList,
+            ...recentApprovals,
+            ...recentRejections,
+          ].length
+        : !franchises.length,
     [
       pendingValidations,
       validatedList,
       paidList,
       recentApprovals,
       recentRejections,
+      franchises,
+      isFiltered,
     ],
   );
 

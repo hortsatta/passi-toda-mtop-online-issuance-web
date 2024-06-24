@@ -16,6 +16,7 @@ export function AdminTodaAssociationListPage() {
     refresh,
     handleTodaAssociationDetails,
     handleTodaAssociationEdit,
+    handleFranchiseView,
   } = useTodaAssociationList();
 
   const data: any = useLoaderData();
@@ -38,6 +39,7 @@ export function AdminTodaAssociationListPage() {
             todaAssociations={todaAssociations}
             onTodaAssociationDetails={handleTodaAssociationDetails}
             onTodaAssociationEdit={handleTodaAssociationEdit}
+            onFranchiseView={handleFranchiseView}
           />
         )}
       </BaseScene>

@@ -12,6 +12,7 @@ type Props = ComponentProps<'div'> & {
   todaAssociations: TodaAssociation[];
   onTodaAssociationDetails?: (id: number) => void;
   onTodaAssociationEdit?: (id: number) => void;
+  onFranchiseView?: (id: number) => void;
 };
 
 export const TodaAssociationList = memo(function ({
@@ -19,6 +20,7 @@ export const TodaAssociationList = memo(function ({
   todaAssociations,
   onTodaAssociationDetails,
   onTodaAssociationEdit,
+  onFranchiseView,
   ...moreProps
 }: Props) {
   const isEmpty = useMemo(() => !todaAssociations?.length, [todaAssociations]);
@@ -37,10 +39,17 @@ export const TodaAssociationList = memo(function ({
     [onTodaAssociationEdit],
   );
 
+  const handleFranchiseView = useCallback(
+    (id: number) => () => {
+      onFranchiseView && onFranchiseView(id);
+    },
+    [onFranchiseView],
+  );
+
   return (
     <div
       className={cx(
-        'flex w-full flex-wrap gap-4 rounded bg-backdrop-surface px-16 py-12',
+        'flex w-full flex-wrap gap-2.5 rounded bg-backdrop-surface px-16 py-12',
         className,
       )}
       role='table'
@@ -63,6 +72,7 @@ export const TodaAssociationList = memo(function ({
                 ? handleTodaAssociationEdit(todaAssociation.id)
                 : undefined
             }
+            onFranchiseView={handleFranchiseView(todaAssociation.id)}
             role='row'
           />
         ))

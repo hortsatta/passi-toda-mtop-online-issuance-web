@@ -15,6 +15,7 @@ export function IssuerTodaAssociationListPage() {
     setKeyword,
     refresh,
     handleTodaAssociationDetails,
+    handleFranchiseView,
   } = useTodaAssociationList();
 
   const data: any = useLoaderData();
@@ -36,6 +37,7 @@ export function IssuerTodaAssociationListPage() {
           <TodaAssociationList
             todaAssociations={todaAssociations}
             onTodaAssociationDetails={handleTodaAssociationDetails}
+            onFranchiseView={handleFranchiseView}
           />
         )}
       </BaseScene>

@@ -68,6 +68,11 @@ export const routeConfig = {
       label: 'Edit',
       pageTitle: 'Edit TODA Association',
     },
+    franchise: {
+      to: 'franchise',
+      label: 'Franchise',
+      pageTitle: 'TODA Association Franchises',
+    },
   },
   reports: {
     name: 'reports',

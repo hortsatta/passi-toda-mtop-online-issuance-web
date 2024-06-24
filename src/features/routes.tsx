@@ -33,6 +33,7 @@ import {
 } from './franchise/loaders/admin-franchise.loader';
 import {
   getTodaAssociationByIdLoader,
+  getTodaAssociationWithFranchisesByIdLoader,
   getTodaAssociationsLoader,
 } from './toda-association/loaders/toda-association.loader';
 import { CoreLayout } from './core/components/core-layout.component';
@@ -55,6 +56,8 @@ import { AdminFranchiseListPage } from './franchise/pages/admin-franchise-list.p
 import { AdminFranchiseSinglePage } from './franchise/pages/admin-franchise-single.page';
 import { AdminTodaAssociationListPage } from './toda-association/pages/admin-toda-association-list.page';
 import { AdminTodaAssociationSinglePage } from './toda-association/pages/admin-toda-association-single.page';
+import { AdminTodaAssociationFranchiseListPage } from './toda-association/pages/admin-toda-association-franchise-list.page';
+import { IssuerTodaAssociationFranchiseListPage } from './toda-association/pages/issuer-toda-association-franchise-list.page';
 import { TodaAssociationCreatePage } from './toda-association/pages/toda-association-create.page';
 import { TodaAssociationEditPage } from './toda-association/pages/toda-association-edit.page';
 
@@ -184,6 +187,11 @@ const routes = createRoutesFromElements(
             element={<IssuerTodaAssociationSinglePage />}
             loader={getTodaAssociationByIdLoader(queryClient)}
           />
+          <Route
+            path={routeConfig.todaAssociation.franchise.to}
+            element={<IssuerTodaAssociationFranchiseListPage />}
+            loader={getTodaAssociationWithFranchisesByIdLoader(queryClient)}
+          />
         </Route>
       </Route>
     </Route>
@@ -225,6 +233,11 @@ const routes = createRoutesFromElements(
           <Route
             path={routeConfig.todaAssociation.edit.to}
             element={<TodaAssociationEditPage />}
+          />
+          <Route
+            path={routeConfig.todaAssociation.franchise.to}
+            element={<AdminTodaAssociationFranchiseListPage />}
+            loader={getTodaAssociationWithFranchisesByIdLoader(queryClient)}
           />
         </Route>
         <Route

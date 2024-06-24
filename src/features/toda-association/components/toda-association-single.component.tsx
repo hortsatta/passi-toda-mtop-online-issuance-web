@@ -2,6 +2,8 @@ import { memo, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import cx from 'classix';
 
+import { routeConfig } from '#/config/routes.config';
+import { BaseButton } from '#/base/components/base-button.component';
 import { BaseButtonIcon } from '#/base/components/base-button-icon.component';
 import { BaseFieldText } from '#/base/components/base-field-text.component';
 
@@ -22,13 +24,15 @@ export const TodaAssociationSingle = memo(function ({
 }: Props) {
   const navigate = useNavigate();
 
-  const { name, authorizedRoute, presidentReverseFullName } = useMemo(
-    () => todaAssociation,
-    [todaAssociation],
-  );
+  const { name, authorizedRoute, presidentReverseFullName, franchiseCount } =
+    useMemo(() => todaAssociation, [todaAssociation]);
 
   const handleEditClick = useCallback(() => {
-    navigate(`edit`);
+    navigate(routeConfig.todaAssociation.edit.to);
+  }, [navigate]);
+
+  const handleFranchiseView = useCallback(() => {
+    navigate(routeConfig.todaAssociation.franchise.to);
   }, [navigate]);
 
   return (
@@ -39,17 +43,22 @@ export const TodaAssociationSingle = memo(function ({
       )}
       {...moreProps}
     >
-      {!viewOnly && (
-        <div className='absolute right-4 top-4'>
+      <div className='absolute right-4 top-4 flex items-center gap-2.5'>
+        <BaseButton onClick={handleFranchiseView}>View Franchises</BaseButton>
+        {!viewOnly && (
           <BaseButtonIcon iconName='pencil-simple' onClick={handleEditClick} />
-        </div>
-      )}
+        )}
+      </div>
+
       <div className='flex w-full flex-1 flex-col gap-4'>
         <h4>Association Info</h4>
         <div className='flex flex-1 flex-col gap-4'>
           <BaseFieldText label='Association Name'>{name}</BaseFieldText>
           <BaseFieldText label='Authorized Route'>
             {authorizedRoute}
+          </BaseFieldText>
+          <BaseFieldText label='Registered Franchises'>
+            {franchiseCount}
           </BaseFieldText>
         </div>
       </div>

@@ -21,13 +21,14 @@ export function getAllTodaAssociations(
     q?: string;
     status?: string;
     sort?: string;
+    withFranchise?: boolean;
   },
   options?: Omit<
     UseQueryOptions<TodaAssociation[], Error, TodaAssociation[], any>,
     'queryFn' | 'queryKey'
   > & { queryKey?: any },
 ) {
-  const { ids, q, status, sort } = keys || {};
+  const { ids, q, status, sort, withFranchise = false } = keys || {};
   const { queryKey, ...moreOptions } = options || {};
 
   const queryFn = async (): Promise<any> => {
@@ -37,6 +38,7 @@ export function getAllTodaAssociations(
       q,
       status,
       sort,
+      withFranchise: withFranchise.toString(),
     });
 
     try {
@@ -55,7 +57,7 @@ export function getAllTodaAssociations(
   return {
     queryKey: [
       ...(queryKey?.length ? queryKey : queryTodaAssociationKey.list),
-      { q, ids, status, sort },
+      { q, ids, status, sort, withFranchise },
     ],
     queryFn,
     ...moreOptions,
@@ -63,17 +65,28 @@ export function getAllTodaAssociations(
 }
 
 export function getTodaAssociationById(
-  keys: { id: number; status?: string; exclude?: string; include?: string },
+  keys: {
+    id: number;
+    withFranchise?: boolean;
+    status?: string;
+    exclude?: string;
+    include?: string;
+  },
   options?: Omit<
     UseQueryOptions<TodaAssociation, Error, TodaAssociation, any>,
     'queryFn' | 'queryKey'
   >,
 ) {
-  const { id, status, exclude, include } = keys;
+  const { id, status, exclude, include, withFranchise = false } = keys;
 
   const queryFn = async (): Promise<any> => {
     const url = `${BASE_URL}/${id}`;
-    const searchParams = generateSearchParams({ status, exclude, include });
+    const searchParams = generateSearchParams({
+      withFranchise: withFranchise.toString(),
+      status,
+      exclude,
+      include,
+    });
 
     try {
       const todaAssociation = await kyInstance
@@ -89,7 +102,7 @@ export function getTodaAssociationById(
   return {
     queryKey: [
       ...queryTodaAssociationKey.single,
-      { id, status, exclude, include },
+      { id, withFranchise, status, exclude, include },
     ],
     queryFn,
     ...options,

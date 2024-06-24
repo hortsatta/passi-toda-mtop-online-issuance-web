@@ -29,6 +29,26 @@ export function getTodaAssociationByIdLoader(
   };
 }
 
+export function getTodaAssociationWithFranchisesByIdLoader(
+  queryClient: QueryClient,
+  queryParams?: { status?: string; exclude?: string; include?: string },
+) {
+  return async ({ params }: LoaderFunctionArgs) => {
+    if (!params?.id) {
+      return;
+    }
+
+    const keys = { ...queryParams, id: +params.id, withFranchise: true };
+    const query = getTodaAssociationById(keys);
+
+    return defer({
+      main:
+        queryClient.getQueryData(query.queryKey as string[]) ??
+        queryClient.fetchQuery(query),
+    });
+  };
+}
+
 export function getTodaAssociationsLoader(queryClient: QueryClient) {
   return async () => {
     const query = getAllTodaAssociations(defaultParamKeys);

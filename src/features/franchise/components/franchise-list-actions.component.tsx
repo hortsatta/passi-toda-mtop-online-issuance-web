@@ -12,8 +12,8 @@ import type { QueryFilterOption } from '#/core/models/core.model';
 import type { ListView } from '#/base/models/base.model';
 
 type Props = ComponentProps<'div'> & {
-  listView: ListView;
-  filterOptions: QueryFilterOption[];
+  filterOptions?: QueryFilterOption[];
+  listView?: ListView;
   defaultSelectedtFilterOptions?: QueryFilterOption[];
   onSearchChange?: (value: string | null) => void;
   onFilter?: (options: QueryFilterOption[]) => void;
@@ -23,7 +23,7 @@ type Props = ComponentProps<'div'> & {
 
 export const FranchiseListActions = memo(function ({
   className,
-  listView,
+  listView = 'strip',
   filterOptions,
   defaultSelectedtFilterOptions,
   onSearchChange,
@@ -70,7 +70,9 @@ export const FranchiseListActions = memo(function ({
 
   const handleSelectClearAll = useCallback(() => {
     setSelectedFilterOptions(
-      filterOptions.length <= selectedFilterOptions.length ? [] : filterOptions,
+      (filterOptions?.length || 0) <= selectedFilterOptions.length
+        ? []
+        : (filterOptions as QueryFilterOption[]),
     );
   }, [filterOptions, selectedFilterOptions]);
 
@@ -114,7 +116,7 @@ export const FranchiseListActions = memo(function ({
         <BaseModal title='Filters' open={open} onClose={handleOpenModal(false)}>
           <div className='flex flex-col items-center gap-5'>
             <div className='flex w-full max-w-52 flex-col gap-2.5 px-4'>
-              {filterOptions.map((option) => (
+              {filterOptions?.map((option) => (
                 <BaseCheckbox
                   key={option.key}
                   checked={isFilterChecked(option)}

@@ -22,6 +22,7 @@ type Result = {
   refresh: () => void;
   handleTodaAssociationEdit: (id: number) => void;
   handleTodaAssociationDetails: (id: number) => void;
+  handleFranchiseView: (id: number) => void;
   loading?: boolean;
 };
 
@@ -52,7 +53,7 @@ export function useTodaAssociationList(): Result {
     refetch,
   } = useQuery(
     getAllTodaAssociations(
-      { q: keyword || undefined },
+      { q: keyword || undefined, withFranchise: true },
       {
         refetchOnWindowFocus: false,
         initialData: [],
@@ -86,6 +87,15 @@ export function useTodaAssociationList(): Result {
     [navigate],
   );
 
+  const handleFranchiseView = useCallback(
+    (id: number) => {
+      navigate(
+        `${user?.role === UserRole.Issuer ? ISSUER_TODA_ASSOCIATION_LIST_TO : ADMIN_TODA_ASSOCIATION_LIST_TO}/${id}/${routeConfig.todaAssociation.franchise.to}`,
+      );
+    },
+    [user, navigate],
+  );
+
   return {
     loading: isFetching || isLoading,
     todaAssociations: todaAssociations || [],
@@ -94,5 +104,6 @@ export function useTodaAssociationList(): Result {
     refresh: refetch,
     handleTodaAssociationDetails,
     handleTodaAssociationEdit,
+    handleFranchiseView,
   };
 }
