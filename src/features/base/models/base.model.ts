@@ -17,6 +17,7 @@ export type IconName =
   | 'circle'
   | 'eye'
   | 'eye-slash'
+  | 'file-pdf'
   | 'funnel-simple'
   | 'image'
   | 'magnifying-glass'

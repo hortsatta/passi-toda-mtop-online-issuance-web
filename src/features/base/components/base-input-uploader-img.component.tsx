@@ -11,6 +11,7 @@ import { useController } from 'react-hook-form';
 import mergeRefs from 'merge-refs';
 import cx from 'classix';
 
+import { PDF_FILE_EXT } from '../helpers/base-file.helper';
 import { BaseButtonSimple } from './base-button-simple.component';
 import { BaseIcon } from './base-icon.component';
 
@@ -150,8 +151,10 @@ export const BaseInputUploaderImg = memo(
             <span className={cx('text-text/60', lg && 'order-last')}>
               {labelText}
             </span>
-            <div className='opacity-70 hover:opacity-100'>
+            <div className='flex items-center justify-center gap-2.5 opacity-70 hover:opacity-100'>
               <BaseIcon name='image' size={lg ? 30 : 20} />
+              <div className='h-10 border-r border-border' />
+              <BaseIcon name='file-pdf' size={lg ? 30 : 20} />
             </div>
           </div>
         ) : (
@@ -162,11 +165,17 @@ export const BaseInputUploaderImg = memo(
               iconName='x'
               onClick={handleRemove}
             />
-            <img
-              src={currentImage.toString()}
-              className='h-full w-full object-contain'
-              alt='image upload'
-            />
+            {(localValue as File)?.type.includes(PDF_FILE_EXT) ? (
+              <div className='overflow-hidden rounded bg-white/90 px-1.5 py-2.5 text-red-600'>
+                <BaseIcon name='file-pdf' size={64} />
+              </div>
+            ) : (
+              <img
+                src={currentImage.toString()}
+                className='h-full w-full object-contain'
+                alt='image upload'
+              />
+            )}
           </div>
         )}
         <input
@@ -175,7 +184,7 @@ export const BaseInputUploaderImg = memo(
           type='file'
           id={newId}
           className={cx('absolute hidden h-0 w-0', className)}
-          accept='image/*'
+          accept='application/pdf,image/*'
           required={required}
           disabled={disabled}
           onChange={handleChange}

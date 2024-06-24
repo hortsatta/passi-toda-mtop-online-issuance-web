@@ -1,5 +1,7 @@
 import isBase64 from 'validator/lib/isBase64';
 
+import { PDF_FILE_EXT, IMG_FILE_EXT } from '#/base/helpers/base-file.helper';
+
 import type { FranchiseUpsertFormData } from '../models/franchise-form-data.model';
 
 export async function generateImageFormData(
@@ -30,12 +32,18 @@ export async function generateImageFormData(
 
   const formData = new FormData();
   const files: { base64: string; filename: string }[] = [];
-  const fileExt = 'png';
 
   items.forEach(({ imageData, name }) => {
-    if (!imageData || !isBase64(imageData.split(',').pop() || '')) return;
+    const target = imageData?.split(',') || [];
+
+    if (!imageData || !isBase64([...target].pop() || '')) return;
+
+    const fileExt = [...target].shift()?.includes(PDF_FILE_EXT)
+      ? PDF_FILE_EXT
+      : IMG_FILE_EXT;
 
     const filename = `${mvFileNo}-${name}.${fileExt}`;
+
     files.push({ base64: imageData, filename });
   });
 

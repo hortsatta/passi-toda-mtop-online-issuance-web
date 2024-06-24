@@ -14,7 +14,7 @@ type Props = ComponentProps<'button'> & {
 
 export const BaseButtonSimple = memo(
   forwardRef<HTMLButtonElement, Props>(function (
-    { className, iconName, iconSize, children, ...moreProps },
+    { className, iconName, iconSize, disabled, children, ...moreProps },
     ref,
   ) {
     const size = useMemo(() => {
@@ -30,6 +30,7 @@ export const BaseButtonSimple = memo(
         ref={ref}
         className={cx(
           'flex items-center gap-1 uppercase transition-colors hover:text-primary',
+          disabled && 'pointer-events-none',
           className,
         )}
         {...moreProps}

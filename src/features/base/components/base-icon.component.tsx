@@ -16,6 +16,7 @@ import {
   Circle,
   Eye,
   EyeSlash,
+  FilePdf,
   FunnelSimple,
   Image,
   MagnifyingGlass,
@@ -77,6 +78,8 @@ export const BaseIcon = memo(
           return Eye;
         case 'eye-slash':
           return EyeSlash;
+        case 'file-pdf':
+          return FilePdf;
         case 'funnel-simple':
           return FunnelSimple;
         case 'image':
