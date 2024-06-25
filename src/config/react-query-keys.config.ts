@@ -30,6 +30,7 @@ export const queryRateSheetKey = {
   list: ['rate-sheets', 'list'],
   single: ['rate-sheets', 'single'],
   latestSingle: ['rate-sheets', 'latest-single'],
+  historyList: ['rate-sheets', 'history-list'],
 };
 
 export const queryReportKey = {

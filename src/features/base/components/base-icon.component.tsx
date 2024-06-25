@@ -1,6 +1,7 @@
 import { forwardRef, memo, useMemo } from 'react';
 import {
   ArrowCounterClockwise,
+  ArrowFatLinesUp,
   ArrowLeft,
   ArrowRight,
   ArrowsClockwise,
@@ -48,6 +49,8 @@ export const BaseIcon = memo(
       switch (name) {
         case 'arrow-counter-clockwise':
           return ArrowCounterClockwise;
+        case 'arrow-fat-lines-up':
+          return ArrowFatLinesUp;
         case 'arrow-left':
           return ArrowLeft;
         case 'arrow-right':

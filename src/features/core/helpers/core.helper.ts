@@ -1,4 +1,5 @@
 import dayjs from '#/config/dayjs.config';
+import { RateSheetFee } from '#/rate-sheet/models/rate-sheet.model';
 
 export const CENTAVOS = 100;
 
@@ -14,6 +15,20 @@ export function transformAuditTrail(
     updatedAt: dayjs(updatedAt).toDate(),
     deletedAt: deletedAt ? dayjs(deletedAt).toDate() : undefined,
   };
+}
+
+export function convertToCurrency(target: RateSheetFee[] | number) {
+  if (Array.isArray(target)) {
+    const amount = (
+      target.reduce((total, current) => current.amount + total, 0) / CENTAVOS
+    ).toFixed(2);
+
+    return `₱${amount}`;
+  }
+
+  const amount = (target / CENTAVOS).toFixed(2);
+
+  return `₱${amount}`;
 }
 
 export function getErrorMessage(value: { [key: string]: any }): string | null {

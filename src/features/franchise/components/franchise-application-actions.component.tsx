@@ -1,7 +1,7 @@
 import { memo, useMemo } from 'react';
 
 import { BaseButton } from '#/base/components/base-button.component';
-import { CENTAVOS } from '#/core/helpers/core.helper';
+import { convertToCurrency } from '#/core/helpers/core.helper';
 import { FeeType } from '#/rate-sheet/models/rate-sheet.model';
 import { FranchiseApprovalStatus } from '../models/franchise.model';
 
@@ -32,18 +32,12 @@ export const FranchiseApplicationActions = memo(function ({
 }: Props) {
   const description = useMemo(() => {
     if (isApprove) {
-      const total = (
-        rateSheet.rateSheetFees.reduce(
-          (total, current) => current.amount + total,
-          0,
-        ) / CENTAVOS
-      ).toFixed(2);
-
+      const totalAmountText = convertToCurrency(rateSheet.rateSheetFees);
       const baseMessage = `Mark client's application for franchise ${rateSheet.feeType === FeeType.FranchiseRegistration ? 'registration' : 'renewal'} as`;
 
       switch (franchise.approvalStatus) {
         case FranchiseApprovalStatus.PendingValidation:
-          return `${baseMessage} verified and invoice the client with a total amount of ₱${total}?`;
+          return `${baseMessage} verified and invoice the client with a total amount of ${totalAmountText}?`;
         case FranchiseApprovalStatus.Validated:
           return `${baseMessage} paid?`;
         case FranchiseApprovalStatus.Paid:

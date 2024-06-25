@@ -2,7 +2,7 @@ import { memo, useCallback, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import cx from 'classix';
 
-import { CENTAVOS } from '#/core/helpers/core.helper';
+import { convertToCurrency } from '#/core/helpers/core.helper';
 import { BaseButton } from '#/base/components/base-button.component';
 import { BaseIcon } from '#/base/components/base-icon.component';
 import { BaseModal } from '#/base/components/base-modal.component';
@@ -140,16 +140,10 @@ export const MemberFranchiseSingle = memo(function ({
     [rateSheet],
   );
 
-  const totalAmountText = useMemo(() => {
-    const amount = (
-      rateSheet.rateSheetFees.reduce(
-        (total, current) => current.amount + total,
-        0,
-      ) / CENTAVOS
-    ).toFixed(2);
-
-    return `₱${amount}`;
-  }, [rateSheet]);
+  const totalAmountText = useMemo(
+    () => convertToCurrency(rateSheet.rateSheetFees),
+    [rateSheet],
+  );
 
   const handleDetailsActionsModalClose = useCallback(() => {
     setOpenActions(false);

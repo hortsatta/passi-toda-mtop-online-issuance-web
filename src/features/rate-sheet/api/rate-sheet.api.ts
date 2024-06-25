@@ -7,7 +7,6 @@ import type { UseQueryOptions } from '@tanstack/react-query';
 import { FeeType, RateSheet } from '../models/rate-sheet.model';
 
 const BASE_URL = 'rate-sheets';
-const FRANCHISE_URL = 'franchises';
 
 export function getAllRateSheets(
   keys?: {
@@ -78,42 +77,8 @@ export function getRateSheetById(
   };
 }
 
-export function getLatestFranchiseRateSheets(
-  options?: Omit<
-    UseQueryOptions<RateSheet[], Error, RateSheet[], any>,
-    'queryFn' | 'queryKey'
-  > & { queryKey?: any },
-) {
-  const types = [FeeType.FranchiseRegistration, FeeType.FranchiseRenewal];
-  const { queryKey, ...moreOptions } = options || {};
-
-  const queryFn = async (): Promise<any> => {
-    const url = `${BASE_URL}/${FRANCHISE_URL}/list/latest`;
-    const searchParams = generateSearchParams({ types: types?.join(',') });
-
-    try {
-      const franchises = await kyInstance.get(url, { searchParams }).json();
-      return (franchises as any[]).map((franchise) =>
-        transformToRateSheet(franchise),
-      );
-    } catch (error: any) {
-      const apiError = await generateApiError(error);
-      throw apiError;
-    }
-  };
-
-  return {
-    queryKey: [
-      ...(queryKey?.length ? queryKey : queryRateSheetKey.list),
-      { types },
-    ],
-    queryFn,
-    ...moreOptions,
-  };
-}
-
 export function getLatestRateSheetByType(
-  keys: { type?: FeeType; exclude?: string; include?: string },
+  keys: { type: FeeType; exclude?: string; include?: string },
   options?: Omit<
     UseQueryOptions<RateSheet, Error, RateSheet, any>,
     'queryFn' | 'queryKey'
@@ -122,7 +87,7 @@ export function getLatestRateSheetByType(
   const { type, exclude, include } = keys;
 
   const queryFn = async (): Promise<any> => {
-    const url = `${BASE_URL}/${FRANCHISE_URL}/latest`;
+    const url = `${BASE_URL}/latest`;
     const searchParams = generateSearchParams({ type, exclude, include });
 
     try {
@@ -138,5 +103,74 @@ export function getLatestRateSheetByType(
     queryKey: [...queryRateSheetKey.latestSingle, { type, exclude, include }],
     queryFn,
     ...options,
+  };
+}
+
+export function getRateSheetHistory(
+  keys: { type: FeeType },
+  options?: Omit<
+    UseQueryOptions<RateSheet[], Error, RateSheet[], any>,
+    'queryFn' | 'queryKey'
+  > & { queryKey?: any },
+) {
+  const { type } = keys;
+  const { queryKey, ...moreOptions } = options || {};
+
+  const queryFn = async (): Promise<any> => {
+    const url = `${BASE_URL}/history`;
+    const searchParams = generateSearchParams({ type });
+
+    try {
+      const rateSheets = await kyInstance.get(url, { searchParams }).json();
+      return (rateSheets as any[]).map((rateSheet) =>
+        transformToRateSheet(rateSheet),
+      );
+    } catch (error: any) {
+      const apiError = await generateApiError(error);
+      throw apiError;
+    }
+  };
+
+  return {
+    queryKey: [
+      ...(queryKey?.length ? queryKey : queryRateSheetKey.historyList),
+      { type },
+    ],
+    queryFn,
+    ...moreOptions,
+  };
+}
+
+export function getLatestFranchiseRateSheets(
+  options?: Omit<
+    UseQueryOptions<RateSheet[], Error, RateSheet[], any>,
+    'queryFn' | 'queryKey'
+  > & { queryKey?: any },
+) {
+  const types = [FeeType.FranchiseRegistration, FeeType.FranchiseRenewal];
+  const { queryKey, ...moreOptions } = options || {};
+
+  const queryFn = async (): Promise<any> => {
+    const url = `${BASE_URL}/list/latest`;
+    const searchParams = generateSearchParams({ types: types?.join(',') });
+
+    try {
+      const rateSheets = await kyInstance.get(url, { searchParams }).json();
+      return (rateSheets as any[]).map((rateSheet) =>
+        transformToRateSheet(rateSheet),
+      );
+    } catch (error: any) {
+      const apiError = await generateApiError(error);
+      throw apiError;
+    }
+  };
+
+  return {
+    queryKey: [
+      ...(queryKey?.length ? queryKey : queryRateSheetKey.list),
+      { types },
+    ],
+    queryFn,
+    ...moreOptions,
   };
 }

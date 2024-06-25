@@ -36,6 +36,7 @@ import {
   getTodaAssociationWithFranchisesByIdLoader,
   getTodaAssociationsLoader,
 } from './toda-association/loaders/toda-association.loader';
+import { getLatestFranchiseRateSheetsLoader } from './rate-sheet/loaders/rate-sheet.loader';
 import { CoreLayout } from './core/components/core-layout.component';
 import { AuthProtectedRoute } from './user/components/auth-protected-route.component';
 import { CoreHomePage } from './core/pages/core-home.page';
@@ -60,6 +61,8 @@ import { AdminTodaAssociationFranchiseListPage } from './toda-association/pages/
 import { IssuerTodaAssociationFranchiseListPage } from './toda-association/pages/issuer-toda-association-franchise-list.page';
 import { TodaAssociationCreatePage } from './toda-association/pages/toda-association-create.page';
 import { TodaAssociationEditPage } from './toda-association/pages/toda-association-edit.page';
+import { AdminRateSheetFranchiseFeesPage } from './rate-sheet/pages/admin-rate-sheet-franchise-fees.page';
+import { TreasurerIssuerRateSheetFranchiseFeesPage } from './rate-sheet/pages/treasurer-issuer-rate-sheet-franchise-fees.page';
 
 const routes = createRoutesFromElements(
   <Route path='/' element={<CoreLayout />}>
@@ -150,6 +153,13 @@ const routes = createRoutesFromElements(
             loader={getTreasurerFranchiseByIdLoader(queryClient)}
           />
         </Route>
+        <Route path={routeConfig.franchise.rates.to} element={<Outlet />}>
+          <Route
+            index
+            element={<TreasurerIssuerRateSheetFranchiseFeesPage />}
+            loader={getLatestFranchiseRateSheetsLoader(queryClient)}
+          />
+        </Route>
       </Route>
     </Route>
     {/* ROLE ISSUER */}
@@ -172,6 +182,13 @@ const routes = createRoutesFromElements(
             index
             element={<IssuerFranchiseSinglePage />}
             loader={getIssuerFranchiseByIdLoader(queryClient)}
+          />
+        </Route>
+        <Route path={routeConfig.franchise.rates.to} element={<Outlet />}>
+          <Route
+            index
+            element={<TreasurerIssuerRateSheetFranchiseFeesPage />}
+            loader={getLatestFranchiseRateSheetsLoader(queryClient)}
           />
         </Route>
       </Route>
@@ -215,6 +232,13 @@ const routes = createRoutesFromElements(
             index
             element={<AdminFranchiseSinglePage />}
             loader={getAdminFranchiseByIdLoader(queryClient)}
+          />
+        </Route>
+        <Route path={routeConfig.franchise.rates.to} element={<Outlet />}>
+          <Route
+            index
+            element={<AdminRateSheetFranchiseFeesPage />}
+            loader={getLatestFranchiseRateSheetsLoader(queryClient)}
           />
         </Route>
       </Route>

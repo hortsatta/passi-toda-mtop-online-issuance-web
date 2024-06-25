@@ -21,7 +21,7 @@ export const BaseScene = memo(function ({
   ...moreProps
 }: Props) {
   return (
-    <div className={cx('w-full pt-10', className)} {...moreProps}>
+    <div className={cx('w-full pb-10 pt-10', className)} {...moreProps}>
       <div
         className={cx(
           'mb-5 flex w-full items-center justify-between gap-5',

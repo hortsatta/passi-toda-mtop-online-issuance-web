@@ -1,7 +1,7 @@
 import { memo, useMemo } from 'react';
 import cx from 'classix';
 
-import { CENTAVOS } from '#/core/helpers/core.helper';
+import { convertToCurrency } from '#/core/helpers/core.helper';
 
 import type { ComponentProps } from 'react';
 import type { RateSheet } from '../models/rate-sheet.model';
@@ -22,14 +22,9 @@ export const RateSheetDetails = memo(function ({
       rateSheet.name,
       rateSheet.rateSheetFees.map(({ name, amount }) => ({
         name,
-        amount: `₱${(amount / CENTAVOS).toFixed(2)}`,
+        amount: convertToCurrency(amount),
       })),
-      (
-        rateSheet.rateSheetFees.reduce(
-          (total, current) => current.amount + total,
-          0,
-        ) / CENTAVOS
-      ).toFixed(2),
+      convertToCurrency(rateSheet.rateSheetFees),
     ],
     [rateSheet],
   );
@@ -50,7 +45,7 @@ export const RateSheetDetails = memo(function ({
         <div className='w-full border-b border-border' />
         <div className='flex w-full items-center justify-end gap-10 font-bold'>
           <span className='uppercase'>Total</span>
-          <span className='text-lg'>₱{totalFees}</span>
+          <span className='text-lg'>{totalFees}</span>
         </div>
       </div>
       {children && <div className='mt-5'>{children}</div>}

@@ -46,6 +46,21 @@ export const routeConfig = {
       label: 'Reports',
       pageTitle: 'Franchise Report',
     },
+    rates: {
+      to: 'rates',
+      label: 'Rates',
+      pageTitle: 'Franchise Issuance Rates',
+      create: {
+        to: 'add',
+        label: 'Add New',
+        pageTitle: 'Add New Franchise Issuance Fee',
+      },
+      edit: {
+        to: 'update',
+        label: 'Update',
+        pageTitle: 'Update Franchise Issuance Fee',
+      },
+    },
   },
   todaAssociation: {
     name: 'toda-associations',

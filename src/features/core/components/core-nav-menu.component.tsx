@@ -13,6 +13,7 @@ import {
   baseAdminRoute,
   baseIssuerRoute,
   baseMemberRoute,
+  baseTreasurerRoute,
   routeConfig,
 } from '#/config/routes.config';
 import { UserRole } from '#/user/models/user.model';
@@ -56,8 +57,12 @@ const menuList = {
       label: routeConfig.franchise.label,
       items: [
         {
-          to: `/${baseIssuerRoute}/${routeConfig.franchise.to}`,
+          to: `/${baseTreasurerRoute}/${routeConfig.franchise.to}`,
           label: routeConfig.franchise.list.label,
+        },
+        {
+          to: `/${baseTreasurerRoute}/${routeConfig.franchise.to}/${routeConfig.franchise.rates.to}`,
+          label: routeConfig.franchise.rates.label,
         },
       ],
     },
@@ -69,6 +74,10 @@ const menuList = {
         {
           to: `/${baseIssuerRoute}/${routeConfig.franchise.to}`,
           label: routeConfig.franchise.list.label,
+        },
+        {
+          to: `/${baseIssuerRoute}/${routeConfig.franchise.to}/${routeConfig.franchise.rates.to}`,
+          label: routeConfig.franchise.rates.label,
         },
       ],
     },
@@ -98,6 +107,10 @@ const menuList = {
         {
           to: `/${baseAdminRoute}/${routeConfig.franchise.to}`,
           label: routeConfig.franchise.list.label,
+        },
+        {
+          to: `/${baseAdminRoute}/${routeConfig.franchise.to}/${routeConfig.franchise.rates.to}`,
+          label: routeConfig.franchise.rates.label,
         },
       ],
     },
