@@ -1,4 +1,5 @@
 import type { AuditTrail } from '#/core/models/core.model';
+import type { RateSheetUpsertFormData } from './rate-sheet-form-data.model';
 
 export enum FeeType {
   FranchiseRegistration = 'franchise-registration',
@@ -17,4 +18,11 @@ export type RateSheetFee = Partial<AuditTrail> & {
   name: string;
   amount: number;
   rateSheet?: RateSheet;
+};
+
+export type RateSheetSlice = {
+  rateSheetFormData?: RateSheetUpsertFormData | null;
+  setRateSheetFormData: (
+    rateSheetUpsertFormData?: RateSheetUpsertFormData,
+  ) => void;
 };

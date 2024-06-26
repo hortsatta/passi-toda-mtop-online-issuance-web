@@ -28,6 +28,7 @@ export const BaseButtonSimple = memo(
     return (
       <button
         ref={ref}
+        type='button'
         className={cx(
           'flex items-center gap-1 uppercase transition-colors hover:text-primary',
           disabled && 'pointer-events-none',

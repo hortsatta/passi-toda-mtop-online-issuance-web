@@ -58,3 +58,19 @@ export function transformToTodaAssociationFormData({
     presidentMiddleName,
   };
 }
+
+export function transformToTodaAssociationUpsertDto({
+  name,
+  authorizedRoute,
+  presidentFirstName,
+  presidentLastName,
+  presidentMiddleName,
+}: any) {
+  return {
+    name,
+    authorizedRoute,
+    presidentFirstName,
+    presidentLastName,
+    presidentMiddleName,
+  };
+}

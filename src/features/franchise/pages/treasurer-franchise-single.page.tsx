@@ -14,8 +14,8 @@ export function TreasurerFranchiseSinglePage() {
   const { franchise, loading, approvalLoading, approveFranchise } =
     useTreasurerFranchiseSingle();
 
-  const { rateSheet, loading: rateSheetLoading } = useRateSheetLatestSingle(
-    franchise?.approvalStatus,
+  const { rateSheets, loading: rateSheetLoading } = useRateSheetLatestSingle(
+    franchise?.id,
   );
 
   const data: any = useLoaderData();
@@ -27,11 +27,11 @@ export function TreasurerFranchiseSinglePage() {
         backTo={FRANCHISE_LIST_TO}
       >
         {(loading || rateSheetLoading) && <BaseLoading />}
-        {franchise && rateSheet && (
+        {franchise && rateSheets && (
           <TreasurerFranchiseSingle
             loading={approvalLoading}
             franchise={franchise}
-            rateSheet={rateSheet}
+            rateSheets={rateSheets}
             onApproveFranchise={approveFranchise}
           />
         )}

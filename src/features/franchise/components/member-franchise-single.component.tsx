@@ -19,7 +19,7 @@ import type { Franchise } from '../models/franchise.model';
 
 type Props = ComponentProps<'div'> & {
   franchise: Franchise;
-  rateSheet: RateSheet;
+  rateSheets: RateSheet[];
   onCancelApplication: () => Promise<Franchise>;
   loading?: boolean;
 };
@@ -86,7 +86,7 @@ export const MemberFranchiseSingle = memo(function ({
   className,
   loading,
   franchise,
-  rateSheet,
+  rateSheets,
   onCancelApplication,
   ...moreProps
 }: Props) {
@@ -102,6 +102,18 @@ export const MemberFranchiseSingle = memo(function ({
   });
 
   const approvalStatus = useMemo(() => franchise.approvalStatus, [franchise]);
+
+  const currentRateSheet = useMemo(
+    () =>
+      rateSheets.find(
+        (rateSheet) =>
+          rateSheet.feeType ===
+          (approvalStatus === FranchiseApprovalStatus.Approved
+            ? FeeType.FranchiseRenewal
+            : FeeType.FranchiseRegistration),
+      ),
+    [rateSheets, approvalStatus],
+  );
 
   const statusLabel = useMemo(() => {
     switch (approvalStatus) {
@@ -122,7 +134,7 @@ export const MemberFranchiseSingle = memo(function ({
 
   const modalTitle = useMemo(() => {
     if (openDetails) {
-      return rateSheet.feeType === FeeType.FranchiseRenewal
+      return currentRateSheet?.feeType === FeeType.FranchiseRenewal
         ? 'Renewal Details'
         : 'Registration Details';
     } else if (openActions) {
@@ -130,19 +142,19 @@ export const MemberFranchiseSingle = memo(function ({
     }
 
     return '';
-  }, [openDetails, openActions, rateSheet]);
+  }, [openDetails, openActions, currentRateSheet]);
 
   const detailButtonLabel = useMemo(
     () =>
-      rateSheet.feeType === FeeType.FranchiseRenewal
+      currentRateSheet?.feeType === FeeType.FranchiseRenewal
         ? 'View Renewal Details'
         : 'View Registration Details',
-    [rateSheet],
+    [currentRateSheet],
   );
 
   const totalAmountText = useMemo(
-    () => convertToCurrency(rateSheet.rateSheetFees),
-    [rateSheet],
+    () => convertToCurrency(currentRateSheet?.rateSheetFees || []),
+    [currentRateSheet],
   );
 
   const handleDetailsActionsModalClose = useCallback(() => {
@@ -245,7 +257,8 @@ export const MemberFranchiseSingle = memo(function ({
                       <i className='text-2xl font-bold not-italic underline'>
                         {totalAmountText}
                       </i>{' '}
-                      {rateSheet.feeType === FeeType.FranchiseRegistration
+                      {currentRateSheet?.feeType ===
+                      FeeType.FranchiseRegistration
                         ? 'Registration'
                         : 'Renewal'}{' '}
                       Fee Payment
@@ -287,18 +300,18 @@ export const MemberFranchiseSingle = memo(function ({
         title={modalTitle}
         onClose={handleDetailsActionsModalClose}
       >
-        {openDetails && (
-          <RateSheetDetails rateSheet={rateSheet}>
+        {openDetails && currentRateSheet && (
+          <RateSheetDetails rateSheet={currentRateSheet}>
             Please pay the exact amount at the cashier.
             <br />
             Franchise status will be updated shortly if payment has been made.
           </RateSheetDetails>
         )}
-        {openActions && (
+        {openActions && currentRateSheet && (
           <FranchiseApplicationActions
             loading={loading}
             franchise={franchise}
-            rateSheet={rateSheet}
+            rateSheet={currentRateSheet}
             onApproveFranchise={handleCancelApplication}
             isUserClient
           />

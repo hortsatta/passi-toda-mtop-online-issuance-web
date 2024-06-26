@@ -3,7 +3,7 @@ import { queryTodaAssociationKey } from '#/config/react-query-keys.config';
 import { generateApiError } from '#/core/helpers/api.helper';
 import {
   transformToTodaAssociation,
-  transformToTodaAssociationFormData,
+  transformToTodaAssociationUpsertDto,
 } from '../helpers/toda-association-transform.helper';
 
 import type {
@@ -123,7 +123,7 @@ export function createTodaAssociation(
   const mutationFn = async (
     data: TodaAssociationUpsertFormData,
   ): Promise<any> => {
-    const json = transformToTodaAssociationFormData(data);
+    const json = transformToTodaAssociationUpsertDto(data);
 
     try {
       const todaAssociation = await kyInstance.post(BASE_URL, { json }).json();
@@ -156,7 +156,7 @@ export function editTodaAssociation(
     data: TodaAssociationUpsertFormData;
   }): Promise<any> => {
     const url = `${BASE_URL}/${id}`;
-    const json = transformToTodaAssociationFormData(data);
+    const json = transformToTodaAssociationUpsertDto(data);
 
     try {
       const todaAssociation = await kyInstance.patch(url, { json }).json();

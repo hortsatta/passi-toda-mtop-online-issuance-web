@@ -48,6 +48,14 @@ export const RateSheetFranchiseList = memo(function ({
     return [currentSelectedRateSheet, previousSelectedRateSheets];
   }, [selectedHistoryRateSheets]);
 
+  const modalTitle = useMemo(
+    () =>
+      currentSelectedRateSheet
+        ? `${currentSelectedRateSheet.name} Fee Details`
+        : undefined,
+    [currentSelectedRateSheet],
+  );
+
   const closeModal = useCallback(() => {
     setOpenModal(false);
   }, []);
@@ -94,11 +102,7 @@ export const RateSheetFranchiseList = memo(function ({
           </div>
         )}
       </div>
-      <BaseModal
-        open={openModal}
-        title={`${currentSelectedRateSheet?.name} Fee Details`}
-        onClose={closeModal}
-      >
+      <BaseModal open={openModal} title={modalTitle} onClose={closeModal}>
         <RateSheetHistoryList
           currentSelectedRateSheet={currentSelectedRateSheet}
           previousSelectedRateSheets={previousSelectedRateSheets}

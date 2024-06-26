@@ -1,33 +1,26 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { FranchiseApprovalStatus } from '#/franchise/models/franchise.model';
-import { getLatestRateSheetByType } from '../api/rate-sheet.api';
-import { FeeType } from '../models/rate-sheet.model';
+import { getFranchiseRateSheetsByFranchiseId } from '../api/rate-sheet.api';
 
 import type { RateSheet } from '../models/rate-sheet.model';
 
 type Result = {
-  rateSheet?: RateSheet;
+  rateSheets?: RateSheet[];
   loading?: boolean;
 };
 
-export function useRateSheetLatestSingle(
-  approvalStatus?: FranchiseApprovalStatus,
-): Result {
+export function useRateSheetLatestSingle(franchiseId?: number): Result {
   const {
-    data: rateSheet,
+    data: rateSheets,
     isLoading,
     isFetching,
   } = useQuery(
-    getLatestRateSheetByType(
+    getFranchiseRateSheetsByFranchiseId(
       {
-        type:
-          approvalStatus === FranchiseApprovalStatus.Approved
-            ? FeeType.FranchiseRenewal
-            : FeeType.FranchiseRegistration,
+        franchiseId: franchiseId || 0,
       },
       {
-        enabled: !!approvalStatus,
+        enabled: !!franchiseId,
         refetchOnWindowFocus: false,
       },
     ),
@@ -35,6 +28,6 @@ export function useRateSheetLatestSingle(
 
   return {
     loading: isLoading || isFetching,
-    rateSheet,
+    rateSheets,
   };
 }

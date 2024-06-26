@@ -17,16 +17,22 @@ export function transformAuditTrail(
   };
 }
 
-export function convertToCurrency(target: RateSheetFee[] | number) {
+export function convertToCurrency(
+  target: RateSheetFee[] | number,
+  isCentavos = true,
+) {
   if (Array.isArray(target)) {
-    const amount = (
-      target.reduce((total, current) => current.amount + total, 0) / CENTAVOS
-    ).toFixed(2);
+    const amount = target.reduce(
+      (total, current) => +current.amount + total,
+      0,
+    );
 
-    return `₱${amount}`;
+    const finalAmount = (isCentavos ? amount / CENTAVOS : amount).toFixed(2);
+
+    return `₱${finalAmount}`;
   }
 
-  const amount = (target / CENTAVOS).toFixed(2);
+  const amount = (isCentavos ? target / CENTAVOS : target).toFixed(2);
 
   return `₱${amount}`;
 }

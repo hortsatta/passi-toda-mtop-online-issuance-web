@@ -24,6 +24,7 @@ export type IconName =
   | 'magnifying-glass'
   | 'pencil-simple'
   | 'placeholder'
+  | 'plus'
   | 'printer'
   | 'rows'
   | 'sign-out'
@@ -34,7 +35,8 @@ export type IconName =
   | 'user'
   | 'user-circle-plus'
   | 'x'
-  | 'x-circle';
+  | 'x-circle'
+  | 'x-square';
 
 export type SelectItem = {
   value: string | number;

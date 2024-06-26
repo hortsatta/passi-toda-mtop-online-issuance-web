@@ -71,7 +71,7 @@ export function useRateSheetFranchiseLatestList(): Result {
 
   const handleRateSheetUpdate = useCallback(
     (id: number) => {
-      const to = `${FRANCHISE_RATE_SHEET_UPDATE}/${id}/${routeConfig.franchise.rates.edit.to}`;
+      const to = `${FRANCHISE_RATE_SHEET_UPDATE}/${id}/${routeConfig.franchise.rates.update.to}`;
       navigate(to);
     },
     [navigate],

@@ -14,8 +14,8 @@ export function MemberFranchiseSinglePage() {
   const { franchise, loading, approvalLoading, cancelApplication } =
     useMemberFranchiseSingle();
 
-  const { rateSheet, loading: rateSheetLoading } = useRateSheetLatestSingle(
-    franchise?.approvalStatus,
+  const { rateSheets, loading: rateSheetLoading } = useRateSheetLatestSingle(
+    franchise?.id,
   );
 
   const data: any = useLoaderData();
@@ -27,11 +27,11 @@ export function MemberFranchiseSinglePage() {
         backTo={FRANCHISE_LIST_TO}
       >
         {(loading || rateSheetLoading) && <BaseLoading />}
-        {franchise && rateSheet && (
+        {franchise && rateSheets && (
           <MemberFranchiseSingle
             loading={approvalLoading}
             franchise={franchise}
-            rateSheet={rateSheet}
+            rateSheets={rateSheets}
             onCancelApplication={cancelApplication}
           />
         )}

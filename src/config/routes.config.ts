@@ -55,7 +55,7 @@ export const routeConfig = {
         label: 'Add New',
         pageTitle: 'Add New Franchise Issuance Fee',
       },
-      edit: {
+      update: {
         to: 'update',
         label: 'Update',
         pageTitle: 'Update Franchise Issuance Fee',

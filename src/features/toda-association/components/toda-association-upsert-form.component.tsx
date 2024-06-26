@@ -26,7 +26,7 @@ type Props = FormProps<
 const TODA_ASSOCIATION_LIST_TO = `/${baseAdminRoute}/${routeConfig.todaAssociation.to}`;
 
 const schema = z.object({
-  name: z.string().max(225, 'Invalid Association Name'),
+  name: z.string().max(225, 'Invalid association name'),
   authorizedRoute: z.string(),
   presidentFirstName: z
     .string()
@@ -62,6 +62,7 @@ export const TodaAssociationUpsertForm = memo(function ({
   ...moreProps
 }: Props) {
   const navigate = useNavigate();
+
   const setTodaAssociationFormData = useBoundStore(
     (state) => state.setTodaAssociationFormData,
   );

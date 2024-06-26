@@ -37,17 +37,18 @@ export function useFranchiseCreate(): Result {
     isPending: isCreateFranchisePending,
   } = useMutation(
     createFranchiseApi({
-      onSuccess: () => {
-        queryClient.invalidateQueries({
-          queryKey: queryFranchiseKey.list,
-        });
-        queryClient.invalidateQueries({
-          queryKey: queryFranchiseKey.digestList,
-        });
-        queryClient.invalidateQueries({
-          queryKey: queryFranchiseKey.checkSingle,
-        });
-      },
+      onSuccess: () =>
+        Promise.all([
+          queryClient.invalidateQueries({
+            queryKey: queryFranchiseKey.list,
+          }),
+          queryClient.invalidateQueries({
+            queryKey: queryFranchiseKey.digestList,
+          }),
+          queryClient.invalidateQueries({
+            queryKey: queryFranchiseKey.checkSingle,
+          }),
+        ]),
     }),
   );
 

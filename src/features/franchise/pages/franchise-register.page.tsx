@@ -13,7 +13,7 @@ export function FranchiseRegisterPage() {
 
   const { loading, isDone, setIsDone, createFranchise } = useFranchiseCreate();
 
-  const { loading: todaAssociationLoading, todaAssociationSelectItems } =
+  const { loading: todaAssociationLoading, todaAssociationSelectOptions } =
     useTodaAssociationList();
 
   const { loading: driverProfilesLoading, driverProfiles } =
@@ -30,7 +30,7 @@ export function FranchiseRegisterPage() {
           isFetching={todaAssociationLoading || driverProfilesLoading}
           isDone={isDone}
           user={user}
-          todaAssociationSelectItems={todaAssociationSelectItems}
+          todaAssociationSelectOptions={todaAssociationSelectOptions}
           driverProfiles={driverProfiles}
           onDone={setIsDone}
           onSubmit={createFranchise}

@@ -23,6 +23,7 @@ import {
   MagnifyingGlass,
   PencilSimple,
   Placeholder,
+  Plus,
   Printer,
   Rows,
   SignOut,
@@ -34,6 +35,7 @@ import {
   UserCirclePlus,
   X,
   XCircle,
+  XSquare,
 } from '@phosphor-icons/react';
 
 import type { Icon as PhosphorIcon, IconProps } from '@phosphor-icons/react';
@@ -93,6 +95,8 @@ export const BaseIcon = memo(
           return PencilSimple;
         case 'placeholder':
           return Placeholder;
+        case 'plus':
+          return Plus;
         case 'printer':
           return Printer;
         case 'rows':
@@ -115,6 +119,8 @@ export const BaseIcon = memo(
           return X;
         case 'x-circle':
           return XCircle;
+        case 'x-square':
+          return XSquare;
       }
     }, [name]);
 

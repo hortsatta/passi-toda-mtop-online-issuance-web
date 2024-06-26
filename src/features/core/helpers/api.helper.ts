@@ -22,7 +22,14 @@ export async function generateApiError(error: HTTPError | TimeoutError) {
   }
 
   const errorRes = await (error as HTTPError).response.json();
-  return new ApiError(capitalize(errorRes.message), errorRes.statusCode);
+  const getMessage = () => {
+    if (Array.isArray(errorRes.message)) {
+      return errorRes.message.length > 0 ? errorRes.message[0] : '';
+    }
+    return errorRes.message;
+  };
+
+  return new ApiError(capitalize(getMessage()), errorRes.statusCode);
 }
 
 export function generateError(

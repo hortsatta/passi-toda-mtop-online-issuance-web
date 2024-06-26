@@ -1,12 +1,21 @@
 import { generateSearchParams, kyInstance } from '#/config/ky.config';
 import { generateApiError } from '#/core/helpers/api.helper';
 import { queryRateSheetKey } from '#/config/react-query-keys.config';
-import { transformToRateSheet } from '../helpers/rate-sheet-transform.helper';
+import {
+  transformToRateSheet,
+  transformToRateSheetUpsertDto,
+} from '../helpers/rate-sheet-transform.helper';
+import { FeeType } from '../models/rate-sheet.model';
 
-import type { UseQueryOptions } from '@tanstack/react-query';
-import { FeeType, RateSheet } from '../models/rate-sheet.model';
+import type {
+  UseMutationOptions,
+  UseQueryOptions,
+} from '@tanstack/react-query';
+import type { RateSheet } from '../models/rate-sheet.model';
+import type { RateSheetUpsertFormData } from '../models/rate-sheet-form-data.model';
 
 const BASE_URL = 'rate-sheets';
+const FRANCHISE_URL = 'franchises';
 
 export function getAllRateSheets(
   keys?: {
@@ -31,9 +40,9 @@ export function getAllRateSheets(
     });
 
     try {
-      const franchises = await kyInstance.get(url, { searchParams }).json();
-      return (franchises as any[]).map((franchise) =>
-        transformToRateSheet(franchise),
+      const rateSheets = await kyInstance.get(url, { searchParams }).json();
+      return (rateSheets as any[]).map((rateSheet) =>
+        transformToRateSheet(rateSheet),
       );
     } catch (error: any) {
       const apiError = await generateApiError(error);
@@ -53,7 +62,10 @@ export function getAllRateSheets(
 
 export function getRateSheetById(
   keys: { id: number; exclude?: string; include?: string },
-  options?: Omit<UseQueryOptions<RateSheet, Error, RateSheet, any>, 'queryFn'>,
+  options?: Omit<
+    UseQueryOptions<RateSheet, Error, RateSheet, any>,
+    'queryFn' | 'queryKey'
+  >,
 ) {
   const { id, exclude, include } = keys;
 
@@ -101,6 +113,39 @@ export function getLatestRateSheetByType(
 
   return {
     queryKey: [...queryRateSheetKey.latestSingle, { type, exclude, include }],
+    queryFn,
+    ...options,
+  };
+}
+
+export function getFranchiseRateSheetsByFranchiseId(
+  keys: { franchiseId: number },
+  options?: Omit<
+    UseQueryOptions<RateSheet[], Error, RateSheet[], any>,
+    'queryFn' | 'queryKey'
+  > & { queryKey?: any },
+) {
+  const { franchiseId } = keys;
+
+  const queryFn = async (): Promise<any> => {
+    const url = `${BASE_URL}/${FRANCHISE_URL}/list`;
+    const searchParams = generateSearchParams({
+      franchiseId: franchiseId.toString(),
+    });
+
+    try {
+      const rateSheets = await kyInstance.get(url, { searchParams }).json();
+      return (rateSheets as any[]).map((rateSheet) =>
+        transformToRateSheet(rateSheet),
+      );
+    } catch (error: any) {
+      const apiError = await generateApiError(error);
+      throw apiError;
+    }
+  };
+
+  return {
+    queryKey: [...queryRateSheetKey.latestSingle, { franchiseId }],
     queryFn,
     ...options,
   };
@@ -173,4 +218,25 @@ export function getLatestFranchiseRateSheets(
     queryFn,
     ...moreOptions,
   };
+}
+
+export function createFranchiseRateSheet(
+  options?: Omit<
+    UseMutationOptions<RateSheet, Error, RateSheetUpsertFormData, any>,
+    'mutationFn'
+  >,
+) {
+  const mutationFn = async (data: RateSheetUpsertFormData): Promise<any> => {
+    const json = transformToRateSheetUpsertDto(data);
+
+    try {
+      const rateSheet = await kyInstance.post(BASE_URL, { json }).json();
+      return transformToRateSheet(rateSheet);
+    } catch (error: any) {
+      const apiError = await generateApiError(error);
+      throw apiError;
+    }
+  };
+
+  return { mutationFn, ...options };
 }

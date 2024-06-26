@@ -43,7 +43,10 @@ export const RateSheetHistoryList = memo(function ({
             <div className='border-b border-border' />
             {previousSelectedRateSheets?.length ? (
               previousSelectedRateSheets.map((rateSheet) => (
-                <div className='flex w-full flex-col gap-2.5 overflow-hidden rounded border border-border bg-backdrop-input p-5'>
+                <div
+                  key={rateSheet.id}
+                  className='flex w-full flex-col gap-2.5 overflow-hidden rounded border border-border bg-backdrop-input p-5'
+                >
                   <small className='text-left'>
                     {dayjs(rateSheet.updatedAt).format('YYYY-MM-DD')}
                   </small>

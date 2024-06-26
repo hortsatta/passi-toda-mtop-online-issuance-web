@@ -17,7 +17,7 @@ import type { TodaAssociation } from '../models/toda-association.model';
 
 type Result = {
   todaAssociations: TodaAssociation[];
-  todaAssociationSelectItems: SelectItem[];
+  todaAssociationSelectOptions: SelectItem[];
   setKeyword: (keyword: string | null) => void;
   refresh: () => void;
   handleTodaAssociationEdit: (id: number) => void;
@@ -61,7 +61,7 @@ export function useTodaAssociationList(): Result {
     ),
   );
 
-  const todaAssociationSelectItems = useMemo(() => {
+  const todaAssociationSelectOptions = useMemo(() => {
     if (todaAssociations == null) return [];
     return todaAssociations.map(({ name, id }) => ({
       value: id,
@@ -99,7 +99,7 @@ export function useTodaAssociationList(): Result {
   return {
     loading: isFetching || isLoading,
     todaAssociations: todaAssociations || [],
-    todaAssociationSelectItems,
+    todaAssociationSelectOptions,
     setKeyword,
     refresh: refetch,
     handleTodaAssociationDetails,

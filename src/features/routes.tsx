@@ -36,7 +36,10 @@ import {
   getTodaAssociationWithFranchisesByIdLoader,
   getTodaAssociationsLoader,
 } from './toda-association/loaders/toda-association.loader';
-import { getLatestFranchiseRateSheetsLoader } from './rate-sheet/loaders/rate-sheet.loader';
+import {
+  getLatestFranchiseRateSheetsLoader,
+  getRateSheetByIdLoader,
+} from './rate-sheet/loaders/rate-sheet.loader';
 import { CoreLayout } from './core/components/core-layout.component';
 import { AuthProtectedRoute } from './user/components/auth-protected-route.component';
 import { CoreHomePage } from './core/pages/core-home.page';
@@ -63,6 +66,7 @@ import { TodaAssociationCreatePage } from './toda-association/pages/toda-associa
 import { TodaAssociationEditPage } from './toda-association/pages/toda-association-edit.page';
 import { AdminRateSheetFranchiseFeesPage } from './rate-sheet/pages/admin-rate-sheet-franchise-fees.page';
 import { TreasurerIssuerRateSheetFranchiseFeesPage } from './rate-sheet/pages/treasurer-issuer-rate-sheet-franchise-fees.page';
+import { RateSheetFranchiseUpdatePage } from './rate-sheet/pages/rate-sheet-franchise-update.page';
 
 const routes = createRoutesFromElements(
   <Route path='/' element={<CoreLayout />}>
@@ -240,6 +244,13 @@ const routes = createRoutesFromElements(
             element={<AdminRateSheetFranchiseFeesPage />}
             loader={getLatestFranchiseRateSheetsLoader(queryClient)}
           />
+          <Route path=':id' element={<Outlet />}>
+            <Route
+              path={routeConfig.franchise.rates.update.to}
+              element={<RateSheetFranchiseUpdatePage />}
+              loader={getRateSheetByIdLoader(queryClient)}
+            />
+          </Route>
         </Route>
       </Route>
       <Route path={routeConfig.todaAssociation.to} element={<Outlet />}>

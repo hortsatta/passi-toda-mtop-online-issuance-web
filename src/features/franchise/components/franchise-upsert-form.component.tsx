@@ -43,7 +43,7 @@ import type { DriverProfileUpsertFormData } from '#/user/models/driver-profile-f
 
 type Props = FormProps<'div', FranchiseUpsertFormData, Promise<Franchise>> & {
   user: User;
-  todaAssociationSelectItems: SelectItem[];
+  todaAssociationSelectOptions: SelectItem[];
   driverProfiles: DriverProfile[];
   isFetching?: boolean;
 };
@@ -183,7 +183,7 @@ export const FranchiseUpsertForm = memo(function ({
   formData,
   loading: formLoading,
   user: { email: userEmail, userProfile },
-  todaAssociationSelectItems,
+  todaAssociationSelectOptions,
   driverProfiles,
   isFetching,
   isDone,
@@ -353,7 +353,7 @@ export const FranchiseUpsertForm = memo(function ({
                 label='TODA Association'
                 name='todaAssociationId'
                 control={control}
-                items={todaAssociationSelectItems}
+                items={todaAssociationSelectOptions}
                 disabled={isFetching}
                 fullWidth
                 asterisk

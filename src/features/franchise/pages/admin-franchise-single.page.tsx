@@ -13,8 +13,8 @@ const FRANCHISE_LIST_TO = `/${baseAdminRoute}/${routeConfig.franchise.to}`;
 export function AdminFranchiseSinglePage() {
   const { franchise, loading } = useIssuerFranchiseSingle();
 
-  const { rateSheet, loading: rateSheetLoading } = useRateSheetLatestSingle(
-    franchise?.approvalStatus,
+  const { rateSheets, loading: rateSheetLoading } = useRateSheetLatestSingle(
+    franchise?.id,
   );
 
   const data: any = useLoaderData();
@@ -26,8 +26,11 @@ export function AdminFranchiseSinglePage() {
         backTo={FRANCHISE_LIST_TO}
       >
         {(loading || rateSheetLoading) && <BaseLoading />}
-        {franchise && rateSheet && (
-          <IssuerFranchiseSingle franchise={franchise} rateSheet={rateSheet} />
+        {franchise && rateSheets?.length && (
+          <IssuerFranchiseSingle
+            franchise={franchise}
+            rateSheets={rateSheets}
+          />
         )}
       </BaseScene>
     </BaseDataSuspense>

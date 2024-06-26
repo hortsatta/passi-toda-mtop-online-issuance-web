@@ -19,7 +19,7 @@ import type { Franchise } from '../models/franchise.model';
 
 type Props = ComponentProps<'div'> & {
   franchise: Franchise;
-  rateSheet: RateSheet;
+  rateSheets: RateSheet[];
   onApproveFranchise?: (
     approvalStatus?: FranchiseApprovalStatus,
   ) => Promise<Franchise>;
@@ -79,7 +79,7 @@ export const IssuerFranchiseSingle = memo(function ({
   className,
   loading,
   franchise,
-  rateSheet,
+  rateSheets,
   onApproveFranchise,
   ...moreProps
 }: Props) {
@@ -96,6 +96,18 @@ export const IssuerFranchiseSingle = memo(function ({
   });
 
   const approvalStatus = useMemo(() => franchise.approvalStatus, [franchise]);
+
+  const currentRateSheet = useMemo(
+    () =>
+      rateSheets.find(
+        (rateSheet) =>
+          rateSheet.feeType ===
+          (approvalStatus === FranchiseApprovalStatus.Approved
+            ? FeeType.FranchiseRenewal
+            : FeeType.FranchiseRegistration),
+      ),
+    [rateSheets, approvalStatus],
+  );
 
   const statusLabel = useMemo(() => {
     switch (approvalStatus) {
@@ -127,7 +139,7 @@ export const IssuerFranchiseSingle = memo(function ({
 
   const modalTitle = useMemo(() => {
     if (openDetails) {
-      return rateSheet.feeType === FeeType.FranchiseRenewal
+      return currentRateSheet?.feeType === FeeType.FranchiseRenewal
         ? 'Renewal Details'
         : 'Registration Details';
     } else if (openActions) {
@@ -135,14 +147,14 @@ export const IssuerFranchiseSingle = memo(function ({
     }
 
     return '';
-  }, [openDetails, openActions, rateSheet]);
+  }, [openDetails, openActions, currentRateSheet]);
 
   const detailButtonLabel = useMemo(
     () =>
-      rateSheet.feeType === FeeType.FranchiseRenewal
+      currentRateSheet?.feeType === FeeType.FranchiseRenewal
         ? 'View Renewal Details'
         : 'View Registration Details',
-    [rateSheet],
+    [currentRateSheet],
   );
 
   const generateApprovalToast = useCallback(
@@ -320,13 +332,15 @@ export const IssuerFranchiseSingle = memo(function ({
         title={modalTitle}
         onClose={handleDetailsActionsModalClose}
       >
-        {openDetails && <RateSheetDetails rateSheet={rateSheet} />}
-        {openActions && handleApproveFranchise && (
+        {openDetails && currentRateSheet && (
+          <RateSheetDetails rateSheet={currentRateSheet} />
+        )}
+        {openActions && currentRateSheet && handleApproveFranchise && (
           <FranchiseApplicationActions
             loading={loading}
             isApprove={isActionApprove}
             franchise={franchise}
-            rateSheet={rateSheet}
+            rateSheet={currentRateSheet}
             onApproveFranchise={
               isActionApprove
                 ? handleApproveFranchise()
