@@ -74,27 +74,34 @@ export const IssuerFranchiseSingleStrip = memo(function ({
   const [
     mvFileNo,
     plateNo,
+    isExpired,
+    ownerReverseFullName,
     approvalStatus,
     expiryDate,
     todaAssociationName,
     isDriverOwner,
-    ownerReverseFullName,
     driverReverseFullName,
-  ] = useMemo(
-    () => [
+  ] = useMemo(() => {
+    const target = franchise.franchiseRenewals.length
+      ? franchise.franchiseRenewals[0]
+      : franchise;
+
+    return [
       franchise.mvFileNo,
       franchise.plateNo,
-      franchise.approvalStatus,
-      franchise.expiryDate,
-      franchise.todaAssociation.name,
-      franchise.isDriverOwner,
+      franchise.isExpired,
       franchise.user?.userProfile.reverseFullName,
-      franchise.driverProfile?.reverseFullName,
-    ],
-    [franchise],
-  );
+      target.approvalStatus,
+      target.expiryDate,
+      target.isDriverOwner,
+      target.todaAssociation.name,
+      target.driverProfile?.reverseFullName,
+    ];
+  }, [franchise]);
 
   const statusLabel = useMemo(() => {
+    if (isExpired) return 'Expired';
+
     switch (approvalStatus) {
       case FranchiseApprovalStatus.Validated:
         return 'Pending Payment';
@@ -109,7 +116,41 @@ export const IssuerFranchiseSingleStrip = memo(function ({
       default:
         return 'Pending Verification';
     }
-  }, [approvalStatus]);
+  }, [approvalStatus, isExpired]);
+
+  const statusLabelClassName = useMemo(() => {
+    if (
+      isExpired ||
+      approvalStatus === FranchiseApprovalStatus.Rejected ||
+      approvalStatus === FranchiseApprovalStatus.Canceled
+    )
+      return 'text-red-600';
+
+    switch (approvalStatus) {
+      case FranchiseApprovalStatus.PendingValidation:
+      case FranchiseApprovalStatus.Validated:
+      case FranchiseApprovalStatus.Paid:
+        return 'text-yellow-500';
+      case FranchiseApprovalStatus.Approved:
+        return 'text-green-600';
+      default:
+        return null;
+    }
+  }, [approvalStatus, isExpired]);
+
+  const statusLabelIconName = useMemo(() => {
+    if (
+      isExpired ||
+      approvalStatus === FranchiseApprovalStatus.Rejected ||
+      approvalStatus === FranchiseApprovalStatus.Canceled
+    ) {
+      return 'x-circle';
+    } else if (approvalStatus === FranchiseApprovalStatus.Approved) {
+      return 'check-circle';
+    } else {
+      return null;
+    }
+  }, [approvalStatus, isExpired]);
 
   const moreStatusInfoText = useMemo(() => {
     if (viewOnly) return null;
@@ -140,14 +181,14 @@ export const IssuerFranchiseSingleStrip = memo(function ({
     >
       <div className='flex w-full items-center justify-between gap-4'>
         <div className='flex items-center gap-4'>
-          <div>
+          <div className='min-w-[80px]'>
             <h4 className='text-2xl font-bold uppercase leading-tight'>
               {plateNo}
             </h4>
             <small className='uppercase leading-tight'>plate no</small>
           </div>
           <div className='h-12 border-r border-border' />
-          <div>
+          <div className='min-w-[200px]'>
             <span className='block text-2xl font-medium leading-tight'>
               {mvFileNo}
             </span>
@@ -165,23 +206,11 @@ export const IssuerFranchiseSingleStrip = memo(function ({
           <span
             className={cx(
               'flex items-center gap-1 text-xl font-bold',
-              (approvalStatus === FranchiseApprovalStatus.PendingValidation ||
-                approvalStatus === FranchiseApprovalStatus.Validated ||
-                approvalStatus === FranchiseApprovalStatus.Paid) &&
-                'text-yellow-500',
-              approvalStatus === FranchiseApprovalStatus.Approved &&
-                'text-green-600',
-              (approvalStatus === FranchiseApprovalStatus.Rejected ||
-                approvalStatus === FranchiseApprovalStatus.Canceled) &&
-                'text-red-600',
+              statusLabelClassName,
             )}
           >
-            {approvalStatus === FranchiseApprovalStatus.Approved && (
-              <BaseIcon name='check-circle' size={24} />
-            )}
-            {(approvalStatus === FranchiseApprovalStatus.Rejected ||
-              approvalStatus === FranchiseApprovalStatus.Canceled) && (
-              <BaseIcon name='x-circle' size={24} />
+            {statusLabelIconName && (
+              <BaseIcon name={statusLabelIconName} size={24} />
             )}
             {statusLabel}
           </span>

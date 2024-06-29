@@ -1,26 +1,23 @@
 import dayjs from '#/config/dayjs.config';
 import { transformAuditTrail } from '#/core/helpers/core.helper';
-import { transformToUser } from '#/user/helpers/user-transform.helper';
 import {
   transformToDriverProfile,
   transformToDriverProfileFormData,
   transformToDriverProfileUpsertDto,
 } from '#/user/helpers/driver-profile-transform.helper';
 import { transformToTodaAssociation } from '#/toda-association/helpers/toda-association-transform.helper';
-import { transformToFranchiseRenewal } from './franchise-renewal-transform.helper';
+import { transformToFranchise } from './franchise-transform.helper';
 
-import type { Franchise } from '../models/franchise.model';
-import type { FranchiseUpsertFormData } from '../models/franchise-form-data.model';
+import type { FranchiseRenewal } from '../models/franchise-renewal.model';
+import type { FranchiseRenewalUpsertFormData } from '../models/franchise-renewal-form-data.model';
 
 const IMG_BASE_URL = import.meta.env.VITE_SUPABASE_BASE_URL;
 
-export function transformToFranchise({
+export function transformToFranchiseRenewal({
   id,
   createdAt,
   updatedAt,
   deletedAt,
-  mvFileNo,
-  plateNo,
   vehicleORImgUrl,
   vehicleCRImgUrl,
   todaAssocMembershipImgUrl,
@@ -30,27 +27,12 @@ export function transformToFranchise({
   approvalStatus,
   approvalDate,
   expiryDate,
-  isExpired,
-  canRenew,
   todaAssociation,
   isDriverOwner,
   driverProfile,
-  franchiseRenewals,
-  user,
-}: any): Franchise {
-  const transformedDriverProfile = driverProfile
-    ? transformToDriverProfile(driverProfile)
-    : undefined;
-
-  const transformedFranchiseRenewals = franchiseRenewals
-    ? franchiseRenewals.map((franchiseRenewal: any) =>
-        transformToFranchiseRenewal(franchiseRenewal),
-      )
-    : [];
-
+  franchise,
+}: any): FranchiseRenewal {
   return {
-    mvFileNo,
-    plateNo,
     vehicleORImgUrl: `${IMG_BASE_URL}${vehicleORImgUrl}`,
     vehicleCRImgUrl: `${IMG_BASE_URL}${vehicleCRImgUrl}`,
     todaAssocMembershipImgUrl: `${IMG_BASE_URL}${todaAssocMembershipImgUrl}`,
@@ -62,20 +44,17 @@ export function transformToFranchise({
     approvalStatus,
     approvalDate: approvalDate ? dayjs(approvalDate).toDate() : null,
     expiryDate: expiryDate ? dayjs(expiryDate).toDate() : null,
-    isExpired,
-    canRenew,
     todaAssociation: transformToTodaAssociation(todaAssociation),
     isDriverOwner,
-    driverProfile: transformedDriverProfile,
-    franchiseRenewals: transformedFranchiseRenewals,
-    user: user ? transformToUser(user) : undefined,
+    driverProfile: driverProfile
+      ? transformToDriverProfile(driverProfile)
+      : undefined,
+    franchise: franchise ? transformToFranchise(franchise) : undefined,
     ...transformAuditTrail(id, createdAt, updatedAt, deletedAt),
   };
 }
 
-export function transformToFranchiseFormData({
-  mvFileNo,
-  plateNo,
+export function transformToFranchiseRenewalFormData({
   isDriverOwner,
   vehicleORImgUrl,
   vehicleCRImgUrl,
@@ -86,14 +65,12 @@ export function transformToFranchiseFormData({
   todaAssociationId,
   driverProfileId,
   driverProfile,
-}: any): FranchiseUpsertFormData {
+}: any): FranchiseRenewalUpsertFormData {
   const transformedDriverProfile = driverProfile
     ? transformToDriverProfileFormData(driverProfile)
     : undefined;
 
   return {
-    mvFileNo,
-    plateNo,
     isDriverOwner,
     vehicleORImgUrl,
     vehicleCRImgUrl,
@@ -107,21 +84,18 @@ export function transformToFranchiseFormData({
   };
 }
 
-export function transformToFranchiseValidateDto({
-  mvFileNo,
-  plateNo,
+export function transformToFranchiseRenewalValidateDto({
   isDriverOwner,
   todaAssociationId,
   driverProfileId,
   driverProfile,
+  franchiseId,
 }: any) {
   const transformedDriverProfile = driverProfile
     ? transformToDriverProfileUpsertDto(driverProfile)
     : undefined;
 
   return {
-    mvFileNo,
-    plateNo,
     isDriverOwner,
     vehicleORImgUrl: '',
     vehicleCRImgUrl: '',
@@ -132,10 +106,11 @@ export function transformToFranchiseValidateDto({
     todaAssociationId: +todaAssociationId,
     driverProfileId: +driverProfileId,
     driverProfile: transformedDriverProfile,
+    franchiseId: +franchiseId,
   };
 }
 
-export function transformToFranchiseUpsertDto({
+export function transformToFranchiseRenewalUpsertDto({
   mvFileNo,
   plateNo,
   isDriverOwner,
@@ -148,6 +123,7 @@ export function transformToFranchiseUpsertDto({
   voterRegRecordImgUrl,
   driverProfileId,
   driverProfile,
+  franchiseId,
 }: any) {
   const transformedDriverProfile = driverProfile
     ? transformToDriverProfileUpsertDto(driverProfile)
@@ -166,5 +142,6 @@ export function transformToFranchiseUpsertDto({
     todaAssociationId: +todaAssociationId,
     driverProfileId: +driverProfileId,
     driverProfile: transformedDriverProfile,
+    franchiseId: +franchiseId,
   };
 }

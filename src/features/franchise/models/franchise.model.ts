@@ -1,8 +1,9 @@
 import type { AuditTrail } from '#/core/models/core.model';
 import type { User } from '#/user/models/user.model';
+import type { DriverProfile } from '#/user/models/driver-profile.model';
 import type { TodaAssociation } from '#/toda-association/models/toda-association.model';
 import type { FranchiseUpsertFormData } from './franchise-form-data.model';
-import type { DriverProfile } from '#/user/models/driver-profile.model';
+import type { FranchiseRenewal } from './franchise-renewal.model';
 
 export enum FranchiseApprovalStatus {
   PendingValidation = 'pending-validation',
@@ -26,9 +27,12 @@ export type Franchise = Partial<AuditTrail> & {
   approvalDate: Date | null;
   expiryDate: Date | null;
   todaAssociation: TodaAssociation;
+  franchiseRenewals: FranchiseRenewal[];
   isDriverOwner: boolean;
   driverProfile?: DriverProfile;
   voterRegRecordImgUrl?: string;
+  isExpired?: boolean;
+  canRenew?: boolean;
   user?: User;
 };
 

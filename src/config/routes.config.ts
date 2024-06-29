@@ -41,6 +41,11 @@ export const routeConfig = {
     edit: {
       to: 'edit',
     },
+    renew: {
+      to: 'renew',
+      label: 'Renewal',
+      pageTitle: 'Franchise Renewal',
+    },
     reports: {
       to: 'reports',
       label: 'Reports',

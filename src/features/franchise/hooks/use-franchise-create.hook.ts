@@ -2,13 +2,19 @@ import { useCallback, useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
 
 import { queryClient } from '#/config/react-query-client.config';
-import { queryFranchiseKey } from '#/config/react-query-keys.config';
+import {
+  queryFranchiseKey,
+  queryUserKey,
+} from '#/config/react-query-keys.config';
+import { useBoundStore } from '#/core/hooks/use-store.hook';
+import { editUser as editUserApi } from '#/user/api/user.api';
 import {
   createFranchise as createFranchiseApi,
   validateUpsertFranchise as validateUpsertFranchiseApi,
   uploadFranchiseFiles as uploadFranchiseFilesApi,
 } from '../api/franchise.api';
 
+import type { UserUpdateFormData } from '#/user/models/user-form-data.model';
 import type { FranchiseUpsertFormData } from '../models/franchise-form-data.model';
 import type { Franchise } from '../models/franchise.model';
 
@@ -20,6 +26,7 @@ type Result = {
 };
 
 export function useFranchiseCreate(): Result {
+  const userProfile = useBoundStore((state) => state.user?.userProfile);
   const [isDone, setIsDone] = useState(false);
 
   const {
@@ -52,6 +59,16 @@ export function useFranchiseCreate(): Result {
     }),
   );
 
+  const { mutateAsync: mutateEditUser, isPending: isEditUserPending } =
+    useMutation(
+      editUserApi({
+        onSuccess: () =>
+          queryClient.invalidateQueries({
+            queryKey: queryUserKey.currentUser,
+          }),
+      }),
+    );
+
   const createFranchise = useCallback(
     async (data: FranchiseUpsertFormData) => {
       const hasImages = [
@@ -66,19 +83,30 @@ export function useFranchiseCreate(): Result {
           !!(typeof imageData === 'string' ? imageData?.trim() : imageData),
       );
 
-      if (!hasImages) {
-        return mutateCreateFranchise(data);
+      await validateUpsertFranchise({ data });
+
+      if (
+        data.isDriverOwner &&
+        userProfile?.driverLicenseNo !== data.driverProfile?.driverLicenseNo
+      ) {
+        await mutateEditUser({
+          driverLicenseNo: data.driverProfile?.driverLicenseNo,
+        } as UserUpdateFormData);
       }
 
-      await validateUpsertFranchise({ data });
-      const imageResult = await mutateUploadFranchiseFiles(data);
-
-      return mutateCreateFranchise({ ...data, ...imageResult });
+      if (!hasImages) {
+        return mutateCreateFranchise(data);
+      } else {
+        const imageResult = await mutateUploadFranchiseFiles(data);
+        return mutateCreateFranchise({ ...data, ...imageResult });
+      }
     },
     [
+      userProfile,
+      validateUpsertFranchise,
       mutateCreateFranchise,
       mutateUploadFranchiseFiles,
-      validateUpsertFranchise,
+      mutateEditUser,
     ],
   );
 
@@ -86,7 +114,8 @@ export function useFranchiseCreate(): Result {
     loading:
       isValidateFranchisePending ||
       isUploadFilesPending ||
-      isCreateFranchisePending,
+      isCreateFranchisePending ||
+      isEditUserPending,
     isDone,
     setIsDone,
     createFranchise,

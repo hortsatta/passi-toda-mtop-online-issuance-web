@@ -124,6 +124,35 @@ export const TreasurerFranchiseSingle = memo(function ({
     }
   }, [approvalStatus]);
 
+  const statusLabelClassName = useMemo(() => {
+    switch (approvalStatus) {
+      case FranchiseApprovalStatus.Rejected:
+      case FranchiseApprovalStatus.Canceled:
+        return 'text-red-600';
+      case FranchiseApprovalStatus.PendingValidation:
+      case FranchiseApprovalStatus.Validated:
+        return 'text-yellow-500';
+      case FranchiseApprovalStatus.Paid:
+      case FranchiseApprovalStatus.Approved:
+        return 'text-green-600';
+      default:
+        return null;
+    }
+  }, [approvalStatus]);
+
+  const statusLabelIconName = useMemo(() => {
+    if (
+      approvalStatus === FranchiseApprovalStatus.Rejected ||
+      approvalStatus === FranchiseApprovalStatus.Canceled
+    ) {
+      return 'x-circle';
+    } else if (approvalStatus === FranchiseApprovalStatus.Approved) {
+      return 'check-circle';
+    } else {
+      return null;
+    }
+  }, [approvalStatus]);
+
   const modalTitle = useMemo(() => {
     if (openDetails) {
       return currentRateSheet?.feeType === FeeType.FranchiseRenewal
@@ -196,24 +225,11 @@ export const TreasurerFranchiseSingle = memo(function ({
             <span
               className={cx(
                 'flex items-center gap-1 text-2xl font-bold',
-                (approvalStatus === FranchiseApprovalStatus.PendingValidation ||
-                  approvalStatus === FranchiseApprovalStatus.Validated) &&
-                  'text-yellow-500',
-                (approvalStatus === FranchiseApprovalStatus.Paid ||
-                  approvalStatus === FranchiseApprovalStatus.Approved) &&
-                  'text-green-600',
-                (approvalStatus === FranchiseApprovalStatus.Rejected ||
-                  approvalStatus === FranchiseApprovalStatus.Canceled) &&
-                  'text-red-600',
+                statusLabelClassName,
               )}
             >
-              {(approvalStatus === FranchiseApprovalStatus.Paid ||
-                approvalStatus === FranchiseApprovalStatus.Approved) && (
-                <BaseIcon name='check-circle' size={24} />
-              )}
-              {(approvalStatus === FranchiseApprovalStatus.Rejected ||
-                approvalStatus === FranchiseApprovalStatus.Canceled) && (
-                <BaseIcon name='x-circle' size={24} />
+              {statusLabelIconName && (
+                <BaseIcon name={statusLabelIconName} size={24} />
               )}
               {statusLabel}
             </span>

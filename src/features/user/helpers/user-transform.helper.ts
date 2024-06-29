@@ -121,7 +121,9 @@ export function transformToUserUpdateDto({
       lastName,
       middleName,
       birthDate,
-      phoneNumber: phoneNumber.replace(/\D/g, ''),
+      phoneNumber: phoneNumber?.length
+        ? phoneNumber.replace(/\D/g, '')
+        : undefined,
       gender,
       civilStatus,
       religion,

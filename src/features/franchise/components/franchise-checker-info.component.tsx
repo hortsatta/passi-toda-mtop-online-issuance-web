@@ -39,7 +39,7 @@ const FranchiseInfo = memo(function ({
   const user = useBoundStore((state) => state.user);
   const navigate = useNavigate();
 
-  const [id, mvFileNo, plateNo, approvalStatus, ownerReverseFullName, isOwner] =
+  const [id, mvFileNo, plateNo, isExpired, ownerReverseFullName, isOwner] =
     useMemo(
       () =>
         !franchise
@@ -48,7 +48,7 @@ const FranchiseInfo = memo(function ({
               franchise.id,
               franchise.mvFileNo,
               franchise.plateNo,
-              franchise.approvalStatus,
+              franchise.isExpired,
               franchise.user?.userProfile.reverseFullName,
               (user?.role === UserRole.Member &&
                 franchise.user?.email === user?.email) ||
@@ -57,7 +57,17 @@ const FranchiseInfo = memo(function ({
       [franchise, user],
     );
 
+  const approvalStatus = useMemo(() => {
+    if (!franchise) return null;
+
+    return franchise.franchiseRenewals?.length
+      ? franchise.franchiseRenewals[0].approvalStatus
+      : franchise.approvalStatus;
+  }, [franchise]);
+
   const statusLabel = useMemo(() => {
+    if (isExpired) return 'Expired';
+
     switch (approvalStatus) {
       case FranchiseApprovalStatus.Validated:
         return 'Pending Payment';
@@ -72,7 +82,40 @@ const FranchiseInfo = memo(function ({
       default:
         return 'Pending';
     }
-  }, [approvalStatus]);
+  }, [approvalStatus, isExpired]);
+
+  const statusLabelClassName = useMemo(() => {
+    if (
+      isExpired ||
+      approvalStatus === FranchiseApprovalStatus.Rejected ||
+      approvalStatus === FranchiseApprovalStatus.Canceled
+    )
+      return 'text-red-600';
+
+    switch (approvalStatus) {
+      case FranchiseApprovalStatus.Validated:
+      case FranchiseApprovalStatus.Paid:
+        return 'text-yellow-500';
+      case FranchiseApprovalStatus.Approved:
+        return 'text-green-600';
+      default:
+        return null;
+    }
+  }, [approvalStatus, isExpired]);
+
+  const statusLabelIconName = useMemo(() => {
+    if (
+      isExpired ||
+      approvalStatus === FranchiseApprovalStatus.Rejected ||
+      approvalStatus === FranchiseApprovalStatus.Canceled
+    ) {
+      return 'x-circle';
+    } else if (approvalStatus === FranchiseApprovalStatus.Approved) {
+      return 'check-circle';
+    } else {
+      return null;
+    }
+  }, [approvalStatus, isExpired]);
 
   const handleRegisterClick = useCallback(() => {
     const to = !user ? AUTH_SIGN_IN_TO : FRANCHISE_REGISTER_TO;
@@ -125,22 +168,11 @@ const FranchiseInfo = memo(function ({
         <span
           className={cx(
             'flex items-center gap-1 bg-backdrop-input px-4 pb-4 pt-2.5 text-base',
-            (approvalStatus === FranchiseApprovalStatus.Validated ||
-              approvalStatus === FranchiseApprovalStatus.Paid) &&
-              'text-yellow-500',
-            approvalStatus === FranchiseApprovalStatus.Approved &&
-              'text-green-600',
-            (approvalStatus === FranchiseApprovalStatus.Rejected ||
-              approvalStatus === FranchiseApprovalStatus.Canceled) &&
-              'text-red-600',
+            statusLabelClassName,
           )}
         >
-          {approvalStatus === FranchiseApprovalStatus.Approved && (
-            <BaseIcon name='check-circle' size={20} />
-          )}
-          {(approvalStatus === FranchiseApprovalStatus.Rejected ||
-            approvalStatus === FranchiseApprovalStatus.Canceled) && (
-            <BaseIcon name='x-circle' size={20} />
+          {statusLabelIconName && (
+            <BaseIcon name={statusLabelIconName} size={20} />
           )}
           {statusLabel}
         </span>

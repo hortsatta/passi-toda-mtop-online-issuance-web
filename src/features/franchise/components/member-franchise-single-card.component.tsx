@@ -58,19 +58,32 @@ export const MemberFranchiseSingleCard = memo(function ({
   onDetails,
   ...moreProps
 }: Props) {
-  const [mvFileNo, plateNo, approvalStatus, expiryDate, todaAssociationName] =
-    useMemo(
-      () => [
-        franchise.mvFileNo,
-        franchise.plateNo,
-        franchise.approvalStatus,
-        franchise.expiryDate,
-        franchise.todaAssociation.name,
-      ],
-      [franchise],
-    );
+  const [
+    mvFileNo,
+    plateNo,
+    isExpired,
+    canRenew,
+    approvalStatus,
+    expiryDate,
+    todaAssociationName,
+  ] = useMemo(() => {
+    const target = franchise.franchiseRenewals.length
+      ? franchise.franchiseRenewals[0]
+      : franchise;
+    return [
+      franchise.mvFileNo,
+      franchise.plateNo,
+      franchise.isExpired,
+      franchise.canRenew,
+      target.approvalStatus,
+      target.expiryDate,
+      target.todaAssociation.name,
+    ];
+  }, [franchise]);
 
   const statusLabel = useMemo(() => {
+    if (isExpired) return 'Expired';
+
     switch (approvalStatus) {
       case FranchiseApprovalStatus.Validated:
         return 'Pending Payment';
@@ -85,17 +98,56 @@ export const MemberFranchiseSingleCard = memo(function ({
       default:
         return 'Pending';
     }
-  }, [approvalStatus]);
+  }, [approvalStatus, isExpired]);
+
+  const statusLabelClassName = useMemo(() => {
+    if (
+      isExpired ||
+      approvalStatus === FranchiseApprovalStatus.Rejected ||
+      approvalStatus === FranchiseApprovalStatus.Canceled
+    )
+      return 'text-red-600';
+
+    switch (approvalStatus) {
+      case FranchiseApprovalStatus.PendingValidation:
+      case FranchiseApprovalStatus.Validated:
+      case FranchiseApprovalStatus.Paid:
+        return 'text-yellow-500';
+      case FranchiseApprovalStatus.Approved:
+        return 'text-green-600';
+      default:
+        return null;
+    }
+  }, [approvalStatus, isExpired]);
+
+  const statusLabelIconName = useMemo(() => {
+    if (
+      isExpired ||
+      approvalStatus === FranchiseApprovalStatus.Rejected ||
+      approvalStatus === FranchiseApprovalStatus.Canceled
+    ) {
+      return 'x-circle';
+    } else if (approvalStatus === FranchiseApprovalStatus.Approved) {
+      return 'check-circle';
+    } else {
+      return null;
+    }
+  }, [approvalStatus, isExpired]);
 
   const moreStatusInfoText = useMemo(() => {
-    if (approvalStatus === FranchiseApprovalStatus.Approved) {
-      const expiryDateText = dayjs(expiryDate).format('YYYY-MM-DD');
-      return `valid until ${expiryDateText}`;
+    if (approvalStatus === FranchiseApprovalStatus.Approved && canRenew) {
+      return 'select to renew franchise';
     } else if (approvalStatus === FranchiseApprovalStatus.Validated) {
       return 'select to view payment details';
     }
 
     return null;
+  }, [approvalStatus, canRenew]);
+
+  const expiryDateText = useMemo(() => {
+    if (approvalStatus !== FranchiseApprovalStatus.Approved) return null;
+    const date = dayjs(expiryDate).format('YYYY-MM-DD');
+    return `valid until ${date}`;
   }, [approvalStatus, expiryDate]);
 
   return (
@@ -133,38 +185,26 @@ export const MemberFranchiseSingleCard = memo(function ({
       <div className='flex w-full items-end justify-between'>
         <div className='flex flex-col gap-3'>
           {moreStatusInfoText && (
-            <small
-              className={cx(
-                'text-xs',
-                approvalStatus !== FranchiseApprovalStatus.Approved &&
-                  'text-green-600',
-              )}
-            >
+            <small className='text-xs text-green-600'>
               {moreStatusInfoText}
             </small>
           )}
-          <span
-            className={cx(
-              'flex items-center gap-1 text-xl font-bold',
-              (approvalStatus === FranchiseApprovalStatus.Validated ||
-                approvalStatus === FranchiseApprovalStatus.Paid) &&
-                'text-yellow-500',
-              approvalStatus === FranchiseApprovalStatus.Approved &&
-                'text-green-600',
-              (approvalStatus === FranchiseApprovalStatus.Rejected ||
-                approvalStatus === FranchiseApprovalStatus.Canceled) &&
-                'text-red-600',
+          <div className='flex flex-col gap-0.5'>
+            <span
+              className={cx(
+                'flex items-center gap-1 text-xl font-bold',
+                statusLabelClassName,
+              )}
+            >
+              {statusLabelIconName && (
+                <BaseIcon name={statusLabelIconName} size={24} />
+              )}
+              {statusLabel}
+            </span>
+            {expiryDateText && (
+              <small className='text-xs'>{expiryDateText}</small>
             )}
-          >
-            {approvalStatus === FranchiseApprovalStatus.Approved && (
-              <BaseIcon name='check-circle' size={24} />
-            )}
-            {(approvalStatus === FranchiseApprovalStatus.Rejected ||
-              approvalStatus === FranchiseApprovalStatus.Canceled) && (
-              <BaseIcon name='x-circle' size={24} />
-            )}
-            {statusLabel}
-          </span>
+          </div>
         </div>
         <CurrentStatus approvalStatus={approvalStatus} />
       </div>

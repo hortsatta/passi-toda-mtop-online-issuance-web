@@ -5,6 +5,7 @@ import { queryUserKey } from '#/config/react-query-keys.config';
 import {
   transformToUser,
   transformToUserCreateDto,
+  transformToUserUpdateDto,
 } from '../helpers/user-transform.helper';
 
 import type {
@@ -12,7 +13,10 @@ import type {
   UseQueryOptions,
 } from '@tanstack/react-query';
 import type { User } from '../models/user.model';
-import type { UserCreateFormData } from '../models/user-form-data.model';
+import type {
+  UserCreateFormData,
+  UserUpdateFormData,
+} from '../models/user-form-data.model';
 
 const BASE_URL = 'users';
 const MEMBER_URL = `${BASE_URL}/members`;
@@ -100,6 +104,28 @@ export function registerIssuerUser(
 
     try {
       const user = await kyInstance.post(url, { json }).json();
+      return transformToUser(user);
+    } catch (error: any) {
+      const apiError = await generateApiError(error);
+      throw apiError;
+    }
+  };
+
+  return { mutationFn, ...options };
+}
+
+export function editUser(
+  options?: Omit<
+    UseMutationOptions<User, Error, UserUpdateFormData, any>,
+    'mutationFn'
+  >,
+) {
+  const mutationFn = async (data: UserUpdateFormData): Promise<any> => {
+    const url = BASE_URL;
+    const json = transformToUserUpdateDto(data);
+
+    try {
+      const user = await kyInstance.patch(url, { json }).json();
       return transformToUser(user);
     } catch (error: any) {
       const apiError = await generateApiError(error);

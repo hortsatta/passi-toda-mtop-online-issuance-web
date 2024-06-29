@@ -26,9 +26,12 @@ export const FranchiseRecord = memo(function ({
   setCurrentImg,
   ...moreProps
 }: Props) {
+  const [mvFileNo, plateNo] = useMemo(
+    () => [franchise.mvFileNo, franchise.plateNo],
+    [franchise],
+  );
+
   const [
-    mvFileNo,
-    plateNo,
     todaAssociationName,
     vehicleORImgUrl,
     vehicleCRImgUrl,
@@ -38,24 +41,25 @@ export const FranchiseRecord = memo(function ({
     voterRegRecordImgUrl,
     driverInfoText,
     driverProfile,
-  ] = useMemo(
-    () => [
-      franchise.mvFileNo,
-      franchise.plateNo,
-      franchise.todaAssociation.name,
-      franchise.vehicleORImgUrl,
-      franchise.vehicleCRImgUrl,
-      franchise.todaAssocMembershipImgUrl,
-      franchise.driverLicenseNoImgUrl,
-      franchise.brgyClearanceImgUrl,
-      franchise.voterRegRecordImgUrl,
-      franchise.isDriverOwner ? 'Owner and Driver Info' : 'Driver Info',
-      franchise.isDriverOwner
+  ] = useMemo(() => {
+    const target = franchise.franchiseRenewals.length
+      ? franchise.franchiseRenewals[0]
+      : franchise;
+
+    return [
+      target.todaAssociation.name,
+      target.vehicleORImgUrl,
+      target.vehicleCRImgUrl,
+      target.todaAssocMembershipImgUrl,
+      target.driverLicenseNoImgUrl,
+      target.brgyClearanceImgUrl,
+      target.voterRegRecordImgUrl,
+      target.isDriverOwner ? 'Owner and Driver Info' : 'Driver Info',
+      target.isDriverOwner
         ? { ...franchise.user?.userProfile, email: franchise.user?.email || '' }
-        : franchise.driverProfile,
-    ],
-    [franchise],
-  );
+        : target.driverProfile,
+    ];
+  }, [franchise]);
 
   const [
     driverReverseFullName,

@@ -95,7 +95,7 @@ const defaultValues: Partial<UserCreateFormData> = {
   civilStatus: undefined,
   religion: '',
   address: '',
-  driverLicenseNo: '',
+  driverLicenseNo: undefined,
 };
 
 export const UserCreateForm = memo(function ({

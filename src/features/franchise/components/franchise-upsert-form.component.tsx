@@ -1,6 +1,6 @@
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
@@ -143,7 +143,7 @@ const schema = z
     if (!data.isDriverOwner && !data.driverProfileId && !data.driverProfile) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
-        message: 'Start time is invalid',
+        message: 'Invalid driver',
         path: ['driverProfileId', 'driverProfile'],
       });
     }
@@ -176,6 +176,7 @@ const defaultValues: Partial<FranchiseUpsertFormData> = {
   isDriverOwner: false,
   voterRegRecordImgUrl: undefined,
   driverProfile: driverProfileDefaultValues,
+  userDriverLicenseNo: undefined,
 };
 
 export const FranchiseUpsertForm = memo(function ({
@@ -213,6 +214,8 @@ export const FranchiseUpsertForm = memo(function ({
     defaultValues: formData || defaultValues,
     resolver: zodResolver(schema),
   });
+
+  const isDriverOwner = useWatch({ control, name: 'isDriverOwner' });
 
   const loading = useMemo(
     () => formLoading || isSubmitting || isDone,
@@ -592,12 +595,23 @@ export const FranchiseUpsertForm = memo(function ({
                   disabled
                 />
                 <BaseInput value={userEmail} label='Email' fullWidth disabled />
-                <BaseInput
-                  value={userProfile.driverLicenseNo}
-                  label={`Driver's License No`}
-                  fullWidth
-                  disabled
-                />
+                {isDriverOwner && !userProfile.driverLicenseNo?.length ? (
+                  <BaseControlledInput
+                    name='driverProfile.driverLicenseNo'
+                    label={`Driver's License No`}
+                    control={control}
+                    disabled={isFetching}
+                    fullWidth
+                    asterisk
+                  />
+                ) : (
+                  <BaseInput
+                    value={userProfile.driverLicenseNo || ''}
+                    label={`Driver's License No`}
+                    fullWidth
+                    disabled
+                  />
+                )}
               </div>
             </div>
           </div>
