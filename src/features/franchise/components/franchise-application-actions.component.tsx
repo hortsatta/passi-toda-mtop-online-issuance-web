@@ -32,43 +32,62 @@ export const FranchiseApplicationActions = memo(function ({
 }: Props) {
   const description = useMemo(() => {
     if (isApprove) {
-      const totalAmountText = convertToCurrency(rateSheet.rateSheetFees);
+      const rateSheetFeeAmount = rateSheet.rateSheetFees
+        .filter((fee) => !fee.isPenalty)
+        .reduce((total, current) => current.amount + total, 0);
+
+      const rateSheetPenaltyFeeAmount = rateSheet.rateSheetFees
+        .filter((fee) => fee.isPenalty && fee.isPenaltyActive)
+        .reduce((total, current) => current.amount + total, 0);
+
+      const totalAmountText = convertToCurrency(
+        rateSheetFeeAmount + rateSheetPenaltyFeeAmount,
+      );
+
       const baseMessage = `Mark client's application for franchise ${rateSheet.feeType === FeeType.FranchiseRegistration ? 'registration' : 'renewal'} as`;
 
-      switch (franchise.approvalStatus) {
+      const approvalStatus = franchise.franchiseRenewals.length
+        ? franchise.franchiseRenewals[0].approvalStatus
+        : franchise.approvalStatus;
+
+      switch (approvalStatus) {
         case FranchiseApprovalStatus.PendingValidation:
           return `${baseMessage} verified and invoice the client with a total amount of ${totalAmountText}?`;
         case FranchiseApprovalStatus.Validated:
           return `${baseMessage} paid?`;
         case FranchiseApprovalStatus.Paid:
           return `Approve franchise?`;
+        default:
+          return '';
       }
     } else {
       return isUserClient
         ? 'Cancel application?'
         : `Reject client's application?`;
     }
-
-    return '';
   }, [isApprove, isUserClient, franchise, rateSheet]);
 
   const [buttonVariant, buttonLabel] = useMemo(() => {
+    const approvalStatus = franchise.franchiseRenewals.length
+      ? franchise.franchiseRenewals[0].approvalStatus
+      : franchise.approvalStatus;
+
     if (isApprove) {
-      switch (franchise.approvalStatus) {
+      switch (approvalStatus) {
         case FranchiseApprovalStatus.PendingValidation:
           return ['primary', 'Verify Application'];
         case FranchiseApprovalStatus.Validated:
           return [isTreasurer ? 'accept' : 'primary', 'Confirm Payment'];
         case FranchiseApprovalStatus.Paid:
           return ['accept', 'Approve Franchise'];
+        default:
+          return [];
       }
     } else {
       return isUserClient
         ? ['warn', ' Cancel Application']
         : ['warn', ' Reject Application'];
     }
-
-    return [];
   }, [isApprove, isUserClient, isTreasurer, franchise]);
 
   return (

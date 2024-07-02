@@ -46,6 +46,7 @@ import { CoreHomePage } from './core/pages/core-home.page';
 import { AuthSignInPage } from './user/pages/auth-sign-in.page';
 import { FranchiseCheckerPage } from './franchise/pages/franchise-checker.page';
 import { FranchiseRegisterPage } from './franchise/pages/franchise-register.page';
+import { FranchiseRenewalPage } from './franchise/pages/franchise-renewal.page';
 import { ReportFranchisesPage } from './report/pages/report-franchises.page';
 import { MemberUserRegisterPage } from './user/pages/member-user-register.page';
 import { MemberFranchiseSinglePage } from './franchise/pages/member-franchise-single.page';
@@ -126,6 +127,11 @@ const routes = createRoutesFromElements(
           <Route
             index
             element={<MemberFranchiseSinglePage />}
+            loader={getMemberFranchiseByIdLoader(queryClient)}
+          />
+          <Route
+            path={routeConfig.franchise.renew.to}
+            element={<FranchiseRenewalPage />}
             loader={getMemberFranchiseByIdLoader(queryClient)}
           />
         </Route>

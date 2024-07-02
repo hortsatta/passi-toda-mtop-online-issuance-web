@@ -2,7 +2,9 @@ import { memo, useCallback, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import cx from 'classix';
 
+import dayjs from '#/config/dayjs.config';
 import { BaseButton } from '#/base/components/base-button.component';
+import { BaseBadge } from '#/base/components/base-badge.component';
 import { BaseIcon } from '#/base/components/base-icon.component';
 import { BaseModal } from '#/base/components/base-modal.component';
 import { FeeType } from '#/rate-sheet/models/rate-sheet.model';
@@ -29,6 +31,22 @@ type CurrentStatusProps = {
 };
 
 const CurrentStatus = memo(function ({ approvalStatus }: CurrentStatusProps) {
+  if (
+    approvalStatus === FranchiseApprovalStatus.Canceled ||
+    approvalStatus === FranchiseApprovalStatus.Rejected
+  ) {
+    return (
+      <div className='flex items-end gap-2.5'>
+        <small className='flex items-center gap-1 text-base uppercase text-red-500'>
+          <BaseIcon name='x-circle' size={16} />
+          {approvalStatus === FranchiseApprovalStatus.Canceled
+            ? 'canceled'
+            : 'rejected'}
+        </small>
+      </div>
+    );
+  }
+
   return (
     <div className='flex items-center gap-2.5'>
       <small
@@ -93,18 +111,37 @@ export const TreasurerFranchiseSingle = memo(function ({
     title: '',
   });
 
-  const approvalStatus = useMemo(() => franchise.approvalStatus, [franchise]);
+  const [
+    isExpired,
+    canRenew,
+    approvalStatus,
+    approvalDate,
+    expiryDate,
+    isRenewal,
+  ] = useMemo(() => {
+    const target = franchise.franchiseRenewals.length
+      ? franchise.franchiseRenewals[0]
+      : franchise;
+
+    return [
+      franchise.isExpired,
+      franchise.canRenew,
+      target.approvalStatus,
+      target.approvalDate,
+      target.expiryDate,
+      !!franchise.franchiseRenewals.length,
+    ];
+  }, [franchise]);
 
   const currentRateSheet = useMemo(
     () =>
-      rateSheets.find(
-        (rateSheet) =>
-          rateSheet.feeType ===
-          (approvalStatus === FranchiseApprovalStatus.Approved
-            ? FeeType.FranchiseRenewal
-            : FeeType.FranchiseRegistration),
-      ),
-    [rateSheets, approvalStatus],
+      rateSheets.find((rateSheet) => {
+        const feeType = isRenewal
+          ? FeeType.FranchiseRenewal
+          : FeeType.FranchiseRegistration;
+        return rateSheet.feeType === feeType;
+      }),
+    [rateSheets, isRenewal],
   );
 
   const statusLabel = useMemo(() => {
@@ -146,12 +183,42 @@ export const TreasurerFranchiseSingle = memo(function ({
       approvalStatus === FranchiseApprovalStatus.Canceled
     ) {
       return 'x-circle';
-    } else if (approvalStatus === FranchiseApprovalStatus.Approved) {
+    } else if (
+      approvalStatus === FranchiseApprovalStatus.Paid ||
+      approvalStatus === FranchiseApprovalStatus.Approved
+    ) {
       return 'check-circle';
     } else {
       return null;
     }
   }, [approvalStatus]);
+
+  const [moreStatusInfoText, moreStatusInfoTextClassName] = useMemo(() => {
+    if (approvalStatus === FranchiseApprovalStatus.Approved) {
+      if (canRenew) {
+        return ['franchise renewal available', 'text-green-600'];
+      } else if (isExpired && !canRenew) {
+        return [
+          'franchise has fully expired, renewal not possible',
+          'text-red-600',
+        ];
+      }
+
+      return [null, null];
+    }
+
+    return [isRenewal ? 'renewal' : 'registration', null];
+  }, [approvalStatus, isExpired, canRenew, isRenewal]);
+
+  const expiryDateText = useMemo(() => {
+    const date = dayjs(expiryDate).format('YYYY-MM-DD');
+    return `valid until ${date}`;
+  }, [expiryDate]);
+
+  const approvalDateText = useMemo(() => {
+    const date = dayjs(approvalDate).format('YYYY-MM-DD');
+    return `granted on ${date}`;
+  }, [approvalDate]);
 
   const modalTitle = useMemo(() => {
     if (openDetails) {
@@ -246,10 +313,30 @@ export const TreasurerFranchiseSingle = memo(function ({
               status
             </small>
           </div>
-          {approvalStatus !== FranchiseApprovalStatus.Rejected &&
-            approvalStatus !== FranchiseApprovalStatus.Canceled && (
-              <CurrentStatus approvalStatus={approvalStatus} />
-            )}
+          <div className='flex flex-col items-end gap-2'>
+            <CurrentStatus approvalStatus={approvalStatus} />
+            <div className='flex items-center gap-2.5'>
+              {moreStatusInfoText && (
+                <BaseBadge
+                  className={cx('text-xs', moreStatusInfoTextClassName)}
+                >
+                  {moreStatusInfoText}
+                </BaseBadge>
+              )}
+              {moreStatusInfoText &&
+                approvalStatus === FranchiseApprovalStatus.Approved && (
+                  <div className='h-6 border-r border-border' />
+                )}
+              {approvalStatus === FranchiseApprovalStatus.Approved && (
+                <div className='flex items-center gap-1.5'>
+                  {approvalDateText && (
+                    <BaseBadge>{approvalDateText}</BaseBadge>
+                  )}
+                  {expiryDateText && <BaseBadge>{expiryDateText}</BaseBadge>}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
         <div className='my-2.5 w-full border-b border-border' />
         <div className='flex w-full items-start justify-between gap-2.5'>

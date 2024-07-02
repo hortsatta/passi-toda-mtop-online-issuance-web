@@ -30,10 +30,19 @@ export function transformToRateSheetFee({
   deletedAt,
   name,
   amount,
+  isPenalty,
+  activatePenaltyAfterExpiryDays,
+  isPenaltyActive,
 }: any): RateSheetFee {
   return {
     name,
     amount: +amount,
+    isPenalty,
+    activatePenaltyAfterExpiryDays:
+      activatePenaltyAfterExpiryDays != null
+        ? +activatePenaltyAfterExpiryDays
+        : undefined,
+    isPenaltyActive: !!isPenaltyActive,
     ...transformAuditTrail(id, createdAt, updatedAt, deletedAt),
   };
 }
@@ -54,10 +63,20 @@ export function transformToRateSheetFormData({
   };
 }
 
-export function transformToRateSheetFeeFormData({ name, amount }: any) {
+export function transformToRateSheetFeeFormData({
+  name,
+  amount,
+  isPenalty,
+  activatePenaltyAfterExpiryDays,
+}: any) {
   return {
     name,
     amount: (amount / CENTAVOS).toString(),
+    isPenalty,
+    activatePenaltyAfterExpiryDays:
+      activatePenaltyAfterExpiryDays != null
+        ? +activatePenaltyAfterExpiryDays
+        : undefined,
   };
 }
 
@@ -77,9 +96,19 @@ export function transformToRateSheetUpsertDto({
   };
 }
 
-export function transformToRateSheetFeeUpsertDto({ name, amount }: any) {
+export function transformToRateSheetFeeUpsertDto({
+  name,
+  amount,
+  isPenalty,
+  activatePenaltyAfterExpiryDays,
+}: any) {
   return {
     name,
-    amount: amount * CENTAVOS,
+    amount: +amount * CENTAVOS,
+    isPenalty,
+    activatePenaltyAfterExpiryDays:
+      activatePenaltyAfterExpiryDays != null
+        ? +activatePenaltyAfterExpiryDays
+        : undefined,
   };
 }

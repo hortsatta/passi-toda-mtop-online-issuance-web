@@ -56,16 +56,14 @@ const schema = z
       .date({ required_error: 'Provide your date of birth' })
       .min(new Date('1900-01-01'), 'Date of birth is too old')
       .max(new Date(), 'Date of birth is too young'),
-    phoneNumber: z
-      .string()
-      .refine((value) => isMobilePhone(value.replace(/[^0-9]/g, ''), 'en-PH'), {
-        message: 'Phone number is invalid',
-      }),
+    phoneNumber: z.string().refine((value) => isMobilePhone(value, 'en-PH'), {
+      message: 'Phone number is invalid',
+    }),
     gender: z.nativeEnum(UserGender, {
-      required_error: 'Provide your gender',
+      required_error: 'Provide your sex',
     }),
     civilStatus: z.nativeEnum(UserCivilStatus, {
-      required_error: 'Provide your gender',
+      required_error: 'Provide your sex',
     }),
     religion: z
       .string()
@@ -218,7 +216,7 @@ export const UserCreateForm = memo(function ({
               />
               <BaseControlledInputSelect
                 name='gender'
-                label='Gender'
+                label='Sex'
                 items={genderSelectOptions}
                 control={control}
                 fullWidth

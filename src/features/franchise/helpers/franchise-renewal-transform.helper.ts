@@ -81,6 +81,7 @@ export function transformToFranchiseRenewalFormData({
     todaAssociationId,
     driverProfileId,
     driverProfile: transformedDriverProfile,
+    franchiseId: 0,
   };
 }
 

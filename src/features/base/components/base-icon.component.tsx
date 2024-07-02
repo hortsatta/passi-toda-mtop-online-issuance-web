@@ -15,6 +15,7 @@ import {
   CheckSquare,
   CheckSquareOffset,
   Circle,
+  CubeFocus,
   Eye,
   EyeSlash,
   FilePdf,
@@ -79,6 +80,8 @@ export const BaseIcon = memo(
           return CheckSquareOffset;
         case 'circle':
           return Circle;
+        case 'cube-focus':
+          return CubeFocus;
         case 'eye':
           return Eye;
         case 'eye-slash':

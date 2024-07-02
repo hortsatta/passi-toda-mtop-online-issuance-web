@@ -16,7 +16,7 @@ import { FeeType } from '../models/rate-sheet.model';
 import {
   franchiseFeeTypeName,
   franchiseFeeTypeSelectOptions,
-  rateSheetFeeDefaultValues,
+  createRateSheetFeeDefaultValues,
 } from '../helpers/rate-sheet-form.helper';
 import { RateSheetFeesFranchiseUpsertForm } from './rate-sheet-fees-franchise-upsert-form.component';
 
@@ -31,10 +31,22 @@ type Props = FormProps<'div', RateSheetUpsertFormData, Promise<RateSheet>>;
 
 const FRANCHISE_RATE_SHEET_LIST_TO = `/${baseAdminRoute}/${routeConfig.franchise.to}/${routeConfig.franchise.rates.to}`;
 
-const rateSheetFeeSchema = z.object({
-  name: z.string().min(1, 'Invalid fee name').max(225, 'Invalid fee name'),
-  amount: z.string({ required_error: 'Provide amount' }),
-});
+const rateSheetFeeSchema = z
+  .object({
+    name: z.string().min(1, 'Invalid fee name').max(225, 'Invalid fee name'),
+    amount: z.string({ required_error: 'Provide amount' }),
+    isPenalty: z.boolean(),
+    activatePenaltyAfterExpiryDays: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.isPenalty && data.activatePenaltyAfterExpiryDays == null) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'Invalid days after expiry',
+        path: ['activatePenaltyAfterExpiryDays'],
+      });
+    }
+  });
 
 const schema = z.object({
   name: z.string().min(1, 'Invalid rate name').max(225, 'Invalid rate name'),
@@ -47,7 +59,9 @@ const schema = z.object({
 const defaultValues: Partial<RateSheetUpsertFormData> = {
   name: '',
   feeType: undefined,
-  rateSheetFees: [rateSheetFeeDefaultValues as RateSheetFeeUpsertFormData],
+  rateSheetFees: [
+    createRateSheetFeeDefaultValues() as RateSheetFeeUpsertFormData,
+  ],
 };
 
 export const RateSheetFranchiseUpsertForm = memo(function ({

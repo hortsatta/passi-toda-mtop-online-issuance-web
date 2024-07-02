@@ -4,6 +4,7 @@ import cx from 'classix';
 
 import dayjs from '#/config/dayjs.config';
 import { BaseButton } from '#/base/components/base-button.component';
+import { BaseBadge } from '#/base/components/base-badge.component';
 import { BaseIcon } from '#/base/components/base-icon.component';
 import { BaseModal } from '#/base/components/base-modal.component';
 import { FeeType } from '#/rate-sheet/models/rate-sheet.model';
@@ -32,6 +33,22 @@ type CurrentStatusProps = {
 };
 
 const CurrentStatus = memo(function ({ approvalStatus }: CurrentStatusProps) {
+  if (
+    approvalStatus === FranchiseApprovalStatus.Canceled ||
+    approvalStatus === FranchiseApprovalStatus.Rejected
+  ) {
+    return (
+      <div className='flex items-end gap-2.5'>
+        <small className='flex items-center gap-1 text-base uppercase text-red-500'>
+          <BaseIcon name='x-circle' size={16} />
+          {approvalStatus === FranchiseApprovalStatus.Canceled
+            ? 'canceled'
+            : 'rejected'}
+        </small>
+      </div>
+    );
+  }
+
   return (
     <div className='flex items-center gap-2.5'>
       <small
@@ -96,29 +113,37 @@ export const IssuerFranchiseSingle = memo(function ({
     title: '',
   });
 
-  const [approvalStatus, expiryDate, isExpired, canRenew] = useMemo(() => {
+  const [
+    approvalStatus,
+    approvalDate,
+    expiryDate,
+    isExpired,
+    canRenew,
+    isRenewal,
+  ] = useMemo(() => {
     const target = franchise.franchiseRenewals.length
       ? franchise.franchiseRenewals[0]
       : franchise;
 
     return [
       target.approvalStatus,
-      target.expiryDate ? dayjs(target.expiryDate).format('YYYY-MM-DD') : null,
+      target.approvalDate,
+      target.expiryDate,
       franchise.isExpired,
       franchise.canRenew,
+      !!franchise.franchiseRenewals.length,
     ];
   }, [franchise]);
 
   const currentRateSheet = useMemo(
     () =>
-      rateSheets.find(
-        (rateSheet) =>
-          rateSheet.feeType ===
-          (approvalStatus === FranchiseApprovalStatus.Approved
-            ? FeeType.FranchiseRenewal
-            : FeeType.FranchiseRegistration),
-      ),
-    [rateSheets, approvalStatus],
+      rateSheets.find((rateSheet) => {
+        const feeType = isRenewal
+          ? FeeType.FranchiseRenewal
+          : FeeType.FranchiseRegistration;
+        return rateSheet.feeType === feeType;
+      }),
+    [rateSheets, isRenewal],
   );
 
   const statusLabel = useMemo(() => {
@@ -175,23 +200,31 @@ export const IssuerFranchiseSingle = memo(function ({
   }, [approvalStatus, isExpired]);
 
   const [moreStatusInfoText, moreStatusInfoTextClassName] = useMemo(() => {
-    if (approvalStatus !== FranchiseApprovalStatus.Approved) {
+    if (approvalStatus === FranchiseApprovalStatus.Approved) {
+      if (canRenew) {
+        return ['franchise renewal available', 'text-green-600'];
+      } else if (isExpired && !canRenew) {
+        return [
+          'franchise has fully expired, renewal not possible',
+          'text-red-600',
+        ];
+      }
+
       return [null, null];
     }
 
-    if (canRenew) {
-      return ['franchise renewal available', 'text-green-600'];
-    }
+    return [isRenewal ? 'renewal' : 'registration', null];
+  }, [approvalStatus, isExpired, canRenew, isRenewal]);
 
-    if (isExpired && !canRenew) {
-      return [
-        'franchise has fully expired, renewal not possible',
-        'text-red-600',
-      ];
-    }
+  const expiryDateText = useMemo(() => {
+    const date = dayjs(expiryDate).format('YYYY-MM-DD');
+    return `valid until ${date}`;
+  }, [expiryDate]);
 
-    return [null, null];
-  }, [approvalStatus, isExpired, canRenew]);
+  const approvalDateText = useMemo(() => {
+    const date = dayjs(approvalDate).format('YYYY-MM-DD');
+    return `granted on ${date}`;
+  }, [approvalDate]);
 
   const buttonLabel = useMemo(() => {
     switch (approvalStatus) {
@@ -321,68 +354,71 @@ export const IssuerFranchiseSingle = memo(function ({
               status
             </small>
           </div>
-          {approvalStatus !== FranchiseApprovalStatus.Rejected &&
-            approvalStatus !== FranchiseApprovalStatus.Canceled && (
-              <div className='flex flex-col items-end gap-2'>
-                <CurrentStatus approvalStatus={approvalStatus} />
-                {approvalStatus === FranchiseApprovalStatus.Approved && (
-                  <div className='flex items-center gap-2.5'>
-                    {moreStatusInfoText && (
-                      <>
-                        <small
-                          className={cx('text-xs', moreStatusInfoTextClassName)}
-                        >
-                          {moreStatusInfoText}
-                        </small>
-                        <div className='h-6 border-r border-border' />
-                      </>
-                    )}
-                    <span>valid until {expiryDate}</span>
-                  </div>
-                )}
-              </div>
-            )}
-        </div>
-        {buttonLabel && (
-          <>
-            <div className='my-2.5 w-full border-b border-border' />
-            <div className='flex w-full items-start justify-between gap-2.5'>
-              <div className='flex h-full flex-col items-start gap-2.5 transition-opacity'>
-                {onApproveFranchise && (
-                  <BaseButton
-                    className='h-16 min-w-[210px] !text-base'
-                    variant={
-                      franchise.approvalStatus === FranchiseApprovalStatus.Paid
-                        ? 'accept'
-                        : 'primary'
-                    }
-                    loading={loading}
-                    disabled={!buttonLabel}
-                    onClick={handleActionsOpen(true, true)}
-                  >
-                    {buttonLabel}
-                  </BaseButton>
-                )}
-                <button
-                  className='w-full min-w-[210px] rounded border border-blue-500 py-1.5 text-blue-500 transition-[filter] hover:brightness-150'
-                  onClick={handleDetailsOpen(true)}
+          <div className='flex flex-col items-end gap-2'>
+            <CurrentStatus approvalStatus={approvalStatus} />
+            <div className='flex items-center gap-2.5'>
+              {moreStatusInfoText && (
+                <BaseBadge
+                  className={cx('text-xs', moreStatusInfoTextClassName)}
                 >
-                  {detailButtonLabel}
-                </button>
-              </div>
-              {onApproveFranchise && (
-                <BaseButton
-                  variant='warn'
-                  loading={loading}
-                  disabled={!buttonLabel}
-                  onClick={handleActionsOpen(true, false)}
-                >
-                  Reject Application
-                </BaseButton>
+                  {moreStatusInfoText}
+                </BaseBadge>
+              )}
+              {moreStatusInfoText &&
+                approvalStatus === FranchiseApprovalStatus.Approved && (
+                  <div className='h-6 border-r border-border' />
+                )}
+              {approvalStatus === FranchiseApprovalStatus.Approved && (
+                <div className='flex items-center gap-1.5'>
+                  {approvalDateText && (
+                    <BaseBadge>{approvalDateText}</BaseBadge>
+                  )}
+                  {expiryDateText && <BaseBadge>{expiryDateText}</BaseBadge>}
+                </div>
               )}
             </div>
-          </>
+          </div>
+        </div>
+        {(buttonLabel || detailButtonLabel) && (
+          <div className='my-2.5 w-full border-b border-border' />
         )}
+        <div className='flex w-full items-start justify-between gap-2.5'>
+          <div className='flex h-full flex-col items-start gap-2.5 transition-opacity'>
+            {onApproveFranchise && buttonLabel && (
+              <BaseButton
+                className='h-16 min-w-[210px] !text-base'
+                variant={
+                  franchise.approvalStatus === FranchiseApprovalStatus.Paid
+                    ? 'accept'
+                    : 'primary'
+                }
+                loading={loading}
+                disabled={!buttonLabel}
+                onClick={handleActionsOpen(true, true)}
+              >
+                {buttonLabel}
+              </BaseButton>
+            )}
+            {detailButtonLabel && (
+              <button
+                className='w-full min-w-[210px] rounded border border-blue-500 py-1.5 text-blue-500 transition-[filter] hover:brightness-150'
+                onClick={handleDetailsOpen(true)}
+              >
+                {detailButtonLabel}
+              </button>
+            )}
+          </div>
+          {onApproveFranchise && buttonLabel && (
+            <BaseButton
+              variant='warn'
+              loading={loading}
+              disabled={!buttonLabel}
+              onClick={handleActionsOpen(true, false)}
+            >
+              Reject Application
+            </BaseButton>
+          )}
+        </div>
         <div className='my-2.5 w-full border-b border-border' />
         <div className='flex w-full flex-col items-start gap-6'>
           <FranchiseRecord

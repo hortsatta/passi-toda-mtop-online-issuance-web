@@ -9,6 +9,7 @@ import {
   approveFranchise as approveFranchiseApi,
   getFranchiseById,
 } from '../api/franchise.api';
+import { approveFranchiseRenewal as approveFranchiseRenewalApi } from '../api/franchise-renewal.api';
 
 import type { Franchise } from '../models/franchise.model';
 
@@ -36,41 +37,73 @@ export function useMemberFranchiseSingle(): Result {
     ),
   );
 
-  const { mutateAsync, isPending } = useMutation(
+  const handleApproveSuccess = useCallback(
+    () =>
+      Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: queryFranchiseKey.list,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryFranchiseKey.digestList,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryFranchiseKey.checkSingle,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: [...queryFranchiseKey.single, { id: id ? +id : undefined }],
+        }),
+      ]),
+    [id],
+  );
+
+  const {
+    mutateAsync: mutateApproveFranchise,
+    isPending: isMutateApproveFranchisePending,
+  } = useMutation(
     approveFranchiseApi({
-      onSuccess: () =>
-        Promise.all([
-          queryClient.invalidateQueries({
-            queryKey: queryFranchiseKey.list,
-          }),
-          queryClient.invalidateQueries({
-            queryKey: queryFranchiseKey.digestList,
-          }),
-          queryClient.invalidateQueries({
-            queryKey: queryFranchiseKey.checkSingle,
-          }),
-          queryClient.invalidateQueries({
-            queryKey: [
-              ...queryFranchiseKey.single,
-              { id: id ? +id : undefined },
-            ],
-          }),
-        ]),
+      onSuccess: handleApproveSuccess,
     }),
   );
 
-  const cancelApplication = useCallback(
-    () =>
-      mutateAsync({
-        id: +(id || 0),
-        approvalStatus: FranchiseApprovalStatus.Canceled,
-      }),
-    [id, mutateAsync],
+  const {
+    mutateAsync: mutateApproveFranchiseRenewal,
+    isPending: isMutateApproveFranchiseRenewalPending,
+  } = useMutation(
+    approveFranchiseRenewalApi({
+      onSuccess: handleApproveSuccess,
+    }),
   );
+
+  const cancelApplication = useCallback(async () => {
+    const franchiseRenewal = franchise?.franchiseRenewals.length
+      ? franchise.franchiseRenewals[0]
+      : null;
+
+    if (franchiseRenewal) {
+      const result = await mutateApproveFranchiseRenewal({
+        id: +(franchiseRenewal.id || 0),
+        approvalStatus: FranchiseApprovalStatus.Canceled,
+      });
+
+      return {
+        ...franchise,
+        franchiseRenewals:
+          franchise?.franchiseRenewals.map((fr) =>
+            fr.id === result.id ? result : fr,
+          ) || [],
+      } as Franchise;
+    }
+
+    return mutateApproveFranchise({
+      id: +(id || 0),
+      approvalStatus: FranchiseApprovalStatus.Canceled,
+    });
+  }, [id, franchise, mutateApproveFranchise, mutateApproveFranchiseRenewal]);
 
   return {
     loading: isLoading || isFetching,
-    approvalLoading: isPending,
+    approvalLoading:
+      isMutateApproveFranchisePending || isMutateApproveFranchiseRenewalPending,
     franchise,
     cancelApplication,
   };

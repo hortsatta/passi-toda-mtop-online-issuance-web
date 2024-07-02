@@ -26,21 +26,32 @@ export const RateSheetSingleCard = memo(function ({
   onUpdate,
   ...moreProps
 }: Props) {
-  const [id, rateSheetFees, totalFees, updatedDate] = useMemo(
-    () => [
-      rateSheet.id,
-      (showAll
-        ? rateSheet.rateSheetFees
-        : rateSheet.rateSheetFees.slice(0, MAX_FEES_COUNT - 1)
-      ).map(({ name, amount }) => ({
-        name,
-        amount: convertToCurrency(amount),
-      })),
-      convertToCurrency(rateSheet.rateSheetFees),
-      `as of ${dayjs(rateSheet.updatedAt).format('YYYY-MM-DD')}`,
-    ],
-    [rateSheet, showAll],
-  );
+  const [id, rateSheetFees, rateSheetPenaltyFees, totalFees, updatedDate] =
+    useMemo(
+      () => [
+        rateSheet.id,
+        (showAll
+          ? rateSheet.rateSheetFees.filter((fee) => !fee.isPenalty)
+          : rateSheet.rateSheetFees
+              .filter((fee) => !fee.isPenalty)
+              .slice(0, MAX_FEES_COUNT - 1)
+        ).map(({ name, amount }) => ({
+          name,
+          amount: convertToCurrency(amount),
+        })),
+        rateSheet.rateSheetFees
+          .filter((fee) => fee.isPenalty)
+          .map(({ amount, activatePenaltyAfterExpiryDays }) => ({
+            name: `Penalty after ${activatePenaltyAfterExpiryDays} days`,
+            amount: convertToCurrency(amount),
+          })),
+        convertToCurrency(
+          rateSheet.rateSheetFees.filter((fee) => !fee.isPenalty),
+        ),
+        `as of ${dayjs(rateSheet.updatedAt).format('YYYY-MM-DD')}`,
+      ],
+      [rateSheet, showAll],
+    );
 
   const handleUpdate = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
@@ -87,6 +98,21 @@ export const RateSheetSingleCard = memo(function ({
           ))}
           {!showAll && rateSheet.rateSheetFees.length > MAX_FEES_COUNT && (
             <div>......................</div>
+          )}
+          {showAll && rateSheetPenaltyFees.length && (
+            <div className='my-4 flex flex-col gap-2.5 rounded-sm border border-border px-4 py-2.5'>
+              {rateSheetPenaltyFees.map(({ name, amount }, index) => (
+                <div
+                  key={`p-${index}`}
+                  className='flex w-full items-center justify-between text-sm'
+                >
+                  <span>{name}</span>
+                  <span key={`p-fee-${index}`} className='text-base'>
+                    {amount}
+                  </span>
+                </div>
+              ))}
+            </div>
           )}
         </div>
         <div className='flex w-full items-center justify-end gap-10 font-bold'>

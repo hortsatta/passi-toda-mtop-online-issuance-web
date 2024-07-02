@@ -17,6 +17,9 @@ export type RateSheetFee = Partial<AuditTrail> & {
   id: number;
   name: string;
   amount: number;
+  isPenalty: boolean;
+  activatePenaltyAfterExpiryDays?: number;
+  isPenaltyActive?: boolean;
   rateSheet?: RateSheet;
 };
 

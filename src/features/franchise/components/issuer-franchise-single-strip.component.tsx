@@ -2,6 +2,7 @@ import { memo, useMemo } from 'react';
 import cx from 'classix';
 
 import dayjs from '#/config/dayjs.config';
+import { BaseBadge } from '#/base/components/base-badge.component';
 import { BaseIcon } from '#/base/components/base-icon.component';
 import { FranchiseApprovalStatus } from '../models/franchise.model';
 
@@ -20,6 +21,22 @@ type CurrentStatusProps = {
 };
 
 const CurrentStatus = memo(function ({ approvalStatus }: CurrentStatusProps) {
+  if (
+    approvalStatus === FranchiseApprovalStatus.Canceled ||
+    approvalStatus === FranchiseApprovalStatus.Rejected
+  ) {
+    return (
+      <div className='flex items-end gap-2.5'>
+        <small className='flex items-center gap-1 text-sm uppercase text-red-500'>
+          <BaseIcon name='x-circle' size={16} />
+          {approvalStatus === FranchiseApprovalStatus.Canceled
+            ? 'canceled'
+            : 'rejected'}
+        </small>
+      </div>
+    );
+  }
+
   return (
     <div className='flex items-center gap-2.5'>
       <small
@@ -77,10 +94,12 @@ export const IssuerFranchiseSingleStrip = memo(function ({
     isExpired,
     ownerReverseFullName,
     approvalStatus,
+    approvalDate,
     expiryDate,
     todaAssociationName,
     isDriverOwner,
     driverReverseFullName,
+    isRenewal,
   ] = useMemo(() => {
     const target = franchise.franchiseRenewals.length
       ? franchise.franchiseRenewals[0]
@@ -92,10 +111,12 @@ export const IssuerFranchiseSingleStrip = memo(function ({
       franchise.isExpired,
       franchise.user?.userProfile.reverseFullName,
       target.approvalStatus,
+      target.approvalDate,
       target.expiryDate,
-      target.isDriverOwner,
       target.todaAssociation.name,
+      target.isDriverOwner,
       target.driverProfile?.reverseFullName,
+      !!franchise.franchiseRenewals.length,
     ];
   }, [franchise]);
 
@@ -152,23 +173,43 @@ export const IssuerFranchiseSingleStrip = memo(function ({
     }
   }, [approvalStatus, isExpired]);
 
-  const moreStatusInfoText = useMemo(() => {
-    if (viewOnly) return null;
+  const [moreStatusInfoText, moreStatusInfoTextClassName] = useMemo(() => {
+    if (viewOnly) return [null, null];
 
-    if (approvalStatus === FranchiseApprovalStatus.Approved) {
-      const expiryDateText = dayjs(expiryDate).format('YYYY-MM-DD');
-      return `valid until ${expiryDateText}`;
-    } else if (approvalStatus === FranchiseApprovalStatus.Validated) {
-      return 'select to view payment details';
+    const registrationRenewalText = isRenewal ? 'renewal' : 'registration';
+
+    if (approvalStatus === FranchiseApprovalStatus.Validated) {
+      return [
+        `select to view ${registrationRenewalText} payment details`,
+        'text-green-600',
+      ];
     } else if (
       approvalStatus === FranchiseApprovalStatus.PendingValidation ||
       approvalStatus === FranchiseApprovalStatus.Paid
     ) {
-      return 'select to view further actions';
+      return [
+        `select to view ${registrationRenewalText} actions`,
+        'text-green-600',
+      ];
+    } else if (
+      approvalStatus === FranchiseApprovalStatus.Rejected ||
+      approvalStatus === FranchiseApprovalStatus.Canceled
+    ) {
+      return [registrationRenewalText, null];
     }
 
-    return null;
-  }, [viewOnly, approvalStatus, expiryDate]);
+    return [null, null];
+  }, [viewOnly, approvalStatus, isRenewal]);
+
+  const expiryDateText = useMemo(() => {
+    const date = dayjs(expiryDate).format('YYYY-MM-DD');
+    return `valid until ${date}`;
+  }, [expiryDate]);
+
+  const approvalDateText = useMemo(() => {
+    const date = dayjs(approvalDate).format('YYYY-MM-DD');
+    return `granted on ${date}`;
+  }, [approvalDate]);
 
   return (
     <button
@@ -179,7 +220,7 @@ export const IssuerFranchiseSingleStrip = memo(function ({
       onClick={onDetails}
       {...moreProps}
     >
-      <div className='flex w-full items-center justify-between gap-4'>
+      <div className='flex min-h-[57px] w-full items-center justify-between gap-4'>
         <div className='flex items-center gap-4'>
           <div className='min-w-[80px]'>
             <h4 className='text-2xl font-bold uppercase leading-tight'>
@@ -214,17 +255,23 @@ export const IssuerFranchiseSingleStrip = memo(function ({
             )}
             {statusLabel}
           </span>
-          {moreStatusInfoText && (
-            <small
-              className={cx(
-                'text-xs',
-                approvalStatus !== FranchiseApprovalStatus.Approved &&
-                  'text-green-600',
+          <div className='flex items-center gap-2.5'>
+            {moreStatusInfoText && (
+              <BaseBadge className={moreStatusInfoTextClassName || ''}>
+                {moreStatusInfoText}
+              </BaseBadge>
+            )}
+            {moreStatusInfoText &&
+              approvalStatus === FranchiseApprovalStatus.Approved && (
+                <div className='h-6 border-r border-border' />
               )}
-            >
-              {moreStatusInfoText}
-            </small>
-          )}
+            {approvalStatus === FranchiseApprovalStatus.Approved && (
+              <div className='flex items-center gap-1.5'>
+                {approvalDateText && <BaseBadge>{approvalDateText}</BaseBadge>}
+                {expiryDateText && <BaseBadge>{expiryDateText}</BaseBadge>}
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <div className='w-full border-b border-border' />

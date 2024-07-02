@@ -4,6 +4,7 @@ import cx from 'classix';
 import dayjs from '#/config/dayjs.config';
 import { useBoundStore } from '#/core/hooks/use-store.hook';
 import { BaseIcon } from '#/base/components/base-icon.component';
+import { BaseBadge } from '#/base/components/base-badge.component';
 import { FranchiseApprovalStatus } from '../models/franchise.model';
 
 import type { ComponentProps } from 'react';
@@ -21,54 +22,71 @@ type CurrentStatusProps = {
 };
 
 const CurrentStatus = memo(function ({ approvalStatus }: CurrentStatusProps) {
-  return (
-    <div className='flex items-center gap-2.5'>
-      {approvalStatus === FranchiseApprovalStatus.PendingValidation ? (
-        <small className='animate-pulse text-xs uppercase text-orange-500'>
+  if (approvalStatus === FranchiseApprovalStatus.PendingValidation) {
+    return (
+      <div className='flex items-end gap-2.5'>
+        <small className='flex items-center gap-1 text-sm uppercase text-orange-500'>
+          <BaseIcon name='cube-focus' size={16} />
           verifying application
         </small>
-      ) : (
-        <>
-          <small
-            className={cx(
-              'flex items-center gap-1 text-sm uppercase',
-              approvalStatus === FranchiseApprovalStatus.Validated ||
-                approvalStatus === FranchiseApprovalStatus.Paid ||
-                approvalStatus === FranchiseApprovalStatus.Approved
-                ? 'text-green-500'
-                : 'text-text/40',
-            )}
-          >
-            <BaseIcon name='check-circle' size={16} />
-            verified
-          </small>
-          <div className='w-8 border-b border-border' />
-          <small
-            className={cx(
-              'flex items-center gap-1 text-sm uppercase',
-              approvalStatus === FranchiseApprovalStatus.Paid ||
-                approvalStatus === FranchiseApprovalStatus.Approved
-                ? 'text-green-500'
-                : 'text-text/40',
-            )}
-          >
-            <BaseIcon name='check-circle' size={16} />
-            paid
-          </small>
-          <div className='w-8 border-b border-border' />
-          <small
-            className={cx(
-              'flex items-center gap-1 text-sm uppercase',
-              approvalStatus === FranchiseApprovalStatus.Approved
-                ? 'text-green-500'
-                : 'text-text/40',
-            )}
-          >
-            <BaseIcon name='check-circle' size={16} />
-            approved
-          </small>
-        </>
-      )}
+      </div>
+    );
+  } else if (
+    approvalStatus === FranchiseApprovalStatus.Canceled ||
+    approvalStatus === FranchiseApprovalStatus.Rejected
+  ) {
+    return (
+      <div className='flex items-end gap-2.5'>
+        <small className='flex items-center gap-1 text-sm uppercase text-red-500'>
+          <BaseIcon name='x-circle' size={16} />
+          {approvalStatus === FranchiseApprovalStatus.Canceled
+            ? 'canceled'
+            : 'rejected'}
+        </small>
+      </div>
+    );
+  }
+
+  return (
+    <div className='flex items-center gap-2.5'>
+      <small
+        className={cx(
+          'flex items-center gap-1 text-sm uppercase',
+          approvalStatus === FranchiseApprovalStatus.Validated ||
+            approvalStatus === FranchiseApprovalStatus.Paid ||
+            approvalStatus === FranchiseApprovalStatus.Approved
+            ? 'text-green-500'
+            : 'text-text/40',
+        )}
+      >
+        <BaseIcon name='check-circle' size={16} />
+        verified
+      </small>
+      <div className='w-8 border-b border-border' />
+      <small
+        className={cx(
+          'flex items-center gap-1 text-sm uppercase',
+          approvalStatus === FranchiseApprovalStatus.Paid ||
+            approvalStatus === FranchiseApprovalStatus.Approved
+            ? 'text-green-500'
+            : 'text-text/40',
+        )}
+      >
+        <BaseIcon name='check-circle' size={16} />
+        paid
+      </small>
+      <div className='w-8 border-b border-border' />
+      <small
+        className={cx(
+          'flex items-center gap-1 text-sm uppercase',
+          approvalStatus === FranchiseApprovalStatus.Approved
+            ? 'text-green-500'
+            : 'text-text/40',
+        )}
+      >
+        <BaseIcon name='check-circle' size={16} />
+        approved
+      </small>
     </div>
   );
 });
@@ -87,9 +105,11 @@ export const MemberFranchiseSingleStrip = memo(function ({
     isExpired,
     canRenew,
     approvalStatus,
+    approvalDate,
     expiryDate,
     todaAssociationName,
     driverReverseFullName,
+    isRenewal,
   ] = useMemo(() => {
     const target = franchise.franchiseRenewals.length
       ? franchise.franchiseRenewals[0]
@@ -101,11 +121,13 @@ export const MemberFranchiseSingleStrip = memo(function ({
       franchise.isExpired,
       franchise.canRenew,
       target.approvalStatus,
+      target.approvalDate,
       target.expiryDate,
       target.todaAssociation.name,
       target.isDriverOwner
         ? userProfile?.reverseFullName
         : target.driverProfile?.reverseFullName,
+      !!franchise.franchiseRenewals.length,
     ];
   }, [franchise, userProfile]);
 
@@ -163,7 +185,9 @@ export const MemberFranchiseSingleStrip = memo(function ({
   }, [approvalStatus, isExpired]);
 
   const [moreStatusInfoText, moreStatusInfoTextClassName] = useMemo(() => {
-    if (approvalStatus === FranchiseApprovalStatus.Approved && canRenew) {
+    const registrationRenewalText = isRenewal ? 'renewal' : 'registration';
+
+    if (approvalStatus === FranchiseApprovalStatus.Approved) {
       if (canRenew) {
         return ['select to renew franchise', 'text-green-600'];
       } else if (isExpired && !canRenew) {
@@ -173,17 +197,32 @@ export const MemberFranchiseSingleStrip = memo(function ({
         ];
       }
     } else if (approvalStatus === FranchiseApprovalStatus.Validated) {
-      return ['select to view payment details', 'text-green-600'];
+      return [
+        `select to view ${registrationRenewalText} payment details`,
+        'text-green-600',
+      ];
+    } else if (approvalStatus === FranchiseApprovalStatus.Rejected) {
+      return ['select to view details', 'text-green-600'];
+    } else if (
+      approvalStatus === FranchiseApprovalStatus.PendingValidation ||
+      approvalStatus === FranchiseApprovalStatus.Paid ||
+      approvalStatus === FranchiseApprovalStatus.Canceled
+    ) {
+      return [registrationRenewalText, null];
     }
 
     return [null, null];
-  }, [approvalStatus, isExpired, canRenew]);
+  }, [approvalStatus, isExpired, canRenew, isRenewal]);
 
   const expiryDateText = useMemo(() => {
-    if (approvalStatus !== FranchiseApprovalStatus.Approved) return null;
     const date = dayjs(expiryDate).format('YYYY-MM-DD');
     return `valid until ${date}`;
-  }, [approvalStatus, expiryDate]);
+  }, [expiryDate]);
+
+  const approvalDateText = useMemo(() => {
+    const date = dayjs(approvalDate).format('YYYY-MM-DD');
+    return `granted on ${date}`;
+  }, [approvalDate]);
 
   return (
     <button
@@ -194,7 +233,7 @@ export const MemberFranchiseSingleStrip = memo(function ({
       onClick={onDetails}
       {...moreProps}
     >
-      <div className='flex w-full items-center justify-between gap-4'>
+      <div className='flex min-h-[57px] w-full items-center justify-between gap-4'>
         <div className='flex items-center gap-4'>
           <div className='min-w-[80px]'>
             <h4 className='text-2xl font-bold uppercase leading-tight'>
@@ -231,15 +270,19 @@ export const MemberFranchiseSingleStrip = memo(function ({
           </span>
           <div className='flex items-center gap-2.5'>
             {moreStatusInfoText && (
-              <>
-                <small className={cx('text-xs', moreStatusInfoTextClassName)}>
-                  {moreStatusInfoText}
-                </small>
-                <div className='h-6 border-r border-border' />
-              </>
+              <BaseBadge className={moreStatusInfoTextClassName || ''}>
+                {moreStatusInfoText}
+              </BaseBadge>
             )}
-            {expiryDateText && (
-              <small className='text-xs'>{expiryDateText}</small>
+            {moreStatusInfoText &&
+              approvalStatus === FranchiseApprovalStatus.Approved && (
+                <div className='h-6 border-r border-border' />
+              )}
+            {approvalStatus === FranchiseApprovalStatus.Approved && (
+              <div className='flex items-center gap-1.5'>
+                {approvalDateText && <BaseBadge>{approvalDateText}</BaseBadge>}
+                {expiryDateText && <BaseBadge>{expiryDateText}</BaseBadge>}
+              </div>
             )}
           </div>
         </div>

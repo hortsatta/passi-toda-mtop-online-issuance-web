@@ -1,5 +1,7 @@
 import dayjs from '#/config/dayjs.config';
-import { RateSheetFee } from '#/rate-sheet/models/rate-sheet.model';
+
+import type { RateSheetFeeUpsertFormData } from '#/rate-sheet/models/rate-sheet-form-data.model';
+import type { RateSheetFee } from '#/rate-sheet/models/rate-sheet.model';
 
 export const CENTAVOS = 100;
 
@@ -18,7 +20,7 @@ export function transformAuditTrail(
 }
 
 export function convertToCurrency(
-  target: RateSheetFee[] | number,
+  target: RateSheetFee[] | RateSheetFeeUpsertFormData[] | number,
   isCentavos = true,
 ) {
   if (Array.isArray(target)) {

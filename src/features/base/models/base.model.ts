@@ -16,6 +16,7 @@ export type IconName =
   | 'check-square'
   | 'check-square-offset'
   | 'circle'
+  | 'cube-focus'
   | 'eye'
   | 'eye-slash'
   | 'file-pdf'

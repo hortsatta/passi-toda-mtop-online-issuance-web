@@ -37,12 +37,18 @@ import type { FieldErrors } from 'react-hook-form';
 import type { FormProps, SelectItem } from '#/base/models/base.model';
 import type { User } from '#/user/models/user.model';
 import type { Franchise } from '../models/franchise.model';
-import type { FranchiseUpsertFormData } from '../models/franchise-form-data.model';
+import type { FranchiseRenewal } from '../models/franchise-renewal.model';
+import type { FranchiseRenewalUpsertFormData } from '../models/franchise-renewal-form-data.model';
 import type { DriverProfile } from '#/user/models/driver-profile.model';
 import type { DriverProfileUpsertFormData } from '#/user/models/driver-profile-form-data.model';
 
-type Props = FormProps<'div', FranchiseUpsertFormData, Promise<Franchise>> & {
+type Props = FormProps<
+  'div',
+  FranchiseRenewalUpsertFormData,
+  Promise<FranchiseRenewal>
+> & {
   user: User;
+  franchise: Franchise;
   todaAssociationSelectOptions: SelectItem[];
   driverProfiles: DriverProfile[];
   isFetching?: boolean;
@@ -82,11 +88,6 @@ const driverProfileSchema = z.object({
 
 const schema = z
   .object({
-    mvFileNo: z.string().length(15, 'Invalid MV file number'),
-    plateNo: z
-      .string()
-      .min(3, 'Invalid plate number')
-      .max(7, 'Invalid plate number'),
     vehicleORImgUrl: z
       .string()
       .refine(
@@ -136,6 +137,12 @@ const schema = z
       .string()
       .refine((value) => isBase64(value.split(',').pop() || ''))
       .optional(),
+    franchiseId: z
+      .number({
+        message: 'Invalid franchise',
+      })
+      .int()
+      .gt(0),
   })
   .superRefine((data, ctx) => {
     if (!data.isDriverOwner && !data.driverProfileId && !data.driverProfile) {
@@ -161,9 +168,7 @@ const driverProfileDefaultValues: Partial<DriverProfileUpsertFormData> = {
   email: '',
 };
 
-const defaultValues: Partial<FranchiseUpsertFormData> = {
-  mvFileNo: '',
-  plateNo: '',
+const defaultValues: Partial<FranchiseRenewalUpsertFormData> = {
   vehicleORImgUrl: undefined,
   vehicleCRImgUrl: undefined,
   todaAssocMembershipImgUrl: undefined,
@@ -174,10 +179,12 @@ const defaultValues: Partial<FranchiseUpsertFormData> = {
   isDriverOwner: false,
   voterRegRecordImgUrl: undefined,
   driverProfile: driverProfileDefaultValues,
+  franchiseId: undefined,
 };
 
-export const FranchiseUpsertForm = memo(function ({
+export const FranchiseRenewalUpsertForm = memo(function ({
   className,
+  franchise,
   formData,
   loading: formLoading,
   user: { email: userEmail, userProfile },
@@ -192,8 +199,8 @@ export const FranchiseUpsertForm = memo(function ({
 }: Props) {
   const navigate = useNavigate();
 
-  const setFranchiseFormData = useBoundStore(
-    (state) => state.setFranchiseFormData,
+  const setFranchiseRenewalFormData = useBoundStore(
+    (state) => state.setFranchiseRenewalFormData,
   );
 
   const [selectedDriverInfoValue, setSelectedDriverInfoValue] = useState<
@@ -206,13 +213,18 @@ export const FranchiseUpsertForm = memo(function ({
     handleSubmit,
     setValue,
     reset,
-  } = useForm<FranchiseUpsertFormData>({
+  } = useForm<FranchiseRenewalUpsertFormData>({
     shouldFocusError: false,
     defaultValues: formData || defaultValues,
     resolver: zodResolver(schema),
   });
 
   const isDriverOwner = useWatch({ control, name: 'isDriverOwner' });
+
+  const [mvFileNo, plateNo] = useMemo(
+    () => [franchise.mvFileNo, franchise.plateNo],
+    [franchise],
+  );
 
   const loading = useMemo(
     () => formLoading || isSubmitting || isDone,
@@ -289,7 +301,7 @@ export const FranchiseUpsertForm = memo(function ({
   }, [formData, reset]);
 
   const handleSubmitError = useCallback(
-    (errors: FieldErrors<FranchiseUpsertFormData>) => {
+    (errors: FieldErrors<FranchiseRenewalUpsertFormData>) => {
       const errorMessage = getErrorMessage(errors);
       toast.error(errorMessage || '');
     },
@@ -297,7 +309,7 @@ export const FranchiseUpsertForm = memo(function ({
   );
 
   const submitForm = useCallback(
-    async (data: FranchiseUpsertFormData) => {
+    async (data: FranchiseRenewalUpsertFormData) => {
       try {
         await onSubmit(data);
         const successText = `Registration ${formData ? 'updated' : 'submitted'}`;
@@ -313,8 +325,13 @@ export const FranchiseUpsertForm = memo(function ({
   );
 
   useEffect(() => {
+    setValue('franchiseId', franchise.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [franchise]);
+
+  useEffect(() => {
     return () => {
-      setFranchiseFormData();
+      setFranchiseRenewalFormData();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -335,20 +352,13 @@ export const FranchiseUpsertForm = memo(function ({
           <div className='flex flex-col gap-4'>
             <h4>Vehicle Info</h4>
             <div className='flex w-full flex-1 gap-2.5'>
-              <BaseControlledInput
+              <BaseInput
+                value={mvFileNo}
                 label='MV File No'
-                name='mvFileNo'
-                control={control}
                 fullWidth
-                asterisk
+                disabled
               />
-              <BaseControlledInput
-                label='Plate No'
-                name='plateNo'
-                control={control}
-                fullWidth
-                asterisk
-              />
+              <BaseInput value={plateNo} label='Plate No' fullWidth disabled />
               <BaseControlledInputSelect
                 label='TODA Association'
                 name='todaAssociationId'

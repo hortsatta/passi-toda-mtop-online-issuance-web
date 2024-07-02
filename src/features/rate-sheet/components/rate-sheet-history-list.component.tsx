@@ -53,7 +53,9 @@ export const RateSheetHistoryList = memo(function ({
                   <div className='flex w-full items-center justify-end gap-10 font-bold'>
                     <span className='uppercase'>Total</span>
                     <span className='text-lg'>
-                      {convertToCurrency(rateSheet.rateSheetFees)}
+                      {convertToCurrency(
+                        rateSheet.rateSheetFees.filter((fee) => !fee.isPenalty),
+                      )}
                     </span>
                   </div>
                 </div>

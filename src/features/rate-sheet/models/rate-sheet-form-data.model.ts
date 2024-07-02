@@ -9,4 +9,6 @@ export type RateSheetUpsertFormData = {
 export type RateSheetFeeUpsertFormData = {
   name: string;
   amount: number;
+  isPenalty: boolean;
+  activatePenaltyAfterExpiryDays?: number;
 };

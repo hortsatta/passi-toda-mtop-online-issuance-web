@@ -2,6 +2,7 @@ import { memo, useMemo } from 'react';
 import cx from 'classix';
 
 import dayjs from '#/config/dayjs.config';
+import { BaseBadge } from '#/base/components/base-badge.component';
 import { BaseIcon } from '#/base/components/base-icon.component';
 import { FranchiseApprovalStatus } from '../models/franchise.model';
 
@@ -19,6 +20,22 @@ type CurrentStatusProps = {
 };
 
 const CurrentStatus = memo(function ({ approvalStatus }: CurrentStatusProps) {
+  if (
+    approvalStatus === FranchiseApprovalStatus.Canceled ||
+    approvalStatus === FranchiseApprovalStatus.Rejected
+  ) {
+    return (
+      <div className='flex flex-col gap-0.5'>
+        <small className='flex items-center gap-1 text-sm uppercase text-red-500'>
+          <BaseIcon name='x-circle' size={16} />
+          {approvalStatus === FranchiseApprovalStatus.Canceled
+            ? 'canceled'
+            : 'rejected'}
+        </small>
+      </div>
+    );
+  }
+
   return (
     <div className='flex flex-col gap-0.5'>
       {(approvalStatus === FranchiseApprovalStatus.Validated ||
@@ -58,8 +75,10 @@ export const TreasurerFranchiseSingleCard = memo(function ({
     isExpired,
     reverseFullName,
     approvalStatus,
+    approvalDate,
     expiryDate,
     todaAssociationName,
+    isRenewal,
   ] = useMemo(() => {
     const target = franchise.franchiseRenewals.length
       ? franchise.franchiseRenewals[0]
@@ -71,8 +90,10 @@ export const TreasurerFranchiseSingleCard = memo(function ({
       franchise.isExpired,
       franchise.user?.userProfile.reverseFullName,
       target.approvalStatus,
+      target.approvalDate,
       target.expiryDate,
       target.todaAssociation.name,
+      !!franchise.franchiseRenewals.length,
     ];
   }, [franchise]);
 
@@ -129,21 +150,33 @@ export const TreasurerFranchiseSingleCard = memo(function ({
     }
   }, [approvalStatus, isExpired]);
 
-  const moreStatusInfoText = useMemo(() => {
-    if (approvalStatus === FranchiseApprovalStatus.Approved) {
-      const expiryDateText = dayjs(expiryDate).format('YYYY-MM-DD');
-      return `valid until ${expiryDateText}`;
-    } else if (approvalStatus === FranchiseApprovalStatus.Validated) {
-      return 'select to view payment details';
-    }
+  const [moreStatusInfoText, moreStatusInfoTextClassName] = useMemo(() => {
+    const registrationRenewalText = isRenewal ? 'renewal' : 'registration';
 
-    return null;
-  }, [approvalStatus, expiryDate]);
+    if (approvalStatus === FranchiseApprovalStatus.Validated) {
+      return [
+        `select to view ${registrationRenewalText} payment details`,
+        'text-green-600',
+      ];
+    } else {
+      return [registrationRenewalText, null];
+    }
+  }, [approvalStatus, isRenewal]);
+
+  const expiryDateText = useMemo(() => {
+    const date = dayjs(expiryDate).format('YYYY-MM-DD');
+    return `valid until ${date}`;
+  }, [expiryDate]);
+
+  const approvalDateText = useMemo(() => {
+    const date = dayjs(approvalDate).format('YYYY-MM-DD');
+    return `granted on ${date}`;
+  }, [approvalDate]);
 
   return (
     <button
       className={cx(
-        'relative flex h-80 w-[326px] cursor-pointer flex-col justify-between rounded border border-border bg-backdrop-input px-5 py-4 text-left transition-colors hover:border-primary',
+        'relative flex w-[326px] cursor-pointer flex-col justify-between gap-4 rounded border border-border bg-backdrop-input px-5 py-4 text-left transition-colors hover:border-primary',
         className,
       )}
       onClick={onDetails}
@@ -176,32 +209,36 @@ export const TreasurerFranchiseSingleCard = memo(function ({
         </div>
         <div className='mt-5 w-full border-b border-border' />
       </div>
-      <div className='flex w-full items-end justify-between'>
-        <div className='flex flex-col gap-3'>
-          {moreStatusInfoText && (
-            <small
-              className={cx(
-                'text-xs',
-                approvalStatus !== FranchiseApprovalStatus.Approved &&
-                  'text-green-600',
-              )}
-            >
-              {moreStatusInfoText}
-            </small>
+      <div className='flex min-h-[52px] w-full items-end justify-between'>
+        <span
+          className={cx(
+            'flex items-center gap-1 text-xl font-bold',
+            statusLabelClassName,
           )}
-          <span
-            className={cx(
-              'flex items-center gap-1 text-xl font-bold',
-              statusLabelClassName,
-            )}
-          >
-            {statusLabelIconName && (
-              <BaseIcon name={statusLabelIconName} size={24} />
-            )}
-            {statusLabel}
-          </span>
-        </div>
+        >
+          {statusLabelIconName && (
+            <BaseIcon name={statusLabelIconName} size={24} />
+          )}
+          {statusLabel}
+        </span>
         <CurrentStatus approvalStatus={approvalStatus} />
+      </div>
+      <div className='flex items-center gap-2.5'>
+        {moreStatusInfoText && (
+          <BaseBadge className={moreStatusInfoTextClassName || ''}>
+            {moreStatusInfoText}
+          </BaseBadge>
+        )}
+        {moreStatusInfoText &&
+          approvalStatus === FranchiseApprovalStatus.Approved && (
+            <div className='h-6 border-r border-border' />
+          )}
+        {approvalStatus === FranchiseApprovalStatus.Approved && (
+          <div className='flex gap-1.5'>
+            {approvalDateText && <BaseBadge>{approvalDateText}</BaseBadge>}
+            {expiryDateText && <BaseBadge>{expiryDateText}</BaseBadge>}
+          </div>
+        )}
       </div>
     </button>
   );

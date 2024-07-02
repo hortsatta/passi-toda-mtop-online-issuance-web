@@ -168,7 +168,7 @@ export const FranchiseRecord = memo(function ({
         <div className='grid w-full grid-cols-3 gap-4'>
           <BaseFieldText label='Name'>{driverReverseFullName}</BaseFieldText>
           <BaseFieldText label='Date of Birth'>{driverBirthDate}</BaseFieldText>
-          <BaseFieldText label='Gender'>{driverGender}</BaseFieldText>
+          <BaseFieldText label='Sex'>{driverGender}</BaseFieldText>
           <BaseFieldText label='Civil Status'>
             {driverCivilStatus}
           </BaseFieldText>

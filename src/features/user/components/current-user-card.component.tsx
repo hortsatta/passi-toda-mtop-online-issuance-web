@@ -15,6 +15,7 @@ type Props = ComponentProps<'div'> & {
 export const CurrentUserCard = memo(function ({
   className,
   user: {
+    role,
     userProfile: { fullName },
   },
   signOut,
@@ -25,9 +26,11 @@ export const CurrentUserCard = memo(function ({
       className={cx('flex h-14 overflow-hidden rounded', className)}
       {...moreProps}
     >
-      <div className='flex min-w-52 flex-col items-end justify-center rounded border border-r-0 border-border bg-backdrop-input px-3'>
-        <span className='text-base leading-none text-white/50'>Hello,</span>
+      <div className='flex min-w-52 flex-col items-end justify-center gap-0.5 rounded border border-r-0 border-border bg-backdrop-input px-3'>
         <span className='text-base font-medium'>{fullName}</span>
+        <span className='text-xs uppercase leading-none text-white/50'>
+          {role}
+        </span>
       </div>
       <div className='flex h-full items-center gap-2.5'>
         <div className='flex h-full w-[49px] items-center justify-center rounded-r border border-border bg-backdrop-input px-2'>

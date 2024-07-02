@@ -19,7 +19,19 @@ export const franchiseFeeTypeSelectOptions: SelectItem[] = [
   },
 ];
 
-export const rateSheetFeeDefaultValues: Partial<RateSheetFeeUpsertFormData> = {
-  name: '',
-  amount: undefined,
-};
+export function createRateSheetFeeDefaultValues(
+  isPenalty = false,
+  name?: string,
+): Partial<RateSheetFeeUpsertFormData> {
+  return isPenalty
+    ? {
+        name,
+        amount: undefined,
+        isPenalty: true,
+      }
+    : {
+        name: '',
+        amount: undefined,
+        isPenalty: false,
+      };
+}
