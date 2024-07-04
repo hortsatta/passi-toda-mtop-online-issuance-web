@@ -65,6 +65,12 @@ export const issuerAdminFilterOptions = [
     value: FranchiseApprovalStatus.Canceled,
     label: 'Canceled',
   },
+  {
+    key: 'status-revoked',
+    name: 'status',
+    value: FranchiseApprovalStatus.Revoked,
+    label: 'Revoked',
+  },
 ];
 
 export const treasurerFilterOptions = [

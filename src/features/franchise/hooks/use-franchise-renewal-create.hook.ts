@@ -92,6 +92,7 @@ export function useFranchiseRenewalCreate(): Result {
         data.todaAssocMembershipImgUrl,
         data.driverLicenseNoImgUrl,
         data.brgyClearanceImgUrl,
+        data.ctcCedulaImgUrl,
         data.voterRegRecordImgUrl,
       ].some(
         (imageData) =>

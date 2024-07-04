@@ -10,14 +10,19 @@ import {
 } from '../api/franchise.api';
 import { approveFranchiseRenewal as approveFranchiseRenewalApi } from '../api/franchise-renewal.api';
 
-import { Franchise, FranchiseApprovalStatus } from '../models/franchise.model';
+import type {
+  Franchise,
+  FranchiseApprovalStatus,
+} from '../models/franchise.model';
+import type { FranchiseStatusRemarkUpsertFormData } from '../models/franchise-status-remark-form-data.model';
 
 type Result = {
   loading: boolean;
   approvalLoading: boolean;
-  approveFranchise: (
-    approvalStatus?: FranchiseApprovalStatus,
-  ) => Promise<Franchise>;
+  approveFranchise: (data?: {
+    approvalStatus?: FranchiseApprovalStatus;
+    statusRemarks?: FranchiseStatusRemarkUpsertFormData[];
+  }) => Promise<Franchise>;
   franchise?: Franchise;
 };
 
@@ -76,7 +81,10 @@ export function useIssuerFranchiseSingle(): Result {
   );
 
   const approveFranchise = useCallback(
-    async (approvalStatus?: FranchiseApprovalStatus) => {
+    async (data?: {
+      approvalStatus?: FranchiseApprovalStatus;
+      statusRemarks?: FranchiseStatusRemarkUpsertFormData[];
+    }) => {
       const franchiseRenewal = franchise?.franchiseRenewals.length
         ? franchise.franchiseRenewals[0]
         : null;
@@ -84,7 +92,7 @@ export function useIssuerFranchiseSingle(): Result {
       if (franchiseRenewal) {
         const result = await mutateApproveFranchiseRenewal({
           id: +(franchiseRenewal.id || 0),
-          approvalStatus,
+          data,
         });
 
         return {
@@ -98,7 +106,7 @@ export function useIssuerFranchiseSingle(): Result {
 
       return mutateApproveFranchise({
         id: +(id || 0),
-        approvalStatus,
+        data,
       });
     },
     [id, franchise, mutateApproveFranchise, mutateApproveFranchiseRenewal],

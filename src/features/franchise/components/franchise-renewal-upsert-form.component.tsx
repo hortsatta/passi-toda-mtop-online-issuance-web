@@ -116,6 +116,12 @@ const schema = z
       .string()
       .refine(
         (value) => isBase64(value.split(',').pop() || ''),
+        'Invalid CTC (Cedula)',
+      ),
+    ctcCedulaImgUrl: z
+      .string()
+      .refine(
+        (value) => isBase64(value.split(',').pop() || ''),
         'Invalid Barangay Clearance',
       ),
     todaAssociationId: z
@@ -174,6 +180,7 @@ const defaultValues: Partial<FranchiseRenewalUpsertFormData> = {
   todaAssocMembershipImgUrl: undefined,
   driverLicenseNoImgUrl: undefined,
   brgyClearanceImgUrl: undefined,
+  ctcCedulaImgUrl: undefined,
   todaAssociationId: undefined,
   driverProfileId: undefined,
   isDriverOwner: false,
@@ -414,6 +421,15 @@ export const FranchiseRenewalUpsertForm = memo(function ({
                 <BaseControlledInputUploaderImage
                   label='Barangay Clearance'
                   name='brgyClearanceImgUrl'
+                  control={control}
+                  hideErrorMessage
+                  fullWidth
+                  asterisk
+                  lg
+                />
+                <BaseControlledInputUploaderImage
+                  label='CTC (Cedula)'
+                  name='ctcCedulaImgUrl'
                   control={control}
                   hideErrorMessage
                   fullWidth

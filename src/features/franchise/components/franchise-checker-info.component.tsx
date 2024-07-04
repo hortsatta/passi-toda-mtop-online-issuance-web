@@ -79,6 +79,8 @@ const FranchiseInfo = memo(function ({
         return 'Rejected';
       case FranchiseApprovalStatus.Canceled:
         return 'Canceled';
+      case FranchiseApprovalStatus.Revoked:
+        return 'Revoked';
       default:
         return 'Pending';
     }
@@ -88,7 +90,8 @@ const FranchiseInfo = memo(function ({
     if (
       isExpired ||
       approvalStatus === FranchiseApprovalStatus.Rejected ||
-      approvalStatus === FranchiseApprovalStatus.Canceled
+      approvalStatus === FranchiseApprovalStatus.Canceled ||
+      approvalStatus === FranchiseApprovalStatus.Revoked
     )
       return 'text-red-600';
 
@@ -107,7 +110,8 @@ const FranchiseInfo = memo(function ({
     if (
       isExpired ||
       approvalStatus === FranchiseApprovalStatus.Rejected ||
-      approvalStatus === FranchiseApprovalStatus.Canceled
+      approvalStatus === FranchiseApprovalStatus.Canceled ||
+      approvalStatus === FranchiseApprovalStatus.Revoked
     ) {
       return 'x-circle';
     } else if (approvalStatus === FranchiseApprovalStatus.Approved) {

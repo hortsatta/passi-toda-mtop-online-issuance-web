@@ -2,6 +2,8 @@ import { memo, useMemo } from 'react';
 import cx from 'classix';
 
 import { convertToCurrency } from '#/core/helpers/core.helper';
+import { BaseIcon } from '#/base/components/base-icon.component';
+import { BaseFieldText } from '#/base/components/base-field-text.component';
 
 import type { ComponentProps } from 'react';
 import type { RateSheet } from '../models/rate-sheet.model';
@@ -9,11 +11,13 @@ import type { RateSheet } from '../models/rate-sheet.model';
 type Props = ComponentProps<'div'> & {
   rateSheet: RateSheet;
   label?: string;
+  paymentORNo?: string;
 };
 
 export const RateSheetDetails = memo(function ({
   className,
   rateSheet,
+  paymentORNo,
   children,
   ...moreProps
 }: Props) {
@@ -75,6 +79,17 @@ export const RateSheetDetails = memo(function ({
           <span className='text-lg'>{totalFees}</span>
         </div>
       </div>
+      {!!paymentORNo?.length && (
+        <div className='mt-5 flex items-center justify-between gap-2.5'>
+          <BaseFieldText className='max-w-[200px]' label='Official Receipt No'>
+            {paymentORNo}
+          </BaseFieldText>
+          <div className='flex items-center gap-1 text-lg'>
+            <BaseIcon name='check-circle' size={20} />
+            <span>Paid</span>
+          </div>
+        </div>
+      )}
       {children && <div className='mt-5'>{children}</div>}
     </div>
   );

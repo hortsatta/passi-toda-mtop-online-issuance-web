@@ -7,6 +7,7 @@ import {
   transformToFranchiseValidateDto,
 } from '../helpers/franchise-transform.helper';
 import { generateImageFormData } from '../helpers/franchise-form.helper';
+import { transformToFranchiseStatusRemarkUpsertDto } from '../helpers/franchise-status-remark-transform.helper';
 
 import type {
   UseMutationOptions,
@@ -18,6 +19,7 @@ import type {
   FranchiseApprovalStatus,
 } from '../models/franchise.model';
 import type { FranchiseUpsertFormData } from '../models/franchise-form-data.model';
+import type { FranchiseStatusRemarkUpsertFormData } from '../models/franchise-status-remark-form-data.model';
 
 const BASE_URL = 'franchises';
 const ISSUER_URL = 'issuer';
@@ -388,7 +390,13 @@ export function approveFranchise(
     UseMutationOptions<
       Franchise,
       Error,
-      { id: number; approvalStatus?: FranchiseApprovalStatus },
+      {
+        id: number;
+        data?: {
+          approvalStatus?: FranchiseApprovalStatus;
+          statusRemarks?: FranchiseStatusRemarkUpsertFormData[];
+        };
+      },
       any
     >,
     'mutationFn'
@@ -396,16 +404,63 @@ export function approveFranchise(
 ) {
   const mutationFn = async ({
     id,
-    approvalStatus,
+    data,
   }: {
     id: number;
-    approvalStatus?: FranchiseApprovalStatus;
+    data?: {
+      approvalStatus?: FranchiseApprovalStatus;
+      statusRemarks?: FranchiseStatusRemarkUpsertFormData[];
+    };
   }): Promise<any> => {
     const url = `${BASE_URL}/approve/${id}`;
+    const { approvalStatus, statusRemarks: statusRemarksData } = data || {};
+    const statusRemarks = statusRemarksData?.length
+      ? statusRemarksData.map((sr) =>
+          transformToFranchiseStatusRemarkUpsertDto(sr),
+        )
+      : undefined;
 
     try {
       const franchise = await kyInstance
-        .patch(url, { json: { approvalStatus } })
+        .patch(url, { json: { approvalStatus, statusRemarks } })
+        .json();
+
+      return transformToFranchise(franchise);
+    } catch (error: any) {
+      const apiError = await generateApiError(error);
+      throw apiError;
+    }
+  };
+
+  return { mutationFn, ...options };
+}
+
+export function approveTreasurerFranchise(
+  options?: Omit<
+    UseMutationOptions<
+      Franchise,
+      Error,
+      {
+        id: number;
+        paymentORNo: string;
+      },
+      any
+    >,
+    'mutationFn'
+  >,
+) {
+  const mutationFn = async ({
+    id,
+    paymentORNo,
+  }: {
+    id: number;
+    paymentORNo: string;
+  }): Promise<any> => {
+    const url = `${BASE_URL}/${TREASURER_URL}/approve/${id}`;
+
+    try {
+      const franchise = await kyInstance
+        .patch(url, { json: { paymentORNo } })
         .json();
 
       return transformToFranchise(franchise);

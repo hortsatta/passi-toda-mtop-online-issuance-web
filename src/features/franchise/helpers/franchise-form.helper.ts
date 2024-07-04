@@ -25,6 +25,10 @@ export async function generateImageFormData(
       name: 'brgyClearanceImgUrl-brgy_clearance',
     },
     {
+      imageData: data.ctcCedulaImgUrl,
+      name: 'ctcCedulaImgUrl-ctc_cedula',
+    },
+    {
       imageData: data.voterRegRecordImgUrl,
       name: 'voterRegRecordImgUrl-voter_reg_record',
     },

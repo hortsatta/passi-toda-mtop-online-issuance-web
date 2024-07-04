@@ -5,17 +5,17 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { queryClient } from '#/config/react-query-client.config';
 import { queryFranchiseKey } from '#/config/react-query-keys.config';
 import {
-  approveFranchise as approveFranchiseApi,
+  approveTreasurerFranchise as approveTreasurerFranchiseApi,
   getFranchiseByIdAsTreasurer,
 } from '../api/franchise.api';
-import { approveFranchiseRenewal as approveFranchiseRenewalApi } from '../api/franchise-renewal.api';
+import { approveTreasurerFranchiseRenewal as approveTreasurerFranchiseRenewalApi } from '../api/franchise-renewal.api';
 
-import { Franchise, FranchiseApprovalStatus } from '../models/franchise.model';
+import { Franchise } from '../models/franchise.model';
 
 type Result = {
   loading: boolean;
   approvalLoading: boolean;
-  approveFranchise: () => Promise<Franchise>;
+  approveFranchise: (paymentORNo: string) => Promise<Franchise>;
   franchise?: Franchise;
 };
 
@@ -59,7 +59,7 @@ export function useTreasurerFranchiseSingle(): Result {
     mutateAsync: mutateApproveFranchise,
     isPending: isMutateApproveFranchisePending,
   } = useMutation(
-    approveFranchiseApi({
+    approveTreasurerFranchiseApi({
       onSuccess: handleApproveSuccess,
     }),
   );
@@ -68,36 +68,39 @@ export function useTreasurerFranchiseSingle(): Result {
     mutateAsync: mutateApproveFranchiseRenewal,
     isPending: isMutateApproveFranchiseRenewalPending,
   } = useMutation(
-    approveFranchiseRenewalApi({
+    approveTreasurerFranchiseRenewalApi({
       onSuccess: handleApproveSuccess,
     }),
   );
 
-  const approveFranchise = useCallback(async () => {
-    const franchiseRenewal = franchise?.franchiseRenewals.length
-      ? franchise.franchiseRenewals[0]
-      : null;
+  const approveFranchise = useCallback(
+    async (paymentORNo: string) => {
+      const franchiseRenewal = franchise?.franchiseRenewals.length
+        ? franchise.franchiseRenewals[0]
+        : null;
 
-    if (franchiseRenewal) {
-      const result = await mutateApproveFranchiseRenewal({
-        id: +(franchiseRenewal.id || 0),
-        approvalStatus: FranchiseApprovalStatus.Paid,
+      if (franchiseRenewal) {
+        const result = await mutateApproveFranchiseRenewal({
+          id: +(franchiseRenewal.id || 0),
+          paymentORNo,
+        });
+
+        return {
+          ...franchise,
+          franchiseRenewals:
+            franchise?.franchiseRenewals.map((fr) =>
+              fr.id === result.id ? result : fr,
+            ) || [],
+        } as Franchise;
+      }
+
+      return mutateApproveFranchise({
+        id: +(id || 0),
+        paymentORNo,
       });
-
-      return {
-        ...franchise,
-        franchiseRenewals:
-          franchise?.franchiseRenewals.map((fr) =>
-            fr.id === result.id ? result : fr,
-          ) || [],
-      } as Franchise;
-    }
-
-    return mutateApproveFranchise({
-      id: +(id || 0),
-      approvalStatus: FranchiseApprovalStatus.Paid,
-    });
-  }, [id, franchise, mutateApproveFranchise, mutateApproveFranchiseRenewal]);
+    },
+    [id, franchise, mutateApproveFranchise, mutateApproveFranchiseRenewal],
+  );
 
   return {
     loading: isLoading || isFetching,

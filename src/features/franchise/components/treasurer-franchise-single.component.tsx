@@ -22,7 +22,7 @@ import type { Franchise } from '../models/franchise.model';
 type Props = ComponentProps<'div'> & {
   franchise: Franchise;
   rateSheets: RateSheet[];
-  onApproveFranchise?: () => Promise<Franchise>;
+  onApproveFranchise?: (paymentORNo: string) => Promise<Franchise>;
   loading?: boolean;
 };
 
@@ -31,6 +31,17 @@ type CurrentStatusProps = {
 };
 
 const CurrentStatus = memo(function ({ approvalStatus }: CurrentStatusProps) {
+  const statusLabel = useMemo(() => {
+    switch (approvalStatus) {
+      case FranchiseApprovalStatus.Canceled:
+        return 'canceled';
+      case FranchiseApprovalStatus.Rejected:
+        return 'rejected';
+      case FranchiseApprovalStatus.Revoked:
+        return 'revoked';
+    }
+  }, [approvalStatus]);
+
   if (
     approvalStatus === FranchiseApprovalStatus.Canceled ||
     approvalStatus === FranchiseApprovalStatus.Rejected
@@ -39,9 +50,7 @@ const CurrentStatus = memo(function ({ approvalStatus }: CurrentStatusProps) {
       <div className='flex items-end gap-2.5'>
         <small className='flex items-center gap-1 text-base uppercase text-red-500'>
           <BaseIcon name='x-circle' size={16} />
-          {approvalStatus === FranchiseApprovalStatus.Canceled
-            ? 'canceled'
-            : 'rejected'}
+          {statusLabel}
         </small>
       </div>
     );
@@ -133,6 +142,18 @@ export const TreasurerFranchiseSingle = memo(function ({
     ];
   }, [franchise]);
 
+  const paymentORNo = useMemo(() => {
+    if (
+      approvalStatus === FranchiseApprovalStatus.Canceled ||
+      approvalStatus === FranchiseApprovalStatus.Rejected ||
+      approvalStatus === FranchiseApprovalStatus.PendingValidation ||
+      approvalStatus === FranchiseApprovalStatus.Validated
+    )
+      return undefined;
+
+    return franchise.paymentORNo;
+  }, [approvalStatus, franchise]);
+
   const currentRateSheet = useMemo(
     () =>
       rateSheets.find((rateSheet) => {
@@ -156,6 +177,8 @@ export const TreasurerFranchiseSingle = memo(function ({
         return 'Rejected';
       case FranchiseApprovalStatus.Canceled:
         return 'Canceled';
+      case FranchiseApprovalStatus.Revoked:
+        return 'Revoked';
       default:
         return 'Pending Verification';
     }
@@ -165,6 +188,7 @@ export const TreasurerFranchiseSingle = memo(function ({
     switch (approvalStatus) {
       case FranchiseApprovalStatus.Rejected:
       case FranchiseApprovalStatus.Canceled:
+      case FranchiseApprovalStatus.Revoked:
         return 'text-red-600';
       case FranchiseApprovalStatus.PendingValidation:
       case FranchiseApprovalStatus.Validated:
@@ -180,7 +204,8 @@ export const TreasurerFranchiseSingle = memo(function ({
   const statusLabelIconName = useMemo(() => {
     if (
       approvalStatus === FranchiseApprovalStatus.Rejected ||
-      approvalStatus === FranchiseApprovalStatus.Canceled
+      approvalStatus === FranchiseApprovalStatus.Canceled ||
+      approvalStatus === FranchiseApprovalStatus.Revoked
     ) {
       return 'x-circle';
     } else if (
@@ -245,17 +270,24 @@ export const TreasurerFranchiseSingle = memo(function ({
     setOpenDetails(false);
   }, []);
 
-  const handleApproveFranchise = useCallback(async () => {
-    if (!onApproveFranchise) return;
+  const handleApproveFranchise = useCallback(
+    async (paymentORNo: string) => {
+      if (!onApproveFranchise) return;
 
-    try {
-      await onApproveFranchise();
-      handleDetailsActionsModalClose();
-      toast.success('Application marked as paid and awaiting approval');
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  }, [onApproveFranchise, handleDetailsActionsModalClose]);
+      if (!paymentORNo.length) {
+        toast.error('Invalid OR number');
+      }
+
+      try {
+        await onApproveFranchise(paymentORNo);
+        handleDetailsActionsModalClose();
+        toast.success('Application marked as paid and awaiting approval');
+      } catch (error: any) {
+        toast.error(error.message);
+      }
+    },
+    [onApproveFranchise, handleDetailsActionsModalClose],
+  );
 
   const handleDetailsOpen = useCallback(
     (open: boolean) => () => {
@@ -306,7 +338,8 @@ export const TreasurerFranchiseSingle = memo(function ({
                 (approvalStatus === FranchiseApprovalStatus.Paid ||
                   approvalStatus === FranchiseApprovalStatus.Approved ||
                   approvalStatus === FranchiseApprovalStatus.Rejected ||
-                  approvalStatus === FranchiseApprovalStatus.Canceled) &&
+                  approvalStatus === FranchiseApprovalStatus.Canceled ||
+                  approvalStatus === FranchiseApprovalStatus.Revoked) &&
                   'pl-8',
               )}
             >
@@ -324,15 +357,20 @@ export const TreasurerFranchiseSingle = memo(function ({
                 </BaseBadge>
               )}
               {moreStatusInfoText &&
-                approvalStatus === FranchiseApprovalStatus.Approved && (
+                (approvalStatus === FranchiseApprovalStatus.Approved ||
+                  approvalStatus === FranchiseApprovalStatus.Revoked) && (
                   <div className='h-6 border-r border-border' />
                 )}
-              {approvalStatus === FranchiseApprovalStatus.Approved && (
+              {(approvalStatus === FranchiseApprovalStatus.Approved ||
+                approvalStatus === FranchiseApprovalStatus.Revoked) && (
                 <div className='flex items-center gap-1.5'>
                   {approvalDateText && (
                     <BaseBadge>{approvalDateText}</BaseBadge>
                   )}
-                  {expiryDateText && <BaseBadge>{expiryDateText}</BaseBadge>}
+                  {expiryDateText &&
+                    approvalStatus === FranchiseApprovalStatus.Approved && (
+                      <BaseBadge>{expiryDateText}</BaseBadge>
+                    )}
                 </div>
               )}
             </div>
@@ -382,7 +420,10 @@ export const TreasurerFranchiseSingle = memo(function ({
         onClose={handleDetailsActionsModalClose}
       >
         {openDetails && currentRateSheet && (
-          <RateSheetDetails rateSheet={currentRateSheet} />
+          <RateSheetDetails
+            rateSheet={currentRateSheet}
+            paymentORNo={paymentORNo}
+          />
         )}
         {openActions && currentRateSheet && handleApproveFranchise && (
           <FranchiseApplicationActions
@@ -390,7 +431,7 @@ export const TreasurerFranchiseSingle = memo(function ({
             isApprove={isActionApprove}
             franchise={franchise}
             rateSheet={currentRateSheet}
-            onApproveFranchise={handleApproveFranchise}
+            onApproveTreasurerFranchise={handleApproveFranchise}
             isTreasurer
           />
         )}

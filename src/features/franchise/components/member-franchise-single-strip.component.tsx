@@ -22,6 +22,17 @@ type CurrentStatusProps = {
 };
 
 const CurrentStatus = memo(function ({ approvalStatus }: CurrentStatusProps) {
+  const statusLabel = useMemo(() => {
+    switch (approvalStatus) {
+      case FranchiseApprovalStatus.Canceled:
+        return 'canceled';
+      case FranchiseApprovalStatus.Rejected:
+        return 'rejected';
+      case FranchiseApprovalStatus.Revoked:
+        return 'revoked';
+    }
+  }, [approvalStatus]);
+
   if (approvalStatus === FranchiseApprovalStatus.PendingValidation) {
     return (
       <div className='flex items-end gap-2.5'>
@@ -39,9 +50,7 @@ const CurrentStatus = memo(function ({ approvalStatus }: CurrentStatusProps) {
       <div className='flex items-end gap-2.5'>
         <small className='flex items-center gap-1 text-sm uppercase text-red-500'>
           <BaseIcon name='x-circle' size={16} />
-          {approvalStatus === FranchiseApprovalStatus.Canceled
-            ? 'canceled'
-            : 'rejected'}
+          {statusLabel}
         </small>
       </div>
     );
@@ -145,6 +154,8 @@ export const MemberFranchiseSingleStrip = memo(function ({
         return 'Rejected';
       case FranchiseApprovalStatus.Canceled:
         return 'Canceled';
+      case FranchiseApprovalStatus.Revoked:
+        return 'Revoked';
       default:
         return 'Pending Verification';
     }
@@ -154,7 +165,8 @@ export const MemberFranchiseSingleStrip = memo(function ({
     if (
       isExpired ||
       approvalStatus === FranchiseApprovalStatus.Rejected ||
-      approvalStatus === FranchiseApprovalStatus.Canceled
+      approvalStatus === FranchiseApprovalStatus.Canceled ||
+      approvalStatus === FranchiseApprovalStatus.Revoked
     )
       return 'text-red-600';
 
@@ -174,7 +186,8 @@ export const MemberFranchiseSingleStrip = memo(function ({
     if (
       isExpired ||
       approvalStatus === FranchiseApprovalStatus.Rejected ||
-      approvalStatus === FranchiseApprovalStatus.Canceled
+      approvalStatus === FranchiseApprovalStatus.Canceled ||
+      approvalStatus === FranchiseApprovalStatus.Revoked
     ) {
       return 'x-circle';
     } else if (approvalStatus === FranchiseApprovalStatus.Approved) {
@@ -275,13 +288,18 @@ export const MemberFranchiseSingleStrip = memo(function ({
               </BaseBadge>
             )}
             {moreStatusInfoText &&
-              approvalStatus === FranchiseApprovalStatus.Approved && (
+              (approvalStatus === FranchiseApprovalStatus.Approved ||
+                approvalStatus === FranchiseApprovalStatus.Revoked) && (
                 <div className='h-6 border-r border-border' />
               )}
-            {approvalStatus === FranchiseApprovalStatus.Approved && (
+            {(approvalStatus === FranchiseApprovalStatus.Approved ||
+              approvalStatus === FranchiseApprovalStatus.Revoked) && (
               <div className='flex items-center gap-1.5'>
                 {approvalDateText && <BaseBadge>{approvalDateText}</BaseBadge>}
-                {expiryDateText && <BaseBadge>{expiryDateText}</BaseBadge>}
+                {expiryDateText &&
+                  approvalStatus === FranchiseApprovalStatus.Approved && (
+                    <BaseBadge>{expiryDateText}</BaseBadge>
+                  )}
               </div>
             )}
           </div>

@@ -4,6 +4,7 @@ import type { DriverProfile } from '#/user/models/driver-profile.model';
 import type { TodaAssociation } from '#/toda-association/models/toda-association.model';
 import type { FranchiseUpsertFormData } from './franchise-form-data.model';
 import type { FranchiseRenewal } from './franchise-renewal.model';
+import type { FranchiseStatusRemark } from './franchise-status-remark.model';
 
 export enum FranchiseApprovalStatus {
   PendingValidation = 'pending-validation',
@@ -12,6 +13,7 @@ export enum FranchiseApprovalStatus {
   Approved = 'approved',
   Rejected = 'rejected',
   Canceled = 'canceled',
+  Revoked = 'revoked',
 }
 
 export type Franchise = Partial<AuditTrail> & {
@@ -23,6 +25,7 @@ export type Franchise = Partial<AuditTrail> & {
   todaAssocMembershipImgUrl: string;
   driverLicenseNoImgUrl: string;
   brgyClearanceImgUrl: string;
+  ctcCedulaImgUrl: string;
   approvalStatus: FranchiseApprovalStatus;
   approvalDate: Date | null;
   expiryDate: Date | null;
@@ -30,6 +33,8 @@ export type Franchise = Partial<AuditTrail> & {
   franchiseRenewals: FranchiseRenewal[];
   isDriverOwner: boolean;
   driverProfile?: DriverProfile;
+  paymentORNo?: string;
+  franchiseStatusRemarks?: FranchiseStatusRemark[];
   voterRegRecordImgUrl?: string;
   isExpired?: boolean;
   canRenew?: boolean;

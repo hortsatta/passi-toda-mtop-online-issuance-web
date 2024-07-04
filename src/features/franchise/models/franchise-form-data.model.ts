@@ -9,6 +9,7 @@ export type FranchiseUpsertFormData = {
   todaAssocMembershipImgUrl: string;
   driverLicenseNoImgUrl: string;
   brgyClearanceImgUrl: string;
+  ctcCedulaImgUrl: string;
   todaAssociationId: number;
   voterRegRecordImgUrl?: string;
   driverProfile?: Partial<DriverProfileUpsertFormData>;

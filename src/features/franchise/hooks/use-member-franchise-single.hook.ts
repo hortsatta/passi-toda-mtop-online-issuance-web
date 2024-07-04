@@ -12,12 +12,15 @@ import {
 import { approveFranchiseRenewal as approveFranchiseRenewalApi } from '../api/franchise-renewal.api';
 
 import type { Franchise } from '../models/franchise.model';
+import type { FranchiseStatusRemarkUpsertFormData } from '../models/franchise-status-remark-form-data.model';
 
 type Result = {
   loading: boolean;
   approvalLoading: boolean;
   franchise?: Franchise;
-  cancelApplication: () => Promise<Franchise>;
+  cancelApplication: (
+    statusRemarks?: FranchiseStatusRemarkUpsertFormData[],
+  ) => Promise<Franchise>;
 };
 
 export function useMemberFranchiseSingle(): Result {
@@ -74,31 +77,39 @@ export function useMemberFranchiseSingle(): Result {
     }),
   );
 
-  const cancelApplication = useCallback(async () => {
-    const franchiseRenewal = franchise?.franchiseRenewals.length
-      ? franchise.franchiseRenewals[0]
-      : null;
+  const cancelApplication = useCallback(
+    async (statusRemarks?: FranchiseStatusRemarkUpsertFormData[]) => {
+      const franchiseRenewal = franchise?.franchiseRenewals.length
+        ? franchise.franchiseRenewals[0]
+        : null;
 
-    if (franchiseRenewal) {
-      const result = await mutateApproveFranchiseRenewal({
-        id: +(franchiseRenewal.id || 0),
+      const data = {
         approvalStatus: FranchiseApprovalStatus.Canceled,
+        statusRemarks,
+      };
+
+      if (franchiseRenewal) {
+        const result = await mutateApproveFranchiseRenewal({
+          id: +(franchiseRenewal.id || 0),
+          data,
+        });
+
+        return {
+          ...franchise,
+          franchiseRenewals:
+            franchise?.franchiseRenewals.map((fr) =>
+              fr.id === result.id ? result : fr,
+            ) || [],
+        } as Franchise;
+      }
+
+      return mutateApproveFranchise({
+        id: +(id || 0),
+        data,
       });
-
-      return {
-        ...franchise,
-        franchiseRenewals:
-          franchise?.franchiseRenewals.map((fr) =>
-            fr.id === result.id ? result : fr,
-          ) || [],
-      } as Franchise;
-    }
-
-    return mutateApproveFranchise({
-      id: +(id || 0),
-      approvalStatus: FranchiseApprovalStatus.Canceled,
-    });
-  }, [id, franchise, mutateApproveFranchise, mutateApproveFranchiseRenewal]);
+    },
+    [id, franchise, mutateApproveFranchise, mutateApproveFranchiseRenewal],
+  );
 
   return {
     loading: isLoading || isFetching,

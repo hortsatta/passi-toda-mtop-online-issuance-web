@@ -6,9 +6,11 @@ import { capitalize } from '#/core/helpers/string.helper';
 import { BaseFieldImg } from '#/base/components/base-field-img.component';
 import { BaseFieldText } from '#/base/components/base-field-text.component';
 import { UserCivilStatus } from '#/user/models/user.model';
+import { fieldNames } from '../config/franchise.config';
 
-import type { ComponentProps } from 'react';
+import type { ComponentProps, Dispatch, SetStateAction } from 'react';
 import type { Franchise } from '../models/franchise.model';
+import type { FranchiseStatusFieldError } from '../models/franchise-status-remark.model';
 
 type CurrentImg = {
   src: string | null;
@@ -18,12 +20,18 @@ type CurrentImg = {
 type Props = ComponentProps<'div'> & {
   franchise: Franchise;
   setCurrentImg: (value: CurrentImg) => void;
+  fieldErrors?: FranchiseStatusFieldError[];
+  canHighlight?: boolean;
+  setFieldErrors?: Dispatch<SetStateAction<FranchiseStatusFieldError[]>>;
 };
 
 export const FranchiseRecord = memo(function ({
   className,
   franchise,
+  fieldErrors,
+  canHighlight,
   setCurrentImg,
+  setFieldErrors,
   ...moreProps
 }: Props) {
   const [mvFileNo, plateNo] = useMemo(
@@ -32,12 +40,14 @@ export const FranchiseRecord = memo(function ({
   );
 
   const [
+    statusFieldRemarks,
     todaAssociationName,
     vehicleORImgUrl,
     vehicleCRImgUrl,
     todaAssocMembershipImgUrl,
     driverLicenseNoImgUrl,
     brgyClearanceImgUrl,
+    ctcCedulaImgUrl,
     voterRegRecordImgUrl,
     driverInfoText,
     driverProfile,
@@ -47,12 +57,14 @@ export const FranchiseRecord = memo(function ({
       : franchise;
 
     return [
+      target.franchiseStatusRemarks?.filter((sr) => sr.fieldName?.length) || [],
       target.todaAssociation.name,
       target.vehicleORImgUrl,
       target.vehicleCRImgUrl,
       target.todaAssocMembershipImgUrl,
       target.driverLicenseNoImgUrl,
       target.brgyClearanceImgUrl,
+      target.ctcCedulaImgUrl,
       target.voterRegRecordImgUrl,
       target.isDriverOwner ? 'Owner and Driver Info' : 'Driver Info',
       target.isDriverOwner
@@ -88,12 +100,33 @@ export const FranchiseRecord = memo(function ({
     [driverProfile],
   );
 
+  const getError = useCallback(
+    (fieldError: FranchiseStatusFieldError) =>
+      canHighlight
+        ? fieldErrors?.some((fe) => fe.name === fieldError.name)
+        : statusFieldRemarks.some((sr) => sr.fieldName === fieldError.name),
+    [canHighlight, fieldErrors, statusFieldRemarks],
+  );
+
   const handleImgClick = useCallback(
     (src: string | null, title = '') =>
       () => {
         setCurrentImg({ src, title });
       },
     [setCurrentImg],
+  );
+
+  const handleFieldClick = useCallback(
+    (value: FranchiseStatusFieldError) => () => {
+      if (!setFieldErrors) return;
+
+      const exist = fieldErrors?.some((fe) => fe.name === value.name);
+      const newValue = exist
+        ? (fieldErrors || []).filter((fe) => fe.name !== value.name)
+        : [...(fieldErrors || []), value];
+      setFieldErrors(newValue);
+    },
+    [fieldErrors, setFieldErrors],
   );
 
   return (
@@ -104,9 +137,34 @@ export const FranchiseRecord = memo(function ({
       <div className='flex w-full flex-1 flex-col gap-4'>
         <h4>Vehicle Info</h4>
         <div className='flex flex-1 gap-4'>
-          <BaseFieldText label='Plate No'>{plateNo}</BaseFieldText>
-          <BaseFieldText label='MV File No'>{mvFileNo}</BaseFieldText>
-          <BaseFieldText label='TODA Association'>
+          <BaseFieldText
+            label='Plate No'
+            error={getError(fieldNames.plateNo)}
+            onClick={
+              canHighlight ? handleFieldClick(fieldNames.plateNo) : undefined
+            }
+          >
+            {plateNo}
+          </BaseFieldText>
+          <BaseFieldText
+            label='MV File No'
+            error={getError(fieldNames.mvFileNo)}
+            onClick={
+              canHighlight ? handleFieldClick(fieldNames.mvFileNo) : undefined
+            }
+          >
+            {mvFileNo}
+          </BaseFieldText>
+
+          <BaseFieldText
+            label='TODA Association'
+            error={getError(fieldNames.todaAssociation)}
+            onClick={
+              canHighlight
+                ? handleFieldClick(fieldNames.todaAssociation)
+                : undefined
+            }
+          >
             {todaAssociationName}
           </BaseFieldText>
         </div>
@@ -117,70 +175,201 @@ export const FranchiseRecord = memo(function ({
           <BaseFieldImg
             src={vehicleORImgUrl}
             label='Vehicle Official Receipt (OR)'
+            error={getError(fieldNames.vehicleORImgUrl)}
             onClick={handleImgClick(
               vehicleORImgUrl,
               'Vehicle Official Receipt (OR)',
             )}
+            onWrapperClick={
+              canHighlight
+                ? handleFieldClick(fieldNames.vehicleORImgUrl)
+                : undefined
+            }
           />
           <BaseFieldImg
             src={vehicleCRImgUrl}
             label='Vehicle Certificate of Registration (CR)'
+            error={getError(fieldNames.vehicleCRImgUrl)}
             onClick={handleImgClick(
               vehicleCRImgUrl,
               'Vehicle Certificate of Registration (CR)',
             )}
+            onWrapperClick={
+              canHighlight
+                ? handleFieldClick(fieldNames.vehicleCRImgUrl)
+                : undefined
+            }
           />
           <BaseFieldImg
             src={todaAssocMembershipImgUrl}
             label='TODA Association Membership'
+            error={getError(fieldNames.todaAssocMembershipImgUrl)}
             onClick={handleImgClick(
               todaAssocMembershipImgUrl,
               'TODA Association Membership',
             )}
+            onWrapperClick={
+              canHighlight
+                ? handleFieldClick(fieldNames.todaAssocMembershipImgUrl)
+                : undefined
+            }
           />
         </div>
         <div className='grid grid-cols-3 gap-4'>
           <BaseFieldImg
             src={driverLicenseNoImgUrl}
             label={`Driver's License No`}
+            error={getError(fieldNames.driverLicenseNoImgUrl)}
             onClick={handleImgClick(
               driverLicenseNoImgUrl,
               `Driver's License No`,
             )}
+            onWrapperClick={
+              canHighlight
+                ? handleFieldClick(fieldNames.driverLicenseNoImgUrl)
+                : undefined
+            }
           />
           <BaseFieldImg
             src={brgyClearanceImgUrl}
             label='Barangay Clearance'
+            error={getError(fieldNames.brgyClearanceImgUrl)}
             onClick={handleImgClick(brgyClearanceImgUrl, 'Barangay Clearance')}
+            onWrapperClick={
+              canHighlight
+                ? handleFieldClick(fieldNames.brgyClearanceImgUrl)
+                : undefined
+            }
+          />
+          <BaseFieldImg
+            src={ctcCedulaImgUrl}
+            label='CTC (Cedula)'
+            error={getError(fieldNames.ctcCedulaImgUrl)}
+            onClick={handleImgClick(ctcCedulaImgUrl, 'CTC (Cedula)')}
+            onWrapperClick={
+              canHighlight
+                ? handleFieldClick(fieldNames.ctcCedulaImgUrlImgUrl)
+                : undefined
+            }
           />
           <BaseFieldImg
             src={voterRegRecordImgUrl}
             label={`Voter's Registration Record`}
+            error={getError(fieldNames.voterRegRecordImgUrl)}
             onClick={handleImgClick(
               voterRegRecordImgUrl || null,
               `Voter's Registration Record`,
             )}
+            onWrapperClick={
+              canHighlight
+                ? handleFieldClick(fieldNames.voterRegRecordImgUrl)
+                : undefined
+            }
           />
         </div>
       </div>
       <div className='flex w-full flex-1 flex-col gap-4'>
         <h4>{driverInfoText}</h4>
         <div className='grid w-full grid-cols-3 gap-4'>
-          <BaseFieldText label='Name'>{driverReverseFullName}</BaseFieldText>
-          <BaseFieldText label='Date of Birth'>{driverBirthDate}</BaseFieldText>
-          <BaseFieldText label='Sex'>{driverGender}</BaseFieldText>
-          <BaseFieldText label='Civil Status'>
+          <BaseFieldText
+            label='Name'
+            error={getError(fieldNames.driverFullName)}
+            onClick={
+              canHighlight
+                ? handleFieldClick(fieldNames.driverFullName)
+                : undefined
+            }
+          >
+            {driverReverseFullName}
+          </BaseFieldText>
+          <BaseFieldText
+            label='Date of Birth'
+            error={getError(fieldNames.driverBirthDate)}
+            onClick={
+              canHighlight
+                ? handleFieldClick(fieldNames.driverBirthDate)
+                : undefined
+            }
+          >
+            {driverBirthDate}
+          </BaseFieldText>
+          <BaseFieldText
+            label='Sex'
+            error={getError(fieldNames.driverGender)}
+            onClick={
+              canHighlight
+                ? handleFieldClick(fieldNames.driverGender)
+                : undefined
+            }
+          >
+            {driverGender}
+          </BaseFieldText>
+          <BaseFieldText
+            label='Civil Status'
+            error={getError(fieldNames.driverCivilStatus)}
+            onClick={
+              canHighlight
+                ? handleFieldClick(fieldNames.driverCivilStatus)
+                : undefined
+            }
+          >
             {driverCivilStatus}
           </BaseFieldText>
-          <BaseFieldText label='Religion'>{driverReligion}</BaseFieldText>
-          <BaseFieldText label='Address'>{driverAddress}</BaseFieldText>
-          <BaseFieldText label='Phone Number'>
+          <BaseFieldText
+            label='Religion'
+            error={getError(fieldNames.driverReligion)}
+            onClick={
+              canHighlight
+                ? handleFieldClick(fieldNames.driverReligion)
+                : undefined
+            }
+          >
+            {driverReligion}
+          </BaseFieldText>
+          <BaseFieldText
+            label='Address'
+            error={getError(fieldNames.driverAddress)}
+            onClick={
+              canHighlight
+                ? handleFieldClick(fieldNames.driverAddress)
+                : undefined
+            }
+          >
+            {driverAddress}
+          </BaseFieldText>
+          <BaseFieldText
+            label='Phone Number'
+            error={getError(fieldNames.driverPhoneNumber)}
+            onClick={
+              canHighlight
+                ? handleFieldClick(fieldNames.driverPhoneNumber)
+                : undefined
+            }
+          >
             {driverPhoneNumber}
           </BaseFieldText>
-          <BaseFieldText label={`Driver's License`}>
+          <BaseFieldText
+            label={`Driver's License`}
+            error={getError(fieldNames.driverLicenseNo)}
+            onClick={
+              canHighlight
+                ? handleFieldClick(fieldNames.driverLicenseNo)
+                : undefined
+            }
+          >
             {driverLicenseNo}
           </BaseFieldText>
-          <BaseFieldText label='Email'>{driverEmail}</BaseFieldText>
+          <BaseFieldText
+            label='Email'
+            error={getError(fieldNames.driverEmail)}
+            onClick={
+              canHighlight
+                ? handleFieldClick(fieldNames.driverEmail)
+                : undefined
+            }
+          >
+            {driverEmail}
+          </BaseFieldText>
         </div>
       </div>
     </div>

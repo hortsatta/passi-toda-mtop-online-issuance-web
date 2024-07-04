@@ -20,11 +20,14 @@ import { FranchiseApplicationActions } from './franchise-application-actions.com
 import type { ComponentProps } from 'react';
 import type { RateSheet } from '#/rate-sheet/models/rate-sheet.model';
 import type { Franchise } from '../models/franchise.model';
+import type { FranchiseStatusRemarkUpsertFormData } from '../models/franchise-status-remark-form-data.model';
 
 type Props = ComponentProps<'div'> & {
   franchise: Franchise;
   rateSheets: RateSheet[];
-  onCancelApplication: () => Promise<Franchise>;
+  onCancelApplication: (
+    statusRemarks?: FranchiseStatusRemarkUpsertFormData[],
+  ) => Promise<Franchise>;
   loading?: boolean;
 };
 
@@ -35,6 +38,17 @@ type CurrentStatusProps = {
 const FRANCHISE_BASE_URL = `/${baseMemberRoute}/${routeConfig.franchise.to}`;
 
 const CurrentStatus = memo(function ({ approvalStatus }: CurrentStatusProps) {
+  const statusLabel = useMemo(() => {
+    switch (approvalStatus) {
+      case FranchiseApprovalStatus.Canceled:
+        return 'canceled';
+      case FranchiseApprovalStatus.Rejected:
+        return 'rejected';
+      case FranchiseApprovalStatus.Revoked:
+        return 'revoked';
+    }
+  }, [approvalStatus]);
+
   if (approvalStatus === FranchiseApprovalStatus.PendingValidation) {
     return (
       <div className='flex items-end gap-2.5'>
@@ -52,9 +66,7 @@ const CurrentStatus = memo(function ({ approvalStatus }: CurrentStatusProps) {
       <div className='flex items-end gap-2.5'>
         <small className='flex items-center gap-1 text-base uppercase text-red-500'>
           <BaseIcon name='x-circle' size={16} />
-          {approvalStatus === FranchiseApprovalStatus.Canceled
-            ? 'canceled'
-            : 'rejected'}
+          {statusLabel}
         </small>
       </div>
     );
@@ -129,6 +141,7 @@ export const MemberFranchiseSingle = memo(function ({
     id,
     isExpired,
     canRenew,
+    statusRemarks,
     approvalStatus,
     approvalDate,
     expiryDate,
@@ -142,12 +155,27 @@ export const MemberFranchiseSingle = memo(function ({
       franchise.id,
       franchise.isExpired,
       franchise.canRenew,
+      target.franchiseStatusRemarks?.filter(
+        (sr) => !sr.fieldName?.length && !!sr.remark.trim().length,
+      ) || [],
       target.approvalStatus,
       target.approvalDate,
       target.expiryDate,
       !!franchise.franchiseRenewals.length,
     ];
   }, [franchise]);
+
+  const paymentORNo = useMemo(() => {
+    if (
+      approvalStatus === FranchiseApprovalStatus.Canceled ||
+      approvalStatus === FranchiseApprovalStatus.Rejected ||
+      approvalStatus === FranchiseApprovalStatus.PendingValidation ||
+      approvalStatus === FranchiseApprovalStatus.Validated
+    )
+      return undefined;
+
+    return franchise.paymentORNo;
+  }, [approvalStatus, franchise]);
 
   const currentRateSheet = useMemo(
     () =>
@@ -174,6 +202,8 @@ export const MemberFranchiseSingle = memo(function ({
         return 'Rejected';
       case FranchiseApprovalStatus.Canceled:
         return 'Canceled';
+      case FranchiseApprovalStatus.Revoked:
+        return 'Revoked';
       default:
         return 'Pending';
     }
@@ -183,7 +213,8 @@ export const MemberFranchiseSingle = memo(function ({
     if (
       isExpired ||
       approvalStatus === FranchiseApprovalStatus.Rejected ||
-      approvalStatus === FranchiseApprovalStatus.Canceled
+      approvalStatus === FranchiseApprovalStatus.Canceled ||
+      approvalStatus === FranchiseApprovalStatus.Revoked
     )
       return 'text-red-600';
 
@@ -203,7 +234,8 @@ export const MemberFranchiseSingle = memo(function ({
     if (
       isExpired ||
       approvalStatus === FranchiseApprovalStatus.Rejected ||
-      approvalStatus === FranchiseApprovalStatus.Canceled
+      approvalStatus === FranchiseApprovalStatus.Canceled ||
+      approvalStatus === FranchiseApprovalStatus.Revoked
     ) {
       return 'x-circle';
     } else if (approvalStatus === FranchiseApprovalStatus.Approved) {
@@ -254,13 +286,20 @@ export const MemberFranchiseSingle = memo(function ({
     return '';
   }, [openDetails, openActions, openExpiryDetails, currentRateSheet]);
 
-  const detailButtonLabel = useMemo(
-    () =>
-      currentRateSheet?.feeType === FeeType.FranchiseRenewal
-        ? 'View Renewal Details'
-        : 'View Registration Details',
-    [currentRateSheet],
-  );
+  const detailButtonLabel = useMemo(() => {
+    if (
+      approvalStatus === FranchiseApprovalStatus.Rejected ||
+      approvalStatus === FranchiseApprovalStatus.Canceled ||
+      approvalStatus === FranchiseApprovalStatus.Revoked ||
+      approvalStatus === FranchiseApprovalStatus.PendingValidation
+    ) {
+      return null;
+    }
+
+    return currentRateSheet?.feeType === FeeType.FranchiseRenewal
+      ? 'View Renewal Details'
+      : 'View Registration Details';
+  }, [approvalStatus, currentRateSheet]);
 
   const totalAmountText = useMemo(
     () => convertToCurrency(currentRateSheet?.rateSheetFees || []),
@@ -273,15 +312,20 @@ export const MemberFranchiseSingle = memo(function ({
     setOpenExpiryDetails(false);
   }, []);
 
-  const handleCancelApplication = useCallback(async () => {
-    try {
-      await onCancelApplication();
-      handleDetailsActionsModalClose();
-      toast.error('Application canceled');
-    } catch (error: any) {
-      toast.error(error.message);
-    }
-  }, [onCancelApplication, handleDetailsActionsModalClose]);
+  const handleCancelApplication = useCallback(
+    async (remarks?: string) => {
+      const statusRemarks = [{ remark: remarks || '' }];
+
+      try {
+        await onCancelApplication(statusRemarks);
+        handleDetailsActionsModalClose();
+        toast.error('Application canceled');
+      } catch (error: any) {
+        toast.error(error.message);
+      }
+    },
+    [onCancelApplication, handleDetailsActionsModalClose],
+  );
 
   const handleExpiryDetailsOpen = useCallback(
     (open: boolean) => () => {
@@ -346,7 +390,8 @@ export const MemberFranchiseSingle = memo(function ({
                 'text-xs uppercase',
                 (approvalStatus === FranchiseApprovalStatus.Approved ||
                   approvalStatus === FranchiseApprovalStatus.Rejected ||
-                  approvalStatus === FranchiseApprovalStatus.Canceled) &&
+                  approvalStatus === FranchiseApprovalStatus.Canceled ||
+                  approvalStatus === FranchiseApprovalStatus.Revoked) &&
                   'pl-8',
               )}
             >
@@ -364,15 +409,20 @@ export const MemberFranchiseSingle = memo(function ({
                 </BaseBadge>
               )}
               {moreStatusInfoText &&
-                approvalStatus === FranchiseApprovalStatus.Approved && (
+                (approvalStatus === FranchiseApprovalStatus.Approved ||
+                  approvalStatus === FranchiseApprovalStatus.Revoked) && (
                   <div className='h-6 border-r border-border' />
                 )}
-              {approvalStatus === FranchiseApprovalStatus.Approved && (
+              {(approvalStatus === FranchiseApprovalStatus.Approved ||
+                approvalStatus === FranchiseApprovalStatus.Revoked) && (
                 <div className='flex items-center gap-1.5'>
                   {approvalDateText && (
                     <BaseBadge>{approvalDateText}</BaseBadge>
                   )}
-                  {expiryDateText && <BaseBadge>{expiryDateText}</BaseBadge>}
+                  {expiryDateText &&
+                    approvalStatus === FranchiseApprovalStatus.Approved && (
+                      <BaseBadge>{expiryDateText}</BaseBadge>
+                    )}
                 </div>
               )}
             </div>
@@ -384,7 +434,8 @@ export const MemberFranchiseSingle = memo(function ({
           ((approvalStatus === FranchiseApprovalStatus.Approved ||
             approvalStatus === FranchiseApprovalStatus.Canceled ||
             approvalStatus === FranchiseApprovalStatus.Rejected) &&
-            (canRenew || isExpired))) && (
+            (canRenew || isExpired)) ||
+          !!statusRemarks.length) && (
           <div className='my-2.5 w-full border-b border-border' />
         )}
         {(approvalStatus === FranchiseApprovalStatus.Approved ||
@@ -417,24 +468,24 @@ export const MemberFranchiseSingle = memo(function ({
           <div className='flex w-full items-start justify-between gap-2.5'>
             <div className='flex h-full flex-col items-start gap-2.5 transition-opacity'>
               {approvalStatus === FranchiseApprovalStatus.Validated && (
-                <>
-                  <span className='text-base'>
-                    Awaiting{' '}
-                    <i className='text-2xl font-bold not-italic underline'>
-                      {totalAmountText}
-                    </i>{' '}
-                    {currentRateSheet?.feeType === FeeType.FranchiseRegistration
-                      ? 'Registration'
-                      : 'Renewal'}{' '}
-                    Fee Payment
-                  </span>
-                  <button
-                    className='w-full max-w-[210px] rounded border border-blue-500 py-1.5 text-blue-500 transition-[filter] hover:brightness-150'
-                    onClick={handleDetailsOpen(true)}
-                  >
-                    {detailButtonLabel}
-                  </button>
-                </>
+                <span className='text-base'>
+                  Awaiting{' '}
+                  <i className='text-2xl font-bold not-italic underline'>
+                    {totalAmountText}
+                  </i>{' '}
+                  {currentRateSheet?.feeType === FeeType.FranchiseRegistration
+                    ? 'Registration'
+                    : 'Renewal'}{' '}
+                  Fee Payment
+                </span>
+              )}
+              {detailButtonLabel && (
+                <button
+                  className='w-full max-w-[210px] rounded border border-blue-500 px-2.5 py-1.5 text-blue-500 transition-[filter] hover:brightness-150'
+                  onClick={handleDetailsOpen(true)}
+                >
+                  {detailButtonLabel}
+                </button>
               )}
             </div>
             <BaseButton
@@ -444,6 +495,16 @@ export const MemberFranchiseSingle = memo(function ({
             >
               Cancel Application
             </BaseButton>
+          </div>
+        )}
+        {!!statusRemarks.length && (
+          <div className='flex flex-col gap-2.5'>
+            <h4>Remarks</h4>
+            <ul className='flex list-inside list-disc flex-col gap-2.5 text-base'>
+              {statusRemarks.map((sr) => (
+                <li key={sr.id}>{sr.remark}</li>
+              ))}
+            </ul>
           </div>
         )}
         <div className='my-2.5 w-full border-b border-border' />
@@ -465,10 +526,18 @@ export const MemberFranchiseSingle = memo(function ({
         onClose={handleDetailsActionsModalClose}
       >
         {openDetails && currentRateSheet && (
-          <RateSheetDetails rateSheet={currentRateSheet}>
-            Please pay the exact amount at the cashier.
-            <br />
-            Franchise status will be updated shortly if payment has been made.
+          <RateSheetDetails
+            rateSheet={currentRateSheet}
+            paymentORNo={paymentORNo}
+          >
+            {approvalStatus === FranchiseApprovalStatus.Validated && (
+              <>
+                Please pay the exact amount at the cashier.
+                <br />
+                Franchise status will be updated shortly if payment has been
+                made.
+              </>
+            )}
           </RateSheetDetails>
         )}
         {openExpiryDetails && (

@@ -8,6 +8,7 @@ import {
 } from '#/user/helpers/driver-profile-transform.helper';
 import { transformToTodaAssociation } from '#/toda-association/helpers/toda-association-transform.helper';
 import { transformToFranchiseRenewal } from './franchise-renewal-transform.helper';
+import { transformToFranchiseStatusRemark } from './franchise-status-remark-transform.helper';
 
 import type { Franchise } from '../models/franchise.model';
 import type { FranchiseUpsertFormData } from '../models/franchise-form-data.model';
@@ -26,6 +27,7 @@ export function transformToFranchise({
   todaAssocMembershipImgUrl,
   driverLicenseNoImgUrl,
   brgyClearanceImgUrl,
+  ctcCedulaImgUrl,
   voterRegRecordImgUrl,
   approvalStatus,
   approvalDate,
@@ -35,11 +37,19 @@ export function transformToFranchise({
   todaAssociation,
   isDriverOwner,
   driverProfile,
+  paymentORNo,
+  franchiseStatusRemarks,
   franchiseRenewals,
   user,
 }: any): Franchise {
   const transformedDriverProfile = driverProfile
     ? transformToDriverProfile(driverProfile)
+    : undefined;
+
+  const transformedFranchiseStatusRemarks = franchiseStatusRemarks
+    ? franchiseStatusRemarks.map((franchiseStatusRemarks: any) =>
+        transformToFranchiseStatusRemark(franchiseStatusRemarks),
+      )
     : undefined;
 
   const transformedFranchiseRenewals = franchiseRenewals
@@ -56,6 +66,7 @@ export function transformToFranchise({
     todaAssocMembershipImgUrl: `${IMG_BASE_URL}${todaAssocMembershipImgUrl}`,
     driverLicenseNoImgUrl: `${IMG_BASE_URL}${driverLicenseNoImgUrl}`,
     brgyClearanceImgUrl: `${IMG_BASE_URL}${brgyClearanceImgUrl}`,
+    ctcCedulaImgUrl: `${IMG_BASE_URL}${ctcCedulaImgUrl}`,
     voterRegRecordImgUrl: voterRegRecordImgUrl?.trim()
       ? `${IMG_BASE_URL}${voterRegRecordImgUrl}`
       : undefined,
@@ -67,6 +78,8 @@ export function transformToFranchise({
     todaAssociation: transformToTodaAssociation(todaAssociation),
     isDriverOwner,
     driverProfile: transformedDriverProfile,
+    paymentORNo,
+    franchiseStatusRemarks: transformedFranchiseStatusRemarks,
     franchiseRenewals: transformedFranchiseRenewals,
     user: user ? transformToUser(user) : undefined,
     ...transformAuditTrail(id, createdAt, updatedAt, deletedAt),
@@ -82,6 +95,7 @@ export function transformToFranchiseFormData({
   todaAssocMembershipImgUrl,
   driverLicenseNoImgUrl,
   brgyClearanceImgUrl,
+  ctcCedulaImgUrl,
   voterRegRecordImgUrl,
   todaAssociationId,
   driverProfileId,
@@ -100,6 +114,7 @@ export function transformToFranchiseFormData({
     todaAssocMembershipImgUrl,
     driverLicenseNoImgUrl,
     brgyClearanceImgUrl,
+    ctcCedulaImgUrl,
     voterRegRecordImgUrl,
     todaAssociationId,
     driverProfileId,
@@ -128,6 +143,7 @@ export function transformToFranchiseValidateDto({
     todaAssocMembershipImgUrl: '',
     driverLicenseNoImgUrl: '',
     brgyClearanceImgUrl: '',
+    ctcCedulaImgUrl: '',
     voterRegRecordImgUrl: '',
     todaAssociationId: +todaAssociationId,
     driverProfileId: +driverProfileId,
@@ -144,6 +160,7 @@ export function transformToFranchiseUpsertDto({
   todaAssocMembershipImgUrl,
   driverLicenseNoImgUrl,
   brgyClearanceImgUrl,
+  ctcCedulaImgUrl,
   todaAssociationId,
   voterRegRecordImgUrl,
   driverProfileId,
@@ -162,6 +179,7 @@ export function transformToFranchiseUpsertDto({
     todaAssocMembershipImgUrl,
     driverLicenseNoImgUrl,
     brgyClearanceImgUrl,
+    ctcCedulaImgUrl,
     voterRegRecordImgUrl,
     todaAssociationId: +todaAssociationId,
     driverProfileId: +driverProfileId,
