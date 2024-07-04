@@ -136,14 +136,14 @@ export const FranchiseApplicationActions = memo(function ({
   );
 
   const handleApproveFranchise = useCallback(() => {
-    if (!isUserClient && !remarks?.length) {
+    if (!isUserClient && !isApprove && !remarks?.length) {
       setRemarksError('error');
       toast.error('Remarks is required');
       return;
     }
 
     onApproveFranchise && onApproveFranchise(remarks);
-  }, [isUserClient, remarks, onApproveFranchise]);
+  }, [isUserClient, isApprove, remarks, onApproveFranchise]);
 
   const handleApproveTreasurerFranchise = useCallback(() => {
     if (!isTreasurer) return;
