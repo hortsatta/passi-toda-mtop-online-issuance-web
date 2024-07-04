@@ -28,6 +28,7 @@ export const fieldNames: { [key: string]: FranchiseStatusFieldError } = {
   },
   driverFullName: { name: 'driverFullName', label: `Driver's Name` },
   driverBirthDate: { name: 'driverBirthDate', label: `Driver's Birthdate` },
+  driverAge: { name: 'driverAge', label: `Driver's Age` },
   driverGender: { name: 'driverGender', label: `Driver's Sex` },
   driverCivilStatus: {
     name: 'driverCivilStatus',
@@ -41,6 +42,7 @@ export const fieldNames: { [key: string]: FranchiseStatusFieldError } = {
 
   ownerFullName: { name: 'ownerFullName', label: `Owner's Name` },
   ownerBirthDate: { name: 'ownerBirthDate', label: `Owner's Birthdate` },
+  ownerAge: { name: 'ownerAge', label: `Owner's Age` },
   ownerGender: { name: 'ownerGender', label: `Owner's Sex` },
   ownerCivilStatus: {
     name: 'ownerCivilStatus',

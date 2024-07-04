@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
+import { baseMemberRoute, routeConfig } from '#/config/routes.config';
 import { queryClient } from '#/config/react-query-client.config';
 import { queryFranchiseKey } from '#/config/react-query-keys.config';
 import { FranchiseApprovalStatus } from '../models/franchise.model';
@@ -21,7 +22,11 @@ type Result = {
   cancelApplication: (
     statusRemarks?: FranchiseStatusRemarkUpsertFormData[],
   ) => Promise<Franchise>;
+  print: () => void;
+  refresh: () => void;
 };
+
+const FRANCHISE_TO = `/${baseMemberRoute}/${routeConfig.franchise.to}`;
 
 export function useMemberFranchiseSingle(): Result {
   const { id } = useParams();
@@ -30,6 +35,7 @@ export function useMemberFranchiseSingle(): Result {
     data: franchise,
     isLoading,
     isFetching,
+    refetch: refresh,
   } = useQuery(
     getFranchiseById(
       { id: +(id || 0) },
@@ -111,11 +117,19 @@ export function useMemberFranchiseSingle(): Result {
     [id, franchise, mutateApproveFranchise, mutateApproveFranchiseRenewal],
   );
 
+  const print = useCallback(() => {
+    if (!franchise) return;
+    const url = `${FRANCHISE_TO}/${franchise.id}/${routeConfig.franchise.single.print.to}`;
+    window.open(url, '_blank');
+  }, [franchise]);
+
   return {
     loading: isLoading || isFetching,
     approvalLoading:
       isMutateApproveFranchisePending || isMutateApproveFranchiseRenewalPending,
     franchise,
     cancelApplication,
+    refresh,
+    print,
   };
 }

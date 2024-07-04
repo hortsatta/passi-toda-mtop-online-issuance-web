@@ -435,6 +435,9 @@ export const MemberFranchiseSingle = memo(function ({
             approvalStatus === FranchiseApprovalStatus.Canceled ||
             approvalStatus === FranchiseApprovalStatus.Rejected) &&
             (canRenew || isExpired)) ||
+          (approvalStatus === FranchiseApprovalStatus.Approved &&
+            !isExpired &&
+            !canRenew) ||
           !!statusRemarks.length) && (
           <div className='my-2.5 w-full border-b border-border' />
         )}
@@ -464,7 +467,10 @@ export const MemberFranchiseSingle = memo(function ({
           )}
         {(approvalStatus === FranchiseApprovalStatus.PendingValidation ||
           approvalStatus === FranchiseApprovalStatus.Validated ||
-          approvalStatus === FranchiseApprovalStatus.Paid) && (
+          approvalStatus === FranchiseApprovalStatus.Paid ||
+          (approvalStatus === FranchiseApprovalStatus.Approved &&
+            !canRenew &&
+            !isExpired)) && (
           <div className='flex w-full items-start justify-between gap-2.5'>
             <div className='flex h-full flex-col items-start gap-2.5 transition-opacity'>
               {approvalStatus === FranchiseApprovalStatus.Validated && (
@@ -488,13 +494,15 @@ export const MemberFranchiseSingle = memo(function ({
                 </button>
               )}
             </div>
-            <BaseButton
-              variant='warn'
-              loading={loading}
-              onClick={handleActionsOpen(true)}
-            >
-              Cancel Application
-            </BaseButton>
+            {approvalStatus !== FranchiseApprovalStatus.Approved && (
+              <BaseButton
+                variant='warn'
+                loading={loading}
+                onClick={handleActionsOpen(true)}
+              >
+                Cancel Application
+              </BaseButton>
+            )}
           </div>
         )}
         {!!statusRemarks.length && (

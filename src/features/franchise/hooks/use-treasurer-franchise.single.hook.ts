@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
+import { baseTreasurerRoute, routeConfig } from '#/config/routes.config';
 import { queryClient } from '#/config/react-query-client.config';
 import { queryFranchiseKey } from '#/config/react-query-keys.config';
 import {
@@ -10,14 +11,18 @@ import {
 } from '../api/franchise.api';
 import { approveTreasurerFranchiseRenewal as approveTreasurerFranchiseRenewalApi } from '../api/franchise-renewal.api';
 
-import { Franchise } from '../models/franchise.model';
+import type { Franchise } from '../models/franchise.model';
 
 type Result = {
   loading: boolean;
   approvalLoading: boolean;
-  approveFranchise: (paymentORNo: string) => Promise<Franchise>;
   franchise?: Franchise;
+  approveFranchise: (paymentORNo: string) => Promise<Franchise>;
+  print: () => void;
+  refresh: () => void;
 };
+
+const FRANCHISE_TO = `/${baseTreasurerRoute}/${routeConfig.franchise.to}`;
 
 export function useTreasurerFranchiseSingle(): Result {
   const { id } = useParams();
@@ -26,6 +31,7 @@ export function useTreasurerFranchiseSingle(): Result {
     data: franchise,
     isLoading,
     isFetching,
+    refetch: refresh,
   } = useQuery(
     getFranchiseByIdAsTreasurer(
       { id: +(id || 0) },
@@ -102,11 +108,19 @@ export function useTreasurerFranchiseSingle(): Result {
     [id, franchise, mutateApproveFranchise, mutateApproveFranchiseRenewal],
   );
 
+  const print = useCallback(() => {
+    if (!franchise) return;
+    const url = `${FRANCHISE_TO}/${franchise.id}/${routeConfig.franchise.single.print.to}`;
+    window.open(url, '_blank');
+  }, [franchise]);
+
   return {
     loading: isLoading || isFetching,
     approvalLoading:
       isMutateApproveFranchisePending || isMutateApproveFranchiseRenewalPending,
     franchise,
     approveFranchise,
+    print,
+    refresh,
   };
 }

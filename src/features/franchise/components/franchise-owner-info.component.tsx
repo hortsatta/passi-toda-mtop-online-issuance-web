@@ -39,6 +39,7 @@ export const FranchiseOwnerInfo = memo(function ({
   const [
     ownerReverseFullName,
     ownerBirthDate,
+    ownerAge,
     ownerGender,
     ownerCivilStatus,
     ownerReligion,
@@ -50,6 +51,9 @@ export const FranchiseOwnerInfo = memo(function ({
     () => [
       franchise.user?.userProfile.reverseFullName || '',
       dayjs(franchise.user?.userProfile.birthDate || '').format('MMM DD, YYYY'),
+      franchise.user?.userProfile.birthDate
+        ? dayjs().diff(dayjs(franchise.user.userProfile.birthDate), 'y')
+        : null,
       capitalize(franchise.user?.userProfile.gender || ''),
       franchise.user?.userProfile.civilStatus ===
       UserCivilStatus.LegallySeparated
@@ -114,6 +118,17 @@ export const FranchiseOwnerInfo = memo(function ({
         >
           {ownerBirthDate}
         </BaseFieldText>
+        {ownerAge && (
+          <BaseFieldText
+            label='Age'
+            error={getError(fieldNames.ownerAge)}
+            onClick={
+              canHighlight ? handleFieldClick(fieldNames.ownerAge) : undefined
+            }
+          >
+            {ownerAge}
+          </BaseFieldText>
+        )}
         <BaseFieldText
           label='Sex'
           error={getError(fieldNames.ownerGender)}

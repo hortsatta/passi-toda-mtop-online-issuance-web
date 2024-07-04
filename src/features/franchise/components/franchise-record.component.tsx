@@ -76,6 +76,7 @@ export const FranchiseRecord = memo(function ({
   const [
     driverReverseFullName,
     driverBirthDate,
+    driverAge,
     driverGender,
     driverCivilStatus,
     driverReligion,
@@ -87,6 +88,9 @@ export const FranchiseRecord = memo(function ({
     () => [
       driverProfile?.reverseFullName || '',
       dayjs(driverProfile?.birthDate || '').format('MMM DD, YYYY'),
+      driverProfile?.birthDate
+        ? dayjs().diff(dayjs(driverProfile.birthDate), 'y')
+        : null,
       capitalize(driverProfile?.gender || ''),
       driverProfile?.civilStatus === UserCivilStatus.LegallySeparated
         ? 'Legally Separated'
@@ -293,6 +297,19 @@ export const FranchiseRecord = memo(function ({
           >
             {driverBirthDate}
           </BaseFieldText>
+          {driverAge && (
+            <BaseFieldText
+              label='Age'
+              error={getError(fieldNames.driverAge)}
+              onClick={
+                canHighlight
+                  ? handleFieldClick(fieldNames.driverAge)
+                  : undefined
+              }
+            >
+              {driverAge}
+            </BaseFieldText>
+          )}
           <BaseFieldText
             label='Sex'
             error={getError(fieldNames.driverGender)}

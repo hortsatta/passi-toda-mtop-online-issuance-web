@@ -7,11 +7,12 @@ import { BaseScene } from '#/base/components/base-scene.component';
 import { useRateSheetLatestSingle } from '#/rate-sheet/hooks/use-rate-sheet-latest-single.hook';
 import { useIssuerFranchiseSingle } from '../hooks/use-issuer-franchise-single.hook';
 import { IssuerFranchiseSingle } from '../components/issuer-franchise-single.component';
+import { FranchiseSingleActions } from '../components/franchise-single-actions.component';
 
 const FRANCHISE_LIST_TO = `/${baseAdminRoute}/${routeConfig.franchise.to}`;
 
 export function AdminFranchiseSinglePage() {
-  const { franchise, loading } = useIssuerFranchiseSingle();
+  const { franchise, loading, refresh, print } = useIssuerFranchiseSingle();
 
   const { rateSheets, loading: rateSheetLoading } = useRateSheetLatestSingle(
     franchise?.id,
@@ -24,6 +25,9 @@ export function AdminFranchiseSinglePage() {
       <BaseScene
         pageTitle={routeConfig.franchise.single.pageTitle}
         backTo={FRANCHISE_LIST_TO}
+        rightComponent={
+          <FranchiseSingleActions onPrint={print} onRefresh={refresh} />
+        }
       >
         {(loading || rateSheetLoading) && <BaseLoading />}
         {franchise && rateSheets?.length && (

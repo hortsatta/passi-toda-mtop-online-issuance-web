@@ -2,8 +2,10 @@ import { useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
+import { routeConfig, userBaseTo } from '#/config/routes.config';
 import { queryClient } from '#/config/react-query-client.config';
 import { queryFranchiseKey } from '#/config/react-query-keys.config';
+import { useBoundStore } from '#/core/hooks/use-store.hook';
 import {
   approveFranchise as approveFranchiseApi,
   getFranchiseById,
@@ -19,20 +21,24 @@ import type { FranchiseStatusRemarkUpsertFormData } from '../models/franchise-st
 type Result = {
   loading: boolean;
   approvalLoading: boolean;
+  franchise?: Franchise;
   approveFranchise: (data?: {
     approvalStatus?: FranchiseApprovalStatus;
     statusRemarks?: FranchiseStatusRemarkUpsertFormData[];
   }) => Promise<Franchise>;
-  franchise?: Franchise;
+  print: () => void;
+  refresh: () => void;
 };
 
 export function useIssuerFranchiseSingle(): Result {
+  const userRole = useBoundStore((state) => state.user?.role);
   const { id } = useParams();
 
   const {
     data: franchise,
     isLoading,
     isFetching,
+    refetch: refresh,
   } = useQuery(
     getFranchiseById(
       { id: +(id || 0) },
@@ -112,11 +118,20 @@ export function useIssuerFranchiseSingle(): Result {
     [id, franchise, mutateApproveFranchise, mutateApproveFranchiseRenewal],
   );
 
+  const print = useCallback(() => {
+    if (!franchise || !userRole) return;
+
+    const url = `${userBaseTo[userRole]}/${routeConfig.franchise.to}/${franchise.id}/${routeConfig.franchise.single.print.to}`;
+    window.open(url, '_blank');
+  }, [franchise, userRole]);
+
   return {
     loading: isLoading || isFetching,
     approvalLoading:
       isMutateApproveFranchisePending || isMutateApproveFranchiseRenewalPending,
     franchise,
     approveFranchise,
+    print,
+    refresh,
   };
 }

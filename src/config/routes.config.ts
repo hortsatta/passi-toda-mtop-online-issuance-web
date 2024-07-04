@@ -32,6 +32,11 @@ export const routeConfig = {
     },
     single: {
       pageTitle: 'Franchise',
+      print: {
+        to: 'print',
+        label: 'Franchise Issuance Print',
+        pageTitle: 'Franchise Issuance Print',
+      },
     },
     create: {
       to: 'register',

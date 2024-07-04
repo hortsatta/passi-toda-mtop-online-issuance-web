@@ -92,3 +92,11 @@ select:-internal-autofill-selected:focus + label {
 .print-table table td {
   @apply !border !border-gray-400 !px-3 !py-1.5;
 }
+
+.print-franchise .content-wrapper {
+  @apply !rounded-none !bg-white !text-black;
+}
+
+.print-franchise .print-border {
+  @apply !border-gray-400;
+}

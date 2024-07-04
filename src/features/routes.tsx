@@ -47,14 +47,17 @@ import { AuthSignInPage } from './user/pages/auth-sign-in.page';
 import { FranchiseCheckerPage } from './franchise/pages/franchise-checker.page';
 import { FranchiseRegisterPage } from './franchise/pages/franchise-register.page';
 import { FranchiseRenewalPage } from './franchise/pages/franchise-renewal.page';
+import { MemberFranchiseSinglePrintViewPage } from './franchise/pages/member-franchise-single-print-view.page';
 import { ReportFranchisesPage } from './report/pages/report-franchises.page';
 import { MemberUserRegisterPage } from './user/pages/member-user-register.page';
 import { MemberFranchiseSinglePage } from './franchise/pages/member-franchise-single.page';
 import { MemberFranchiseListPage } from './franchise/pages/member-franchise-list.page';
 import { TreasurerFranchiseListPage } from './franchise/pages/treasurer-franchise-list.page';
 import { TreasurerFranchiseSinglePage } from './franchise/pages/treasurer-franchise-single.page';
+import { TreasurerFranchiseSinglePrintViewPage } from './franchise/pages/treasurer-franchise-single-print-view.page';
 import { IssuerFranchiseListPage } from './franchise/pages/issuer-franchise-list.page';
 import { IssuerFranchiseSinglePage } from './franchise/pages/issuer-franchise-single.page';
+import { IssuerFranchiseSinglePrintViewPage } from './franchise/pages/issuer-franchise-single-print-view.page';
 import { IssuerTodaAssociationListPage } from './toda-association/pages/issuer-toda-association-list.page';
 import { IssuerTodaAssociationSinglePage } from './toda-association/pages/issuer-toda-association-single.page';
 import { AdminFranchiseListPage } from './franchise/pages/admin-franchise-list.page';
@@ -134,6 +137,11 @@ const routes = createRoutesFromElements(
             element={<FranchiseRenewalPage />}
             loader={getMemberFranchiseByIdLoader(queryClient)}
           />
+          <Route
+            path={routeConfig.franchise.single.print.to}
+            element={<MemberFranchiseSinglePrintViewPage />}
+            loader={getMemberFranchiseByIdLoader(queryClient)}
+          />
         </Route>
         <Route
           path={routeConfig.franchise.create.to}
@@ -160,6 +168,11 @@ const routes = createRoutesFromElements(
           <Route
             index
             element={<TreasurerFranchiseSinglePage />}
+            loader={getTreasurerFranchiseByIdLoader(queryClient)}
+          />
+          <Route
+            path={routeConfig.franchise.single.print.to}
+            element={<TreasurerFranchiseSinglePrintViewPage />}
             loader={getTreasurerFranchiseByIdLoader(queryClient)}
           />
         </Route>
@@ -191,6 +204,11 @@ const routes = createRoutesFromElements(
           <Route
             index
             element={<IssuerFranchiseSinglePage />}
+            loader={getIssuerFranchiseByIdLoader(queryClient)}
+          />
+          <Route
+            path={routeConfig.franchise.single.print.to}
+            element={<IssuerFranchiseSinglePrintViewPage />}
             loader={getIssuerFranchiseByIdLoader(queryClient)}
           />
         </Route>
@@ -241,6 +259,11 @@ const routes = createRoutesFromElements(
           <Route
             index
             element={<AdminFranchiseSinglePage />}
+            loader={getAdminFranchiseByIdLoader(queryClient)}
+          />
+          <Route
+            path={routeConfig.franchise.single.print.to}
+            element={<IssuerFranchiseSinglePrintViewPage />}
             loader={getAdminFranchiseByIdLoader(queryClient)}
           />
         </Route>
