@@ -52,8 +52,9 @@ export const AuthSignInForm = memo(function ({
     async (data: AuthCredentials) => {
       try {
         setIsDone(true);
-        onSubmit && onSubmit(data);
+        await (onSubmit && onSubmit(data));
       } catch (error: any) {
+        setIsDone(false);
         reset({ email: getValues('email'), password: '' });
         toast.error(error.message);
       }

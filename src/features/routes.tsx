@@ -42,6 +42,7 @@ import {
 } from './rate-sheet/loaders/rate-sheet.loader';
 import { CoreLayout } from './core/components/core-layout.component';
 import { AuthProtectedRoute } from './user/components/auth-protected-route.component';
+import { AuthConfirmRegistrationPage } from './user/pages/auth-confirm-registration.page';
 import { CoreHomePage } from './core/pages/core-home.page';
 import { AuthSignInPage } from './user/pages/auth-sign-in.page';
 import { FranchiseCheckerPage } from './franchise/pages/franchise-checker.page';
@@ -76,7 +77,7 @@ const routes = createRoutesFromElements(
   <Route path='/' element={<CoreLayout />}>
     <Route index element={<CoreHomePage />} />
     <Route
-      path={routeConfig.authSignIn.to}
+      path={routeConfig.auth.signIn.to}
       element={
         <AuthProtectedRoute reverse>
           <AuthSignInPage />
@@ -93,6 +94,10 @@ const routes = createRoutesFromElements(
         }
       />
     </Route>
+    <Route
+      path={routeConfig.auth.confirmRegistration.to}
+      element={<AuthConfirmRegistrationPage />}
+    />
     <Route
       path={routeConfig.franchiseChecker.to}
       element={<FranchiseCheckerPage />}

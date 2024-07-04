@@ -13,10 +13,17 @@ export const userBaseTo = {
 };
 
 export const routeConfig = {
-  authSignIn: {
-    name: 'sign-in',
-    to: 'sign-in',
-    pageTitle: 'Sign In',
+  auth: {
+    signIn: {
+      name: 'sign-in',
+      to: 'sign-in',
+      pageTitle: 'Sign In',
+    },
+    confirmRegistration: {
+      name: 'confirm-registration',
+      to: 'register/confirm',
+      pageTitle: 'Confirm Registration',
+    },
   },
   franchiseChecker: {
     to: 'franchise-checker',

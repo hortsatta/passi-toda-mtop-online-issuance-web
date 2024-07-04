@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useMutation } from '@tanstack/react-query';
 
 import { useBoundStore } from '#/core/hooks/use-store.hook';
-import { signIn as authSignIn } from '../api/auth.api';
+import { signIn as signInApi } from '../api/auth.api';
 
 import type { AuthCredentials } from '../models/auth.model';
 import type { User } from '../models/user.model';
@@ -17,7 +17,7 @@ type Result = {
 export function useAuth(): Result {
   const setUser = useBoundStore((state) => state.setUser);
 
-  const { mutateAsync: mutateSignInUser } = useMutation(authSignIn());
+  const { mutateAsync: mutateSignInUser } = useMutation(signInApi());
 
   const signIn = useCallback(
     async (credentials: AuthCredentials) => {

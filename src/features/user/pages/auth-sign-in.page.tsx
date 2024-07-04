@@ -39,7 +39,7 @@ export function AuthSignInPage() {
   return (
     <BaseScene
       className='mx-auto max-w-[500px]'
-      pageTitle={routeConfig.authSignIn.pageTitle}
+      pageTitle={routeConfig.auth.signIn.pageTitle}
     >
       <AuthSignInForm email={email} onSubmit={handleSubmit} />
     </BaseScene>

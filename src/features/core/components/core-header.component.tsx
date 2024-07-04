@@ -27,7 +27,7 @@ export const CoreHeader = memo(function ({
   const { signIn, signOut } = useAuth();
 
   const isSignInPage = useMemo(
-    () => pathname.slice(1) === routeConfig.authSignIn.to,
+    () => pathname.slice(1) === routeConfig.auth.signIn.to,
     [pathname],
   );
 

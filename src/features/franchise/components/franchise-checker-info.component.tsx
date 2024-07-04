@@ -30,7 +30,7 @@ type FranchiseInfoProps = {
 };
 
 const FRANCHISE_REGISTER_TO = `/${baseMemberRoute}/${routeConfig.franchise.to}/${routeConfig.franchise.create.to}`;
-const AUTH_SIGN_IN_TO = `/${routeConfig.authSignIn.to}`;
+const AUTH_SIGN_IN_TO = `/${routeConfig.auth.signIn.to}`;
 
 const FranchiseInfo = memo(function ({
   mvPlateNo,

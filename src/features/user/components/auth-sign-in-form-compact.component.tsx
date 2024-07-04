@@ -60,7 +60,7 @@ export const AuthSignInFormCompact = memo(function ({
         reset({ email, password: '' });
         // Show error and navigate to sign-in page
         toast.error(error.message);
-        navigate(`/${routeConfig.authSignIn.to}`, { state: { email } });
+        navigate(`/${routeConfig.auth.signIn.to}`, { state: { email } });
       }
     },
     [onSubmit, reset, getValues, navigate],

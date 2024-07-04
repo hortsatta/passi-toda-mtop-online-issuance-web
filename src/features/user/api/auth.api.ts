@@ -36,3 +36,20 @@ export function signIn(
 
   return { mutationFn, ...options };
 }
+
+export function confirmRegistration(
+  options?: Omit<UseMutationOptions<string, Error, string, any>, 'mutationFn'>,
+) {
+  const mutationFn = async (token: string): Promise<any> => {
+    const url = `${BASE_URL}/register/confirm?token=${token}`;
+
+    try {
+      return kyInstance.get(url).json();
+    } catch (error: any) {
+      const apiError = await generateApiError(error);
+      throw apiError;
+    }
+  };
+
+  return { mutationFn, ...options };
+}
