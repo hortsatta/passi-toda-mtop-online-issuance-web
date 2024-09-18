@@ -36,11 +36,7 @@ const schema = z.object({
     .string()
     .min(2, 'Name is too short')
     .max(50, 'Name is too long'),
-  presidentMiddleName: z
-    .string()
-    .min(1, 'Name is too short')
-    .max(50, 'Name is too long')
-    .optional(),
+  presidentMiddleName: z.string().max(50, 'Name is too long').optional(),
 });
 
 const defaultValues: Partial<TodaAssociationUpsertFormData> = {

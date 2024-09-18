@@ -54,11 +54,7 @@ const driverProfileSchema = z.object({
   email: z.string().email('Provide your email address').optional(),
   firstName: z.string().min(2, 'Name is too short').max(50, 'Name is too long'),
   lastName: z.string().min(2, 'Name is too short').max(50, 'Name is too long'),
-  middleName: z
-    .string()
-    .min(1, 'Name is too short')
-    .max(50, 'Name is too long')
-    .optional(),
+  middleName: z.string().max(50, 'Name is too long').optional(),
   birthDate: z
     .date({ required_error: 'Provide your date of birth' })
     .min(new Date('1900-01-01'), 'Date of birth is too old')

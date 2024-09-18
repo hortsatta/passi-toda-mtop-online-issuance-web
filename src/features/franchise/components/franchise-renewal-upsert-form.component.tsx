@@ -62,7 +62,6 @@ const driverProfileSchema = z.object({
   lastName: z.string().min(2, 'Name is too short').max(50, 'Name is too long'),
   middleName: z
     .string()
-    .min(1, 'Name is too short')
     .max(50, 'Name is too long')
     .optional(),
   birthDate: z
