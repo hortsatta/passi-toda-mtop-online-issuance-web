@@ -62,7 +62,9 @@ export function transformToFranchiseRenewal({
       : undefined,
     paymentORNo,
     franchiseStatusRemarks: transformedFranchiseStatusRemarks,
-    franchise: franchise ? transformToFranchise(franchise) : undefined,
+    franchise: franchise
+      ? transformToFranchise({ ...franchise, todaAssociation })
+      : undefined,
     ...transformAuditTrail(id, createdAt, updatedAt, deletedAt),
   };
 }
