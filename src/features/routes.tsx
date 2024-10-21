@@ -44,6 +44,8 @@ import { CoreLayout } from './core/components/core-layout.component';
 import { AuthProtectedRoute } from './user/components/auth-protected-route.component';
 import { AuthConfirmRegistrationPage } from './user/pages/auth-confirm-registration.page';
 import { CoreHomePage } from './core/pages/core-home.page';
+import { UserPasswordForgotPage } from './user/pages/user-password-forgot.page';
+import { UserPasswordResetPage } from './user/pages/user-password-reset.page';
 import { AuthSignInPage } from './user/pages/auth-sign-in.page';
 import { FranchiseCheckerPage } from './franchise/pages/franchise-checker.page';
 import { FranchiseRegisterPage } from './franchise/pages/franchise-register.page';
@@ -84,6 +86,24 @@ const routes = createRoutesFromElements(
         </AuthProtectedRoute>
       }
     />
+    <Route path={routeConfig.auth.password.to} element={<Outlet />}>
+      <Route
+        path={routeConfig.auth.password.forgot.to}
+        element={
+          <AuthProtectedRoute reverse>
+            <UserPasswordForgotPage />
+          </AuthProtectedRoute>
+        }
+      />
+      <Route
+        path={routeConfig.auth.password.reset.to}
+        element={
+          <AuthProtectedRoute reverse>
+            <UserPasswordResetPage />
+          </AuthProtectedRoute>
+        }
+      />
+    </Route>
     <Route path={routeConfig.user.to} element={<Outlet />}>
       <Route
         path={routeConfig.user.create.to}

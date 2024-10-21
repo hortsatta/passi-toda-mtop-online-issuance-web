@@ -19,6 +19,20 @@ export const routeConfig = {
       to: 'sign-in',
       pageTitle: 'Sign In',
     },
+    password: {
+      name: 'password',
+      to: 'password',
+      forgot: {
+        name: 'password-forgot',
+        to: 'forgot',
+        pageTitle: 'Forgot Password',
+      },
+      reset: {
+        name: 'password-reset',
+        to: 'reset',
+        pageTitle: 'Reset Password',
+      },
+    },
     confirmRegistration: {
       name: 'confirm-registration',
       to: 'register/confirm',

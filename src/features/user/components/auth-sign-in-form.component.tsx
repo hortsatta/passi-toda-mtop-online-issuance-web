@@ -19,6 +19,7 @@ type Props = FormProps<'form', AuthCredentials, Promise<void>> & {
 };
 
 const USER_REGISTER_TO = `/${routeConfig.user.to}/${routeConfig.user.create.to}`;
+const USER_PASSWORD_FORGOT_TO = `/${routeConfig.auth.password.to}/${routeConfig.auth.password.forgot.to}`;
 
 export const AuthSignInForm = memo(function ({
   className,
@@ -98,6 +99,7 @@ export const AuthSignInForm = memo(function ({
       >
         Sign In
       </BaseButton>
+      <Link to={USER_PASSWORD_FORGOT_TO}>Forgot password</Link>
       <Link to={USER_REGISTER_TO}>Not yet registered? Sign up</Link>
     </form>
   );

@@ -23,6 +23,7 @@ export type IconName =
   | 'funnel-simple'
   | 'image'
   | 'magnifying-glass'
+  | 'password'
   | 'pencil-simple'
   | 'placeholder'
   | 'plus'

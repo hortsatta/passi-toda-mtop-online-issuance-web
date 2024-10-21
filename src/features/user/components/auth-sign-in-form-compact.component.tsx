@@ -17,6 +17,7 @@ import type { FormProps } from '#/base/models/base.model';
 import type { User } from '../models/user.model';
 
 const USER_REGISTER_TO = `/${routeConfig.user.to}/${routeConfig.user.create.to}`;
+// const USER_PASSWORD_FORGOT_TO = `/${routeConfig.auth.password.to}/${routeConfig.auth.password.forgot.to}`;
 
 type Props = FormProps<'form', AuthCredentials, Promise<User>>;
 
@@ -40,6 +41,10 @@ export const AuthSignInFormCompact = memo(function ({
     defaultValues,
     resolver: zodResolver(schema),
   });
+
+  // const handlePasswordForgotClick = useCallback(() => {
+  //   pathname !== USER_PASSWORD_FORGOT_TO && navigate(USER_PASSWORD_FORGOT_TO);
+  // }, [pathname, navigate]);
 
   const handleRegisterClick = useCallback(() => {
     pathname !== USER_REGISTER_TO && navigate(USER_REGISTER_TO);
@@ -99,6 +104,12 @@ export const AuthSignInFormCompact = memo(function ({
       >
         Sign In
       </BaseButton>
+      {/* <BaseButtonIcon
+        iconName='password'
+        disabled={isSubmitting || isDone}
+        onClick={handlePasswordForgotClick}
+      />
+      <div className='h-[49px] border-r border-border' /> */}
       <BaseButtonIcon
         iconName='user-circle-plus'
         disabled={isSubmitting || isDone}

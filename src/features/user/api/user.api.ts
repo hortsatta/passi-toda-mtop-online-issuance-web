@@ -135,3 +135,70 @@ export function editUser(
 
   return { mutationFn, ...options };
 }
+
+export function verifyUserToken(
+  options?: Omit<UseMutationOptions<boolean, Error, string, any>, 'mutationFn'>,
+) {
+  const mutationFn = async (token: string): Promise<any> => {
+    const url = `${MEMBER_URL}/password/verify?token=${token}`;
+
+    try {
+      return kyInstance.get(url).json();
+    } catch (error: any) {
+      const apiError = await generateApiError(error);
+      throw apiError;
+    }
+  };
+
+  return { mutationFn, ...options };
+}
+
+export function passwordForgot(
+  options?: Omit<UseMutationOptions<boolean, Error, string, any>, 'mutationFn'>,
+) {
+  const mutationFn = async (email: string): Promise<any> => {
+    const url = `${MEMBER_URL}/password/forgot`;
+    const json = { email };
+
+    try {
+      const result = await kyInstance.post(url, { json }).json();
+      return result;
+    } catch (error: any) {
+      const apiError = await generateApiError(error);
+      throw apiError;
+    }
+  };
+
+  return { mutationFn, ...options };
+}
+
+export function passwordReset(
+  options?: Omit<
+    UseMutationOptions<
+      boolean,
+      Error,
+      { token: string; password: string },
+      any
+    >,
+    'mutationFn'
+  >,
+) {
+  const mutationFn = async (data: {
+    token: string;
+    password: string;
+  }): Promise<any> => {
+    const { token, password } = data;
+    const url = `${MEMBER_URL}/password/reset?token=${token}`;
+    const json = { password };
+
+    try {
+      const result = await kyInstance.post(url, { json }).json();
+      return result;
+    } catch (error: any) {
+      const apiError = await generateApiError(error);
+      throw apiError;
+    }
+  };
+
+  return { mutationFn, ...options };
+}

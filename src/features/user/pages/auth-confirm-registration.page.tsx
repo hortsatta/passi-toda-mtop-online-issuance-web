@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { routeConfig } from '#/config/routes.config';
 import { BaseLoading } from '#/base/components/base-loading.component';
 import { BaseScene } from '#/base/components/base-scene.component';
-import { useAuthConfirmRegistration } from '../hooks/user-auth-confirm-registration.hook';
+import { useAuthConfirmRegistration } from '../hooks/use-auth-confirm-registration.hook';
 
 export function AuthConfirmRegistrationPage() {
   const { loading, isConfirmed } = useAuthConfirmRegistration();

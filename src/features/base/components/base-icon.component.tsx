@@ -22,6 +22,7 @@ import {
   FunnelSimple,
   Image,
   MagnifyingGlass,
+  Password,
   PencilSimple,
   Placeholder,
   Plus,
@@ -94,6 +95,8 @@ export const BaseIcon = memo(
           return Image;
         case 'magnifying-glass':
           return MagnifyingGlass;
+        case 'password':
+          return Password;
         case 'pencil-simple':
           return PencilSimple;
         case 'placeholder':
