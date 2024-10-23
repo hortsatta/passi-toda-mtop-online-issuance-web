@@ -110,7 +110,7 @@ export const TreasurerFranchiseList = memo(function ({
   return (
     <div
       className={cx(
-        'w-full rounded bg-backdrop-surface px-16 py-12',
+        'w-full rounded bg-backdrop-surface px-4 py-5 lg:px-16 lg:py-12',
         className,
       )}
       role='table'
@@ -119,7 +119,7 @@ export const TreasurerFranchiseList = memo(function ({
       {isEmpty ? (
         <BaseDataEmptyMessage message='No franchises to show' />
       ) : (
-        <div className='flex flex-col gap-10'>
+        <div className='flex flex-col gap-5 lg:gap-10'>
           {!isFiltered ? (
             <>
               <FranchiseSubGroupList

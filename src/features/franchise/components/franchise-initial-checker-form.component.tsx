@@ -63,7 +63,7 @@ export const FranchiseInitialCheckerForm = memo(function ({
   return (
     <form
       className={cx(
-        'flex flex-1 flex-col overflow-hidden rounded-lg bg-backdrop-surface-accent',
+        'flex w-fit shrink-0 flex-col overflow-hidden rounded-lg bg-backdrop-surface-accent',
         className,
       )}
       onSubmit={handleSubmit(submitForm)}
@@ -75,9 +75,9 @@ export const FranchiseInitialCheckerForm = memo(function ({
           <span className='font-bold'>Motor Vehicle (MV) File Number</span> or{' '}
           <span className='font-bold'>Plate Number</span>.
         </p>
-        <div className='border-b-backdrop-input-accent w-full max-w-44 border-b opacity-40' />
+        <div className='w-full max-w-44 border-b border-b-backdrop-input-accent opacity-40' />
         <BaseControlledInput
-          className='!bg-backdrop-input-accent !h-16 text-lg placeholder:text-base placeholder:text-text/60 hover:!border-text/60 focus:!border-text'
+          className='!h-16 !bg-backdrop-input-accent text-lg placeholder:text-base placeholder:text-text/60 hover:!border-text/60 focus:!border-text'
           name='mvPlateNo'
           placeholder='MV1234567890123 or TX1234'
           control={control}

@@ -391,12 +391,12 @@ export const IssuerFranchiseSingle = memo(function ({
     <>
       <div
         className={cx(
-          'flex w-full flex-col gap-5 rounded bg-backdrop-surface px-16 py-12',
+          'flex w-full flex-col gap-2.5 rounded bg-backdrop-surface px-4 py-5 sm:gap-5 lg:px-16 lg:py-12',
           className,
         )}
         {...moreProps}
       >
-        <div className='flex w-full items-center justify-between'>
+        <div className='flex w-full flex-col items-start justify-between gap-2.5 sm:flex-row sm:items-center'>
           <div className='flex flex-col'>
             <span
               className={cx(
@@ -422,7 +422,7 @@ export const IssuerFranchiseSingle = memo(function ({
               status
             </small>
           </div>
-          <div className='flex flex-col items-end gap-2'>
+          <div className='flex flex-col items-end gap-2 self-end'>
             <CurrentStatus approvalStatus={approvalStatus} />
             <div className='flex items-center gap-2.5'>
               {moreStatusInfoText && (
@@ -455,11 +455,11 @@ export const IssuerFranchiseSingle = memo(function ({
         {(buttonLabel || detailButtonLabel || !!statusRemarks.length) && (
           <div className='my-2.5 w-full border-b border-border' />
         )}
-        <div className='flex w-full items-start justify-between gap-2.5'>
-          <div className='flex h-full flex-col items-start gap-2.5 transition-opacity'>
+        <div className='flex w-full flex-col items-start justify-between gap-2.5 sm:flex-row'>
+          <div className='flex h-full w-full flex-col items-start gap-2.5 transition-opacity sm:w-auto'>
             {onApproveFranchise && buttonLabel && (
               <BaseButton
-                className='h-16 min-w-[210px] !text-base'
+                className='h-16 w-full min-w-[210px] !text-base sm:w-auto'
                 variant={buttonLabelVariant as ButtonVariant}
                 loading={loading}
                 disabled={!buttonLabel}
@@ -494,7 +494,7 @@ export const IssuerFranchiseSingle = memo(function ({
           {onApproveFranchise &&
             buttonLabel &&
             approvalStatus === FranchiseApprovalStatus.PendingValidation && (
-              <div className='flex flex-col items-end gap-2.5'>
+              <div className='mt-2.5 flex w-full flex-row items-center justify-between gap-2.5 sm:mt-0 sm:w-auto sm:flex-col sm:items-end sm:justify-normal sm:gap-4'>
                 <BaseButton
                   className='w-fit'
                   variant='warn'
@@ -504,7 +504,7 @@ export const IssuerFranchiseSingle = memo(function ({
                 >
                   Reject Application
                 </BaseButton>
-                <span className='max-w-60 text-right text-xs leading-relaxed'>
+                <span className='order-first max-w-60 text-right text-xs leading-relaxed sm:order-none'>
                   Make sure to highlight fields with issues (if any) before
                   rejecting application
                 </span>

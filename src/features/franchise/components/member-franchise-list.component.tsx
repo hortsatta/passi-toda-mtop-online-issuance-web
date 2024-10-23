@@ -43,7 +43,7 @@ export const MemberFranchiseList = memo(function ({
   return (
     <div
       className={cx(
-        'flex w-full rounded bg-backdrop-surface px-16 py-12',
+        'flex w-full rounded bg-backdrop-surface px-4 py-5 lg:px-16 lg:py-12',
         listView === 'strip' ? 'flex-col gap-2.5' : 'flex-wrap gap-4',
         className,
       )}

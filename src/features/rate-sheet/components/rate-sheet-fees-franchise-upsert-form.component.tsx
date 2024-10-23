@@ -72,7 +72,10 @@ export const RateSheetFeesFranchiseUpsertForm = memo(function ({
   );
 
   return (
-    <div className={cx('flex items-start gap-4', className)} {...moreProps}>
+    <div
+      className={cx('flex flex-col items-start gap-4 sm:flex-row', className)}
+      {...moreProps}
+    >
       <div className='flex w-full flex-col gap-5 border-r border-border pr-4'>
         <div className='flex w-full flex-1 flex-col gap-4'>
           <div className='flex w-full items-center justify-between'>
@@ -168,14 +171,14 @@ export const RateSheetFeesFranchiseUpsertForm = memo(function ({
           </div>
         </div>
       </div>
-      <div className='flex min-h-[155px] w-full max-w-72 shrink-0 flex-col gap-4 rounded bg-backdrop-input p-4'>
+      <div className='flex min-h-[155px] w-full max-w-none flex-col gap-4 rounded bg-backdrop-input p-4 sm:max-w-72 sm:shrink-0'>
         <div>
           <h4>Total Amount</h4>
           {feeType === FeeType.FranchiseRenewal && (
             <span>without penalties</span>
           )}
         </div>
-        <div className='flex flex-1 items-center justify-center overflow-hidden rounded border border-border text-2xl font-bold'>
+        <div className='flex flex-1 items-center justify-center overflow-hidden rounded border border-border px-2.5 text-2xl font-bold sm:px-0'>
           <span>{totalAmount}</span>
         </div>
       </div>

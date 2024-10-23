@@ -367,12 +367,12 @@ export const MemberFranchiseSingle = memo(function ({
     <>
       <div
         className={cx(
-          'flex w-full flex-col gap-5 rounded bg-backdrop-surface px-16 py-12',
+          'flex w-full flex-col gap-2.5 rounded bg-backdrop-surface px-4 py-5 sm:gap-5 lg:px-16 lg:py-12',
           className,
         )}
         {...moreProps}
       >
-        <div className='flex w-full items-center justify-between'>
+        <div className='flex w-full flex-col items-start justify-between gap-2.5 sm:flex-row sm:items-center'>
           <div className='flex flex-col'>
             <span
               className={cx(
@@ -398,7 +398,7 @@ export const MemberFranchiseSingle = memo(function ({
               status
             </small>
           </div>
-          <div className='flex flex-col items-end gap-2'>
+          <div className='flex flex-col items-end gap-2 self-end'>
             <CurrentStatus approvalStatus={approvalStatus} />
             <div className='flex items-center gap-2.5'>
               {moreStatusInfoText && (
@@ -471,8 +471,8 @@ export const MemberFranchiseSingle = memo(function ({
           (approvalStatus === FranchiseApprovalStatus.Approved &&
             !canRenew &&
             !isExpired)) && (
-          <div className='flex w-full items-start justify-between gap-2.5'>
-            <div className='flex h-full flex-col items-start gap-2.5 transition-opacity'>
+          <div className='flex w-full flex-col items-start justify-normal gap-5 sm:flex-row sm:justify-between sm:gap-2.5'>
+            <div className='flex h-full w-full flex-col items-start gap-2.5 transition-opacity sm:w-auto'>
               {approvalStatus === FranchiseApprovalStatus.Validated && (
                 <span className='text-base'>
                   Awaiting{' '}
@@ -487,7 +487,7 @@ export const MemberFranchiseSingle = memo(function ({
               )}
               {detailButtonLabel && (
                 <button
-                  className='w-full max-w-[210px] rounded border border-blue-500 px-2.5 py-1.5 text-blue-500 transition-[filter] hover:brightness-150'
+                  className='w-full max-w-none rounded border border-blue-500 px-2.5 py-1.5 text-blue-500 transition-[filter] hover:brightness-150 sm:max-w-[210px]'
                   onClick={handleDetailsOpen(true)}
                 >
                   {detailButtonLabel}
@@ -496,6 +496,7 @@ export const MemberFranchiseSingle = memo(function ({
             </div>
             {approvalStatus !== FranchiseApprovalStatus.Approved && (
               <BaseButton
+                className='w-full sm:w-auto'
                 variant='warn'
                 loading={loading}
                 onClick={handleActionsOpen(true)}

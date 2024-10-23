@@ -147,7 +147,7 @@ export const FranchiseRecord = memo(function ({
     >
       <div className='flex w-full flex-1 flex-col gap-4'>
         <h4>Vehicle Info</h4>
-        <div className='grid grid-cols-3 gap-4'>
+        <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
           <BaseFieldText
             label='MV File No'
             error={getError(fieldNames.mvFileNo)}
@@ -217,7 +217,7 @@ export const FranchiseRecord = memo(function ({
       </div>
       <div className='flex w-full flex-1 flex-col gap-4'>
         <h4>Documents</h4>
-        <div className='grid grid-cols-3 gap-4'>
+        <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
           <BaseFieldImg
             src={vehicleORImgUrl}
             label='Vehicle Official Receipt (OR)'
@@ -261,7 +261,7 @@ export const FranchiseRecord = memo(function ({
             }
           />
         </div>
-        <div className='grid grid-cols-3 gap-4'>
+        <div className='grid grid-cols-1 gap-4 md:grid-cols-3'>
           <BaseFieldImg
             src={driverLicenseNoImgUrl}
             label={`Driver's License No`}
@@ -316,7 +316,7 @@ export const FranchiseRecord = memo(function ({
       </div>
       <div className='flex w-full flex-1 flex-col gap-4'>
         <h4>{driverInfoText}</h4>
-        <div className='grid w-full grid-cols-3 gap-4'>
+        <div className='grid w-full grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
           <BaseFieldText
             label='Name'
             error={getError(fieldNames.driverFullName)}

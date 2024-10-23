@@ -43,7 +43,7 @@ export const TodaAssociationSingleCard = memo(function ({
   return (
     <div
       className={cx(
-        'flex w-full cursor-pointer items-center justify-between gap-3 rounded border border-border bg-backdrop-input px-5 py-4 transition-colors hover:border-primary',
+        'flex w-full cursor-pointer flex-col items-center justify-between gap-3 rounded border border-border bg-backdrop-input px-5 py-4 transition-colors hover:border-primary sm:flex-row',
         className,
       )}
       onClick={onDetails}
@@ -76,10 +76,10 @@ export const TodaAssociationSingleCard = memo(function ({
           </div>
         </div>
       </div>
-      <div className='flex h-full gap-4'>
+      <div className='flex h-full w-full gap-4 sm:w-auto'>
         <button
           className={cx(
-            'flex h-full min-w-28 flex-col items-center justify-center gap-1 rounded bg-backdrop-input px-4',
+            'flex h-full w-full min-w-28 flex-col items-center justify-center gap-1 rounded bg-backdrop-input px-4 pb-4 pt-2.5 sm:w-auto sm:pb-0 sm:pt-0',
             onFranchiseView && 'transition-colors hover:bg-primary',
           )}
           onClick={handleFranchiseView}

@@ -233,22 +233,22 @@ export const IssuerFranchiseSingleStrip = memo(function ({
       onClick={onDetails}
       {...moreProps}
     >
-      <div className='flex min-h-[57px] w-full items-center justify-between gap-4'>
-        <div className='flex items-center gap-4'>
+      <div className='flex min-h-[57px] w-full flex-col items-center justify-between gap-4 md:flex-row'>
+        <div className='flex w-full flex-col items-start justify-between gap-4 sm:flex-row sm:items-center md:w-auto md:justify-normal'>
           <div className='min-w-[80px]'>
             <h4 className='text-2xl font-bold uppercase leading-tight'>
               {plateNo}
             </h4>
             <small className='uppercase leading-tight'>plate no</small>
           </div>
-          <div className='h-12 border-r border-border' />
+          <div className='hidden h-12 border-r border-border sm:inline-block' />
           <div className='min-w-[200px]'>
             <span className='block text-2xl font-medium leading-tight'>
               {mvFileNo}
             </span>
             <small className='uppercase leading-tight'>mv file no</small>
           </div>
-          <div className='h-12 border-r border-border' />
+          <div className='hidden h-12 border-r border-border sm:inline-block' />
           <div>
             <span className='block text-lg font-medium leading-tight'>
               {todaAssociationName}
@@ -256,7 +256,7 @@ export const IssuerFranchiseSingleStrip = memo(function ({
             <small className='uppercase leading-tight'>association</small>
           </div>
         </div>
-        <div className='flex flex-col items-end gap-1.5'>
+        <div className='order-first flex w-full flex-row items-end justify-between gap-1.5 md:order-none md:w-auto md:flex-col md:justify-normal'>
           <span
             className={cx(
               'flex items-center gap-1 text-xl font-bold',
@@ -293,8 +293,8 @@ export const IssuerFranchiseSingleStrip = memo(function ({
         </div>
       </div>
       <div className='w-full border-b border-border' />
-      <div className='flex w-full items-center justify-between gap-4'>
-        <div className='flex gap-4'>
+      <div className='flex w-full flex-col items-center justify-between gap-4 md:flex-row'>
+        <div className='flex w-full justify-around gap-4 md:w-auto md:justify-start'>
           {isDriverOwner ? (
             <div>
               <span className='block font-medium leading-tight'>

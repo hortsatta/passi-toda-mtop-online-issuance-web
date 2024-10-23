@@ -21,6 +21,7 @@ import {
   FilePdf,
   FunnelSimple,
   Image,
+  List,
   MagnifyingGlass,
   Password,
   PencilSimple,
@@ -93,6 +94,8 @@ export const BaseIcon = memo(
           return FunnelSimple;
         case 'image':
           return Image;
+        case 'list':
+          return List;
         case 'magnifying-glass':
           return MagnifyingGlass;
         case 'password':

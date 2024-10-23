@@ -18,7 +18,10 @@ export const TodaAssociationListActions = memo(function ({
   ...moreProps
 }: Props) {
   return (
-    <div className={cx('flex items-center gap-4', className)} {...moreProps}>
+    <div
+      className={cx('flex w-full items-center gap-4 sm:w-auto', className)}
+      {...moreProps}
+    >
       {onSearchChange && (
         <BaseSearchInput
           iconName='magnifying-glass'

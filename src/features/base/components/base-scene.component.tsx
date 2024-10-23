@@ -21,10 +21,10 @@ export const BaseScene = memo(function ({
   ...moreProps
 }: Props) {
   return (
-    <div className={cx('w-full pb-10 pt-10', className)} {...moreProps}>
+    <div className={cx('w-full py-4 xl:py-10', className)} {...moreProps}>
       <div
         className={cx(
-          'mb-5 flex w-full items-center justify-between gap-5',
+          'mb-5 flex w-full flex-col items-start justify-between gap-5 px-4 sm:flex-row sm:items-center xl:px-0',
           (pageTitle || backTo || !!rightComponent) && 'mb-5',
         )}
       >
@@ -42,7 +42,9 @@ export const BaseScene = memo(function ({
           {pageTitle && <h2>{pageTitle}</h2>}
         </div>
         {!!rightComponent && (
-          <div className='flex items-center'>{rightComponent}</div>
+          <div className='flex w-full items-center sm:w-auto'>
+            {rightComponent}
+          </div>
         )}
       </div>
       {children}

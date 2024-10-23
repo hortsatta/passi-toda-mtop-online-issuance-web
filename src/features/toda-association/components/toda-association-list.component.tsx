@@ -49,7 +49,7 @@ export const TodaAssociationList = memo(function ({
   return (
     <div
       className={cx(
-        'flex w-full flex-wrap gap-2.5 rounded bg-backdrop-surface px-16 py-12',
+        'flex w-full flex-wrap gap-2.5 rounded bg-backdrop-surface px-4 py-5 lg:px-16 lg:py-12',
         className,
       )}
       role='table'

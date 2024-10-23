@@ -9,7 +9,7 @@ type Props = Omit<ComponentProps<typeof BaseInput>, 'onChange'> & {
   onChange?: (value: string | null) => void;
 };
 
-const WRAPPER_PROPS = { className: 'w-full max-w-64' };
+const WRAPPER_PROPS = { className: 'w-full max-w-none sm:max-w-64' };
 
 export const BaseSearchInput = memo(
   forwardRef<HTMLInputElement, Props>(function (

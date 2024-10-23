@@ -23,10 +23,13 @@ export const CurrentUserCard = memo(function ({
 }: Props) {
   return (
     <div
-      className={cx('flex h-14 overflow-hidden rounded', className)}
+      className={cx(
+        'flex h-14 w-full overflow-hidden rounded lg:w-fit',
+        className,
+      )}
       {...moreProps}
     >
-      <div className='flex min-w-52 flex-col items-end justify-center gap-0.5 rounded border border-r-0 border-border bg-backdrop-input px-3'>
+      <div className='flex w-full min-w-52 flex-col items-end justify-center gap-0.5 rounded border border-r-0 border-border bg-backdrop-input px-3 lg:w-fit'>
         <span className='text-base font-medium'>{fullName}</span>
         <span className='text-xs uppercase leading-none text-white/50'>
           {role}

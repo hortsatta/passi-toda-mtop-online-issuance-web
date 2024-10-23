@@ -38,7 +38,7 @@ export const TodaAssociationSingle = memo(function ({
   return (
     <div
       className={cx(
-        'relative flex w-full flex-col gap-6 rounded bg-backdrop-surface px-16 py-12',
+        'relative flex w-full flex-col gap-6 rounded bg-backdrop-surface px-4 py-5 lg:px-16 lg:py-12',
         className,
       )}
       {...moreProps}

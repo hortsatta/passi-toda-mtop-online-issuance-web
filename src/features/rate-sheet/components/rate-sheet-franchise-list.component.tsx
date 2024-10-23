@@ -72,7 +72,7 @@ export const RateSheetFranchiseList = memo(function ({
     <>
       <div
         className={cx(
-          'w-full rounded bg-backdrop-surface px-16 py-12',
+          'w-full rounded bg-backdrop-surface px-4 py-5 lg:px-16 lg:py-12',
           className,
         )}
         {...moreProps}
@@ -84,7 +84,7 @@ export const RateSheetFranchiseList = memo(function ({
             linkTo={routeConfig.franchise.rates.create.to}
           />
         ) : (
-          <div className='flex items-center gap-2.5'>
+          <div className='flex flex-col items-start gap-2.5 sm:flex-row sm:items-center'>
             {registrationRateSheet && (
               <RateSheetSingleCard
                 rateSheet={registrationRateSheet}

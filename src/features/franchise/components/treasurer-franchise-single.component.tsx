@@ -314,12 +314,12 @@ export const TreasurerFranchiseSingle = memo(function ({
     <>
       <div
         className={cx(
-          'flex w-full flex-col gap-5 rounded bg-backdrop-surface px-16 py-12',
+          'flex w-full flex-col gap-2.5 rounded bg-backdrop-surface px-4 py-5 sm:gap-5 lg:px-16 lg:py-12',
           className,
         )}
         {...moreProps}
       >
-        <div className='flex w-full items-center justify-between'>
+        <div className='flex w-full flex-col items-start justify-between gap-2.5 sm:flex-row sm:items-center'>
           <div className='flex flex-col'>
             <span
               className={cx(
@@ -346,7 +346,7 @@ export const TreasurerFranchiseSingle = memo(function ({
               status
             </small>
           </div>
-          <div className='flex flex-col items-end gap-2'>
+          <div className='flex flex-col items-end gap-2 self-end'>
             <CurrentStatus approvalStatus={approvalStatus} />
             <div className='flex items-center gap-2.5'>
               {moreStatusInfoText && (
@@ -377,12 +377,12 @@ export const TreasurerFranchiseSingle = memo(function ({
           </div>
         </div>
         <div className='my-2.5 w-full border-b border-border' />
-        <div className='flex w-full items-start justify-between gap-2.5'>
-          <div className='flex h-full flex-col items-start gap-2.5 transition-opacity'>
+        <div className='flex w-full flex-col items-start justify-between gap-2.5 sm:flex-row'>
+          <div className='flex h-full w-full flex-col items-start gap-2.5 transition-opacity sm:w-auto'>
             {approvalStatus === FranchiseApprovalStatus.Validated &&
               onApproveFranchise && (
                 <BaseButton
-                  className='h-16 min-w-[210px] !text-base'
+                  className='h-16 w-full min-w-[210px] !text-base sm:w-auto'
                   variant='accept'
                   loading={loading}
                   onClick={handleActionsOpen(true, true)}

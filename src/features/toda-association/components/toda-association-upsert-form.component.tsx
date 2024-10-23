@@ -117,13 +117,13 @@ export const TodaAssociationUpsertForm = memo(function ({
   return (
     <div
       className={cx(
-        'w-full rounded bg-backdrop-surface px-16 py-12',
+        'w-full rounded bg-backdrop-surface px-4 py-5 lg:px-16 lg:py-12',
         className,
       )}
       {...moreProps}
     >
       <form
-        className='flex flex-col gap-10'
+        className='flex flex-col gap-5 lg:gap-10'
         onSubmit={handleSubmit(submitForm, handleSubmitError)}
       >
         <fieldset className='flex flex-col gap-6' disabled={loading}>
@@ -148,7 +148,7 @@ export const TodaAssociationUpsertForm = memo(function ({
           </div>
           <div className='flex flex-col gap-4'>
             <h4>More Info</h4>
-            <div className='flex gap-2.5'>
+            <div className='flex flex-col gap-2.5 sm:flex-row'>
               <BaseControlledInput
                 name='presidentFirstName'
                 label='President First Name'

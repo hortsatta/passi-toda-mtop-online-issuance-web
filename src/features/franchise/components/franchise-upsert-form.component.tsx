@@ -340,20 +340,20 @@ export const FranchiseUpsertForm = memo(function ({
   return (
     <div
       className={cx(
-        'w-full rounded bg-backdrop-surface px-16 py-12',
+        'w-full rounded bg-backdrop-surface px-4 py-5 lg:px-16 lg:py-12',
         className,
       )}
       {...moreProps}
     >
       <form
-        className='flex flex-col gap-10'
+        className='flex flex-col gap-5 lg:gap-10'
         onSubmit={handleSubmit(submitForm, handleSubmitError)}
       >
         <fieldset className='flex flex-col gap-6' disabled={loading}>
           <div className='flex flex-col gap-4'>
             <h4>Vehicle Info</h4>
             <div className='flex w-full flex-col gap-2.5'>
-              <div className='grid grid-cols-3 gap-2.5'>
+              <div className='grid grid-cols-1 gap-2.5 sm:grid-cols-2 md:grid-cols-3'>
                 <BaseControlledInput
                   label='MV File No'
                   name='mvFileNo'
@@ -393,6 +393,7 @@ export const FranchiseUpsertForm = memo(function ({
                   asterisk
                 />
                 <BaseControlledInputSelect
+                  wrapperProps={{ className: 'order-last md:order-none' }}
                   label='TODA Association'
                   name='todaAssociationId'
                   control={control}
@@ -408,7 +409,7 @@ export const FranchiseUpsertForm = memo(function ({
           <div className='flex flex-col gap-4'>
             <h4>Documents</h4>
             <div className='flex w-full flex-col gap-2.5'>
-              <div className='grid grid-cols-3 gap-2.5'>
+              <div className='grid grid-cols-1 gap-2.5 sm:grid-cols-2 md:grid-cols-3'>
                 <BaseControlledInputUploaderImage
                   label='Vehicle Official Receipt (OR)'
                   name='vehicleORImgUrl'
@@ -475,9 +476,9 @@ export const FranchiseUpsertForm = memo(function ({
             </div>
           </div>
           <div className='flex flex-col gap-4 pt-2.5'>
-            <div className='flex items-center justify-between'>
+            <div className='flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center'>
               <h4>Driver Info</h4>
-              <div className='w-full max-w-[330px]'>
+              <div className='w-full max-w-none sm:max-w-[330px]'>
                 <BaseInputSelect
                   label='Select Driver'
                   items={driverProfileSelectOptions}
@@ -492,7 +493,7 @@ export const FranchiseUpsertForm = memo(function ({
             {selectedDriverInfoValue !== 'driver-owner' &&
               selectedDriverInfoValue !== undefined && (
                 <div className='flex flex-col gap-2.5'>
-                  <div className='grid grid-cols-3 gap-2.5'>
+                  <div className='grid grid-cols-1 gap-2.5 sm:grid-cols-2 md:grid-cols-3'>
                     <BaseControlledInput
                       name='driverProfile.firstName'
                       label='First Name'
@@ -589,7 +590,7 @@ export const FranchiseUpsertForm = memo(function ({
           <div className='flex flex-col gap-4'>
             <h4>Owner Info</h4>
             <div className='flex flex-col gap-2.5'>
-              <div className='grid grid-cols-3 gap-2.5'>
+              <div className='grid grid-cols-1 gap-2.5 sm:grid-cols-2 md:grid-cols-3'>
                 <BaseInput
                   value={userProfile.firstName}
                   label='First Name'

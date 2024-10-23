@@ -22,6 +22,7 @@ export type IconName =
   | 'file-pdf'
   | 'funnel-simple'
   | 'image'
+  | 'list'
   | 'magnifying-glass'
   | 'password'
   | 'pencil-simple'
@@ -43,6 +44,16 @@ export type IconName =
 export type SelectItem = {
   value: string | number;
   label?: string;
+};
+
+export type NavItem = {
+  to: string;
+  label: string;
+};
+
+export type NavItemList = {
+  label: string;
+  items: NavItem[];
 };
 
 export type ButtonVariant = 'primary' | 'accent' | 'accept' | 'warn';

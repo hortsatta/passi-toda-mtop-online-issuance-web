@@ -13,7 +13,7 @@ export function FranchiseCheckerPage() {
       pageTitle={routeConfig.franchiseChecker.pageTitle}
       backTo='/'
     >
-      <div className='flex flex-col gap-10 overflow-hidden rounded bg-backdrop-surface px-16 py-12'>
+      <div className='flex flex-col gap-5 overflow-hidden rounded bg-backdrop-surface px-4 py-5 lg:gap-10 lg:px-16 lg:py-12'>
         <FranchiseCheckerForm loading={loading} />
         <div className='w-full border-b border-border' />
         <FranchiseCheckerInfo

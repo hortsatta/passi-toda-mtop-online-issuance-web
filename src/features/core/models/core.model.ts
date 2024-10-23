@@ -26,6 +26,11 @@ export type QuerySort = {
   order: 'asc' | 'desc';
 };
 
+export type CoreSlice = {
+  isMobileMenuOpen: boolean;
+  toggleMobileMenu: (isOpen?: boolean) => void;
+};
+
 // export type QueryPagination = {
 //   take: number;
 //   skip: number;

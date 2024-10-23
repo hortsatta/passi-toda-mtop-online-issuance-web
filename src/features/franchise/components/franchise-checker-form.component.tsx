@@ -75,7 +75,7 @@ export const FranchiseCheckerForm = memo(function ({
       <span className='text-lg'>
         Motor Vehicle (MV) File Number or Plate Number
       </span>
-      <div className='flex h-[67px] items-start justify-between gap-4'>
+      <div className='flex h-auto flex-col items-start justify-between gap-4 sm:h-[67px] sm:flex-row'>
         <div className='w-full flex-1'>
           <BaseControlledInput
             className='text-lg placeholder:text-base'
@@ -87,7 +87,7 @@ export const FranchiseCheckerForm = memo(function ({
           />
         </div>
         <BaseButton
-          className='min-w-60 !text-base'
+          className='w-full min-w-60 !text-base sm:w-auto'
           variant='accent'
           type='submit'
           loading={loading || isSubmitting}

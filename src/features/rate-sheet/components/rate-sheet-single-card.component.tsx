@@ -64,7 +64,7 @@ export const RateSheetSingleCard = memo(function ({
   return (
     <div
       className={cx(
-        'relative flex w-[326px] flex-col gap-2.5 overflow-hidden rounded border border-border bg-backdrop-input p-5',
+        'relative flex w-full flex-col gap-2.5 overflow-hidden rounded border border-border bg-backdrop-input p-5 sm:w-[326px]',
         onClick && 'cursor-pointer transition-colors hover:border-primary',
         className,
       )}

@@ -189,7 +189,7 @@ const FranchiseInfo = memo(function ({
         )}
         {isOwner && (
           <BaseButton
-            className='flex w-full max-w-60 items-center gap-2.5'
+            className='flex w-full max-w-none items-center gap-2.5 sm:max-w-60'
             onClick={handleViewFranchiseClick}
           >
             View Franchise

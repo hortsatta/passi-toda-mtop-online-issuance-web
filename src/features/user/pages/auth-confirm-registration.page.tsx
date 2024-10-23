@@ -13,7 +13,7 @@ export function AuthConfirmRegistrationPage() {
       className='mx-auto w-full max-w-[800px]'
       pageTitle={routeConfig.auth.confirmRegistration.pageTitle}
     >
-      <div className='flex min-h-64 flex-col items-center justify-center gap-5 overflow-hidden rounded bg-backdrop-surface px-16 py-12'>
+      <div className='flex min-h-64 flex-col items-center justify-center gap-5 overflow-hidden rounded bg-backdrop-surface px-4 py-5 lg:px-16 lg:py-12'>
         {loading ? (
           <BaseLoading compact />
         ) : (
