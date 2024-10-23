@@ -46,8 +46,8 @@ const FranchiseInfo = memo(function ({
           ? []
           : [
               franchise.id,
-              franchise.mvFileNo,
-              franchise.plateNo,
+              franchise.mvFileNo.toUpperCase(),
+              franchise.plateNo.toUpperCase(),
               franchise.isExpired,
               franchise.user?.userProfile.reverseFullName,
               (user?.role === UserRole.Member &&

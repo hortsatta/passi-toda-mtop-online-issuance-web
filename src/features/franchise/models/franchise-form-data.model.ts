@@ -2,6 +2,9 @@ import type { DriverProfileUpsertFormData } from '#/user/models/driver-profile-f
 
 export type FranchiseUpsertFormData = {
   mvFileNo: string;
+  vehicleMake: string;
+  vehicleMotorNo: string;
+  vehicleChassisNo: string;
   plateNo: string;
   isDriverOwner: boolean;
   vehicleORImgUrl: string;

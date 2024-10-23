@@ -131,6 +131,9 @@ export function transformToFranchiseRenewalValidateDto({
 
 export function transformToFranchiseRenewalUpsertDto({
   mvFileNo,
+  vehicleMake,
+  vehicleMotorNo,
+  vehicleChassisNo,
   plateNo,
   isDriverOwner,
   vehicleORImgUrl,
@@ -151,6 +154,9 @@ export function transformToFranchiseRenewalUpsertDto({
 
   return {
     mvFileNo,
+    vehicleMake,
+    vehicleMotorNo,
+    vehicleChassisNo,
     plateNo,
     isDriverOwner,
     vehicleORImgUrl,

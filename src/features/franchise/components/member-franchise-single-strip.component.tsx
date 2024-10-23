@@ -125,8 +125,8 @@ export const MemberFranchiseSingleStrip = memo(function ({
       : franchise;
 
     return [
-      franchise.mvFileNo,
-      franchise.plateNo,
+      franchise.mvFileNo.toUpperCase(),
+      franchise.plateNo.toUpperCase(),
       franchise.isExpired,
       franchise.canRenew,
       target.approvalStatus,

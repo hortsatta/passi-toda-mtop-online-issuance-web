@@ -103,8 +103,8 @@ export const MemberFranchiseSingleCard = memo(function ({
       ? franchise.franchiseRenewals[0]
       : franchise;
     return [
-      franchise.mvFileNo,
-      franchise.plateNo,
+      franchise.mvFileNo.toUpperCase(),
+      franchise.plateNo.toUpperCase(),
       franchise.isExpired,
       franchise.canRenew,
       target.approvalStatus,

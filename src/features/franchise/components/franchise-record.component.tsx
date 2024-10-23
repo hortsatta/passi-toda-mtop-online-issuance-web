@@ -34,10 +34,17 @@ export const FranchiseRecord = memo(function ({
   setFieldErrors,
   ...moreProps
 }: Props) {
-  const [mvFileNo, plateNo] = useMemo(
-    () => [franchise.mvFileNo, franchise.plateNo],
-    [franchise],
-  );
+  const [mvFileNo, vehicleMake, vehicleMotorNo, vehicleChassisNo, plateNo] =
+    useMemo(
+      () => [
+        franchise.mvFileNo.toUpperCase(),
+        franchise.vehicleMake.toUpperCase(),
+        franchise.vehicleMotorNo.toUpperCase(),
+        franchise.vehicleChassisNo.toUpperCase(),
+        franchise.plateNo.toUpperCase(),
+      ],
+      [franchise],
+    );
 
   const [
     statusFieldRemarks,
@@ -140,16 +147,7 @@ export const FranchiseRecord = memo(function ({
     >
       <div className='flex w-full flex-1 flex-col gap-4'>
         <h4>Vehicle Info</h4>
-        <div className='flex flex-1 gap-4'>
-          <BaseFieldText
-            label='Plate No'
-            error={getError(fieldNames.plateNo)}
-            onClick={
-              canHighlight ? handleFieldClick(fieldNames.plateNo) : undefined
-            }
-          >
-            {plateNo}
-          </BaseFieldText>
+        <div className='grid grid-cols-3 gap-4'>
           <BaseFieldText
             label='MV File No'
             error={getError(fieldNames.mvFileNo)}
@@ -159,7 +157,51 @@ export const FranchiseRecord = memo(function ({
           >
             {mvFileNo}
           </BaseFieldText>
-
+          <BaseFieldText
+            className='order-4'
+            label='Vehicle Make'
+            error={getError(fieldNames.vehicleMake)}
+            onClick={
+              canHighlight
+                ? handleFieldClick(fieldNames.vehicleMake)
+                : undefined
+            }
+          >
+            {vehicleMake}
+          </BaseFieldText>
+          <BaseFieldText
+            className='order-5'
+            label='Vehicle Motor No'
+            error={getError(fieldNames.vehicleMotorNo)}
+            onClick={
+              canHighlight
+                ? handleFieldClick(fieldNames.vehicleMotorNo)
+                : undefined
+            }
+          >
+            {vehicleMotorNo}
+          </BaseFieldText>
+          <BaseFieldText
+            className='order-6'
+            label='Vehicle Chassis No'
+            error={getError(fieldNames.vehicleChassisNo)}
+            onClick={
+              canHighlight
+                ? handleFieldClick(fieldNames.vehicleChassisNo)
+                : undefined
+            }
+          >
+            {vehicleChassisNo}
+          </BaseFieldText>
+          <BaseFieldText
+            label='Plate No'
+            error={getError(fieldNames.plateNo)}
+            onClick={
+              canHighlight ? handleFieldClick(fieldNames.plateNo) : undefined
+            }
+          >
+            {plateNo}
+          </BaseFieldText>
           <BaseFieldText
             label='TODA Association'
             error={getError(fieldNames.todaAssociation)}

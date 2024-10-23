@@ -19,6 +19,9 @@ export enum FranchiseApprovalStatus {
 export type Franchise = Partial<AuditTrail> & {
   id: number;
   mvFileNo: string;
+  vehicleMake: string;
+  vehicleMotorNo: string;
+  vehicleChassisNo: string;
   plateNo: string;
   vehicleORImgUrl: string;
   vehicleCRImgUrl: string;

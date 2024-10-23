@@ -38,7 +38,11 @@ export function TreasurerFranchiseSinglePrintViewPage() {
       >
         {(loading || rateSheetLoading) && <BaseLoading />}
         {franchise && rateSheets && (
-          <FranchiseSinglePrintView ref={contentRef} franchise={franchise} />
+          <FranchiseSinglePrintView
+            ref={contentRef}
+            franchise={franchise}
+            rateSheets={rateSheets}
+          />
         )}
       </BaseScene>
     </BaseDataSuspense>

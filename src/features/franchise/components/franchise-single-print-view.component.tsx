@@ -2,17 +2,19 @@ import cx from 'classix';
 import { forwardRef, memo, useMemo } from 'react';
 
 import dayjs from '#/config/dayjs.config';
+import { FeeType } from '#/rate-sheet/models/rate-sheet.model';
 import { BaseIcon } from '#/base/components/base-icon.component';
 import { BaseFieldText } from '#/base/components/base-field-text.component';
 import { FranchiseApprovalStatus } from '../models/franchise.model';
 
 import type { ComponentProps } from 'react';
+import type { RateSheet } from '#/rate-sheet/models/rate-sheet.model';
 import type { Franchise } from '../models/franchise.model';
+import { RateSheetDetailsPrintView } from '#/rate-sheet/components/rate-sheet-details-print-view.component';
 
 type Props = ComponentProps<'div'> & {
   franchise: Franchise;
-  // rateSheets: RateSheet[];
-  // loading?: boolean;
+  rateSheets: RateSheet[];
 };
 
 type HoriFieldTextProps = ComponentProps<'div'> & {
@@ -41,12 +43,15 @@ const HoriFieldText = memo(function ({
 
 export const FranchiseSinglePrintView = memo(
   forwardRef<HTMLDivElement, Props>(function (
-    { className, franchise, ...moreProps },
+    { className, franchise, rateSheets, ...moreProps },
     ref,
   ) {
     const [
       user,
       mvFileNo,
+      vehicleMake,
+      vehicleMotorNo,
+      vehicleChassisNo,
       plateNo,
       isExpired,
       createdAtText,
@@ -65,8 +70,11 @@ export const FranchiseSinglePrintView = memo(
 
       return [
         franchise.user,
-        franchise.mvFileNo,
-        franchise.plateNo,
+        franchise.mvFileNo.toUpperCase(),
+        franchise.vehicleMake.toUpperCase(),
+        franchise.vehicleMotorNo.toUpperCase(),
+        franchise.vehicleChassisNo.toUpperCase(),
+        franchise.plateNo.toUpperCase(),
         franchise.isExpired,
         dayjs(target.createdAt).format('MMMM DD, YYYY'),
         target.todaAssociation,
@@ -152,11 +160,34 @@ export const FranchiseSinglePrintView = memo(
       }
     }, [approvalStatus, isExpired]);
 
+    const paymentORNo = useMemo(() => {
+      if (
+        approvalStatus === FranchiseApprovalStatus.Canceled ||
+        approvalStatus === FranchiseApprovalStatus.Rejected ||
+        approvalStatus === FranchiseApprovalStatus.PendingValidation ||
+        approvalStatus === FranchiseApprovalStatus.Validated
+      )
+        return undefined;
+
+      return franchise.paymentORNo;
+    }, [approvalStatus, franchise]);
+
+    const currentRateSheet = useMemo(
+      () =>
+        rateSheets.find((rateSheet) => {
+          const feeType = isRenewal
+            ? FeeType.FranchiseRenewal
+            : FeeType.FranchiseRegistration;
+          return rateSheet.feeType === feeType;
+        }),
+      [rateSheets, isRenewal],
+    );
+
     return (
       <div
         ref={ref}
         className={cx(
-          'content-wrapper flex w-full flex-col gap-10 rounded bg-backdrop-surface px-16 py-12',
+          'content-wrapper flex w-full flex-col gap-5 rounded bg-backdrop-surface px-16 py-12',
           className,
         )}
         {...moreProps}
@@ -221,9 +252,18 @@ export const FranchiseSinglePrintView = memo(
         <div className='print-border border-b border-border' />
         <div className='print-border flex w-full flex-col gap-4 rounded-sm border border-border p-3'>
           <h4 className='text-base font-normal uppercase'>Vehicle Info</h4>
-          <div className='flex w-full items-center gap-4'>
+          <div className='grid w-full grid-cols-3 gap-x-4 gap-y-6'>
             <BaseFieldText label='MV File No' isPrint>
               {mvFileNo}
+            </BaseFieldText>
+            <BaseFieldText label='Vehicle Make' isPrint>
+              {vehicleMake}
+            </BaseFieldText>
+            <BaseFieldText label='Vehicle Motor No' isPrint>
+              {vehicleMotorNo}
+            </BaseFieldText>
+            <BaseFieldText label='Vehicle Chassis No' isPrint>
+              {vehicleChassisNo}
             </BaseFieldText>
             <BaseFieldText label='Plate No' isPrint>
               {plateNo}
@@ -240,6 +280,9 @@ export const FranchiseSinglePrintView = memo(
             </BaseFieldText>
             <BaseFieldText label='Authorized Route' isPrint>
               {todaAuthorizedRoute}
+            </BaseFieldText>
+            <BaseFieldText label='Authorized No. of Unit' isPrint>
+              One (1) Unit
             </BaseFieldText>
           </div>
         </div>
@@ -274,6 +317,15 @@ export const FranchiseSinglePrintView = memo(
               </BaseFieldText>
             </div>
           </div>
+        )}
+        {currentRateSheet && (
+          <>
+            <div className='print-border border-b border-border' />
+            <RateSheetDetailsPrintView
+              rateSheet={currentRateSheet}
+              paymentORNo={paymentORNo}
+            />
+          </>
         )}
       </div>
     );

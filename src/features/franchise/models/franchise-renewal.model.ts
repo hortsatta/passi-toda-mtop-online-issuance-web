@@ -4,6 +4,9 @@ import type { FranchiseRenewalUpsertFormData } from './franchise-renewal-form-da
 export type FranchiseRenewal = Omit<
   Franchise,
   | 'mvFileNo'
+  | 'vehicleMake'
+  | 'vehicleMotorNo'
+  | 'vehicleChassisNo'
   | 'plateNo'
   | 'franchiseRenewals'
   | 'isExpired'

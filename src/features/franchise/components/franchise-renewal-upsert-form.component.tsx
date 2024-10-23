@@ -60,10 +60,7 @@ const driverProfileSchema = z.object({
   email: z.string().email('Provide your email address').optional(),
   firstName: z.string().min(2, 'Name is too short').max(50, 'Name is too long'),
   lastName: z.string().min(2, 'Name is too short').max(50, 'Name is too long'),
-  middleName: z
-    .string()
-    .max(50, 'Name is too long')
-    .optional(),
+  middleName: z.string().max(50, 'Name is too long').optional(),
   birthDate: z
     .date({ required_error: 'Provide your date of birth' })
     .min(new Date('1900-01-01'), 'Date of birth is too old')
@@ -227,10 +224,17 @@ export const FranchiseRenewalUpsertForm = memo(function ({
 
   const isDriverOwner = useWatch({ control, name: 'isDriverOwner' });
 
-  const [mvFileNo, plateNo] = useMemo(
-    () => [franchise.mvFileNo, franchise.plateNo],
-    [franchise],
-  );
+  const [mvFileNo, vehicleMake, vehicleMotorNo, vehicleChassisNo, plateNo] =
+    useMemo(
+      () => [
+        franchise.mvFileNo.toUpperCase(),
+        franchise.vehicleMake.toUpperCase(),
+        franchise.vehicleMotorNo.toUpperCase(),
+        franchise.vehicleChassisNo.toUpperCase(),
+        franchise.plateNo.toUpperCase(),
+      ],
+      [franchise],
+    );
 
   const loading = useMemo(
     () => formLoading || isSubmitting || isDone,
@@ -358,23 +362,51 @@ export const FranchiseRenewalUpsertForm = memo(function ({
           <div className='flex flex-col gap-4'>
             <h4>Vehicle Info</h4>
             <div className='flex w-full flex-1 gap-2.5'>
-              <BaseInput
-                value={mvFileNo}
-                label='MV File No'
-                fullWidth
-                disabled
-              />
-              <BaseInput value={plateNo} label='Plate No' fullWidth disabled />
-              <BaseControlledInputSelect
-                label='TODA Association'
-                name='todaAssociationId'
-                control={control}
-                items={todaAssociationSelectOptions}
-                disabled={isFetching}
-                fullWidth
-                asterisk
-                isNumber
-              />
+              <div className='grid grid-cols-3 gap-2.5'>
+                <BaseInput
+                  value={mvFileNo}
+                  label='MV File No'
+                  fullWidth
+                  disabled
+                />
+                <BaseInput
+                  wrapperProps={{ className: 'order-4' }}
+                  value={vehicleMake}
+                  label='Vehicle Make'
+                  fullWidth
+                  disabled
+                />
+                <BaseInput
+                  wrapperProps={{ className: 'order-5' }}
+                  value={vehicleMotorNo}
+                  label='Vehicle Motor No'
+                  fullWidth
+                  disabled
+                />
+                <BaseInput
+                  wrapperProps={{ className: 'order-6' }}
+                  value={vehicleChassisNo}
+                  label='Vehicle Chassis No'
+                  fullWidth
+                  disabled
+                />
+                <BaseInput
+                  value={plateNo}
+                  label='Plate No'
+                  fullWidth
+                  disabled
+                />
+                <BaseControlledInputSelect
+                  label='TODA Association'
+                  name='todaAssociationId'
+                  control={control}
+                  items={todaAssociationSelectOptions}
+                  disabled={isFetching}
+                  fullWidth
+                  asterisk
+                  isNumber
+                />
+              </div>
             </div>
           </div>
           <div className='flex flex-col gap-4'>

@@ -1,8 +1,11 @@
 import type { FranchiseStatusFieldError } from '../models/franchise-status-remark.model';
 
 export const fieldNames: { [key: string]: FranchiseStatusFieldError } = {
-  plateNo: { name: 'plateNo', label: 'Plate No.' },
   mvFileNo: { name: 'mvFileNo', label: 'MV File No.' },
+  vehicleMake: { name: 'vehicleMake', label: 'Vehicle Make' },
+  vehicleMotorNo: { name: 'vehicleMotorNo', label: 'Vehicle Motor No.' },
+  vehicleChassisNo: { name: 'vehicleChassisNo', label: 'Vehicle Chassis No.' },
+  plateNo: { name: 'plateNo', label: 'Plate No.' },
   todaAssociation: { name: 'todaAssociation', label: 'Toda Association' },
   vehicleORImgUrl: { name: 'vehicleORImgUrl', label: 'Vehicle OR' },
   vehicleCRImgUrl: { name: 'vehicleCRImgUrl', label: 'Vehicle CR' },

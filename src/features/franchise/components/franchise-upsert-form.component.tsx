@@ -79,6 +79,18 @@ const driverProfileSchema = z.object({
 const schema = z
   .object({
     mvFileNo: z.string().length(15, 'Invalid MV file number'),
+    vehicleMake: z
+      .string()
+      .min(1, 'Invalid vehicle make')
+      .max(255, 'Invalid vehicle make'),
+    vehicleMotorNo: z
+      .string()
+      .min(5, 'Invalid vehicle motor number')
+      .max(25, 'Invalid vehicle motor number'),
+    vehicleChassisNo: z
+      .string()
+      .min(11, 'Invalid vehicle chassis number')
+      .max(17, 'Invalid vehicle chassis number'),
     plateNo: z
       .string()
       .min(3, 'Invalid plate number')
@@ -165,6 +177,9 @@ const driverProfileDefaultValues: Partial<DriverProfileUpsertFormData> = {
 
 const defaultValues: Partial<FranchiseUpsertFormData> = {
   mvFileNo: '',
+  vehicleMake: '',
+  vehicleMotorNo: '',
+  vehicleChassisNo: '',
   plateNo: '',
   vehicleORImgUrl: undefined,
   vehicleCRImgUrl: undefined,
@@ -337,31 +352,57 @@ export const FranchiseUpsertForm = memo(function ({
         <fieldset className='flex flex-col gap-6' disabled={loading}>
           <div className='flex flex-col gap-4'>
             <h4>Vehicle Info</h4>
-            <div className='flex w-full flex-1 gap-2.5'>
-              <BaseControlledInput
-                label='MV File No'
-                name='mvFileNo'
-                control={control}
-                fullWidth
-                asterisk
-              />
-              <BaseControlledInput
-                label='Plate No'
-                name='plateNo'
-                control={control}
-                fullWidth
-                asterisk
-              />
-              <BaseControlledInputSelect
-                label='TODA Association'
-                name='todaAssociationId'
-                control={control}
-                items={todaAssociationSelectOptions}
-                disabled={isFetching}
-                fullWidth
-                asterisk
-                isNumber
-              />
+            <div className='flex w-full flex-col gap-2.5'>
+              <div className='grid grid-cols-3 gap-2.5'>
+                <BaseControlledInput
+                  label='MV File No'
+                  name='mvFileNo'
+                  control={control}
+                  fullWidth
+                  asterisk
+                />
+                <BaseControlledInput
+                  wrapperProps={{ className: 'order-4' }}
+                  label='Vehicle Make'
+                  name='vehicleMake'
+                  control={control}
+                  fullWidth
+                  asterisk
+                />
+                <BaseControlledInput
+                  wrapperProps={{ className: 'order-5' }}
+                  label='Vehicle Motor No'
+                  name='vehicleMotorNo'
+                  control={control}
+                  fullWidth
+                  asterisk
+                />
+                <BaseControlledInput
+                  wrapperProps={{ className: 'order-6' }}
+                  label='Vehicle Chassis No'
+                  name='vehicleChassisNo'
+                  control={control}
+                  fullWidth
+                  asterisk
+                />
+                <BaseControlledInput
+                  label='Plate No'
+                  name='plateNo'
+                  control={control}
+                  fullWidth
+                  asterisk
+                />
+                <BaseControlledInputSelect
+                  label='TODA Association'
+                  name='todaAssociationId'
+                  control={control}
+                  items={todaAssociationSelectOptions}
+                  disabled={isFetching}
+                  fullWidth
+                  asterisk
+                  isNumber
+                />
+              </div>
             </div>
           </div>
           <div className='flex flex-col gap-4'>

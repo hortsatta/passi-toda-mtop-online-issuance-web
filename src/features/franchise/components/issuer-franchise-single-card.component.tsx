@@ -96,8 +96,8 @@ export const IssuerFranchiseSingleCard = memo(function ({
       : franchise;
 
     return [
-      franchise.mvFileNo,
-      franchise.plateNo,
+      franchise.mvFileNo.toUpperCase(),
+      franchise.plateNo.toUpperCase(),
       franchise.isExpired,
       franchise.user?.userProfile.reverseFullName,
       target.approvalStatus,

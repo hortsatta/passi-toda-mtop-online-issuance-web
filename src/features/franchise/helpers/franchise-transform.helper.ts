@@ -21,6 +21,9 @@ export function transformToFranchise({
   updatedAt,
   deletedAt,
   mvFileNo,
+  vehicleMake,
+  vehicleMotorNo,
+  vehicleChassisNo,
   plateNo,
   vehicleORImgUrl,
   vehicleCRImgUrl,
@@ -60,6 +63,9 @@ export function transformToFranchise({
 
   return {
     mvFileNo,
+    vehicleMake,
+    vehicleMotorNo,
+    vehicleChassisNo,
     plateNo,
     vehicleORImgUrl: `${IMG_BASE_URL}${vehicleORImgUrl}`,
     vehicleCRImgUrl: `${IMG_BASE_URL}${vehicleCRImgUrl}`,
@@ -88,6 +94,9 @@ export function transformToFranchise({
 
 export function transformToFranchiseFormData({
   mvFileNo,
+  vehicleMake,
+  vehicleMotorNo,
+  vehicleChassisNo,
   plateNo,
   isDriverOwner,
   vehicleORImgUrl,
@@ -107,6 +116,9 @@ export function transformToFranchiseFormData({
 
   return {
     mvFileNo,
+    vehicleMake,
+    vehicleMotorNo,
+    vehicleChassisNo,
     plateNo,
     isDriverOwner,
     vehicleORImgUrl,
@@ -124,6 +136,9 @@ export function transformToFranchiseFormData({
 
 export function transformToFranchiseValidateDto({
   mvFileNo,
+  vehicleMake,
+  vehicleMotorNo,
+  vehicleChassisNo,
   plateNo,
   isDriverOwner,
   todaAssociationId,
@@ -136,6 +151,9 @@ export function transformToFranchiseValidateDto({
 
   return {
     mvFileNo,
+    vehicleMake,
+    vehicleMotorNo,
+    vehicleChassisNo,
     plateNo,
     isDriverOwner,
     vehicleORImgUrl: '',
@@ -153,6 +171,9 @@ export function transformToFranchiseValidateDto({
 
 export function transformToFranchiseUpsertDto({
   mvFileNo,
+  vehicleMake,
+  vehicleMotorNo,
+  vehicleChassisNo,
   plateNo,
   isDriverOwner,
   vehicleORImgUrl,
@@ -172,6 +193,9 @@ export function transformToFranchiseUpsertDto({
 
   return {
     mvFileNo,
+    vehicleMake,
+    vehicleMotorNo,
+    vehicleChassisNo,
     plateNo,
     isDriverOwner,
     vehicleORImgUrl,
