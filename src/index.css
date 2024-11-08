@@ -68,7 +68,7 @@ select:-internal-autofill-selected:focus + label {
   @apply !text-black;
 }
 
-.print-table .print-hidden {
+.print-hidden {
   @apply !hidden;
 }
 

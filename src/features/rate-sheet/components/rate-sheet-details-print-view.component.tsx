@@ -51,16 +51,23 @@ export const RateSheetDetailsPrintView = memo(function ({
       )}
       {...moreProps}
     >
-      <h4 className='text-base font-normal uppercase'>{headerTitle}</h4>
-      <div className='print-border flex flex-col gap-2.5 rounded-sm border border-border p-4 text-base'>
-        {rateSheetFees.map(({ name, amount }, index) => (
-          <div key={index} className='flex flex-1 items-center justify-between'>
-            <span>{name}</span>
-            <span>{amount}</span>
-          </div>
-        ))}
+      <div className='print-border flex flex-col gap-1.5 rounded-sm border border-border p-3 pb-2 text-base'>
+        <h4 className='pb-1.5 text-base font-normal uppercase leading-none'>
+          {headerTitle}
+        </h4>
+        <div className='flex flex-col gap-1'>
+          {rateSheetFees.map(({ name, amount }, index) => (
+            <div
+              key={index}
+              className='flex flex-1 items-center justify-between'
+            >
+              <span>{name}</span>
+              <span>{amount}</span>
+            </div>
+          ))}
+        </div>
         {!!rateSheetPenaltyFees.length && (
-          <div className='my-2.5 mb-4 flex flex-col rounded-sm border border-border px-4 py-2.5'>
+          <div className='flex flex-col gap-1 rounded-sm border border-border'>
             {rateSheetPenaltyFees.map(({ name, amount }, index) => (
               <div
                 key={`p-${index}`}
@@ -77,7 +84,7 @@ export const RateSheetDetailsPrintView = memo(function ({
         <div className='print-border flex-1 border-b border-border' />
         <div className='flex flex-1 items-center justify-end gap-5 font-bold'>
           <span className='uppercase'>Total</span>
-          <span className='text-lg'>{totalFees}</span>
+          <span className='text-lg leading-none'>{totalFees}</span>
         </div>
       </div>
       <div className='flex items-center justify-between gap-2.5'>

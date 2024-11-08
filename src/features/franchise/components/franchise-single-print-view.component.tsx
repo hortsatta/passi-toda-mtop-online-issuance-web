@@ -30,13 +30,13 @@ const HoriFieldText = memo(function ({
   return (
     <div
       className={cx(
-        'print-border flex w-full items-baseline justify-between gap-2.5 border-b border-border pb-1.5',
+        'print-border flex w-full items-baseline justify-between gap-2 border-b border-border pb-1',
         className,
       )}
       {...moreProps}
     >
       <small className='text-xs uppercase leading-tight'>{label}</small>
-      <div className='text-lg font-medium leading-none'>{children}</div>
+      <div className='text-base font-medium leading-none'>{children}</div>
     </div>
   );
 });
@@ -187,13 +187,18 @@ export const FranchiseSinglePrintView = memo(
       <div
         ref={ref}
         className={cx(
-          'content-wrapper flex w-full flex-col gap-5 rounded bg-backdrop-surface px-4 py-5 lg:px-16 lg:py-12',
+          'content-wrapper flex w-full flex-col gap-2.5 rounded bg-backdrop-surface px-4 py-5 lg:px-16 lg:py-12',
           className,
         )}
         {...moreProps}
       >
+        <div className='flex flex-col items-center gap-1.5 py-4 text-base uppercase leading-none'>
+          <span>Republic of the Philippines</span>
+          <span>Province of Iloilo</span>
+          <span>City of Passi</span>
+        </div>
         <div className='flex items-start justify-between gap-2.5'>
-          <h2 className='flex-1 text-2xl'>{headerTitle}</h2>
+          <h2 className='flex-1 text-xl'>{headerTitle}</h2>
           <BaseFieldText
             className='!w-fit max-w-[170px] flex-none text-right'
             label='Created On'
@@ -205,8 +210,8 @@ export const FranchiseSinglePrintView = memo(
         <div className='print-border border-b border-border' />
         <div className='flex w-full items-start justify-between'>
           <div className='flex items-center gap-2'>
-            <BaseIcon name={statusLabelIconName} size={30} />
-            <span className='text-xl font-medium'>{statusLabel}</span>
+            <BaseIcon name={statusLabelIconName} size={24} />
+            <span className='text-lg font-medium'>{statusLabel}</span>
           </div>
           {approvalStatus === FranchiseApprovalStatus.Approved ||
           approvalStatus === FranchiseApprovalStatus.Revoked ? (
@@ -250,47 +255,55 @@ export const FranchiseSinglePrintView = memo(
           )}
         </div>
         <div className='print-border border-b border-border' />
-        <div className='print-border flex w-full flex-col gap-4 rounded-sm border border-border p-3'>
-          <h4 className='text-base font-normal uppercase'>Vehicle Info</h4>
-          <div className='grid w-full grid-cols-3 gap-x-4 gap-y-6'>
-            <BaseFieldText label='MV File No' isPrint>
-              {mvFileNo}
-            </BaseFieldText>
-            <BaseFieldText label='Vehicle Make' isPrint>
-              {vehicleMake}
-            </BaseFieldText>
-            <BaseFieldText label='Vehicle Motor No' isPrint>
-              {vehicleMotorNo}
-            </BaseFieldText>
-            <BaseFieldText label='Vehicle Chassis No' isPrint>
-              {vehicleChassisNo}
-            </BaseFieldText>
-            <BaseFieldText label='Plate No' isPrint>
-              {plateNo}
-            </BaseFieldText>
+        <div className='flex items-start gap-2.5'>
+          <div className='print-border flex min-h-[221px] w-full flex-col gap-2.5 rounded-sm border border-border p-3'>
+            <h4 className='text-base font-normal uppercase leading-none'>
+              Vehicle Info
+            </h4>
+            <div className='flex w-full flex-col gap-2.5'>
+              <BaseFieldText
+                className='print-hidden'
+                label='MV File No'
+                isPrint
+              >
+                {mvFileNo}
+              </BaseFieldText>
+              <BaseFieldText label='Vehicle Make' isPrint>
+                {vehicleMake}
+              </BaseFieldText>
+              <BaseFieldText label='Vehicle Motor No' isPrint>
+                {vehicleMotorNo}
+              </BaseFieldText>
+              <BaseFieldText label='Vehicle Chassis No' isPrint>
+                {vehicleChassisNo}
+              </BaseFieldText>
+              <BaseFieldText label='Plate No' isPrint>
+                {plateNo}
+              </BaseFieldText>
+            </div>
+          </div>
+          <div className='print-border flex min-h-[221px] w-full flex-col gap-2.5 rounded-sm border border-border p-3'>
+            <h4 className='text-base font-normal uppercase leading-none'>
+              TODA Association Info
+            </h4>
+            <div className='flex w-full flex-col gap-2.5'>
+              <BaseFieldText label='Name' isPrint>
+                {todaName}
+              </BaseFieldText>
+              <BaseFieldText label='Authorized Route' isPrint>
+                {todaAuthorizedRoute}
+              </BaseFieldText>
+              <BaseFieldText label='Authorized No. of Unit' isPrint>
+                One (1) Unit
+              </BaseFieldText>
+            </div>
           </div>
         </div>
-        <div className='print-border flex w-full flex-col gap-4 rounded-sm border border-border p-3'>
-          <h4 className='text-base font-normal uppercase'>
-            TODA Association Info
-          </h4>
-          <div className='flex w-full items-center gap-4'>
-            <BaseFieldText label='Name' isPrint>
-              {todaName}
-            </BaseFieldText>
-            <BaseFieldText label='Authorized Route' isPrint>
-              {todaAuthorizedRoute}
-            </BaseFieldText>
-            <BaseFieldText label='Authorized No. of Unit' isPrint>
-              One (1) Unit
-            </BaseFieldText>
-          </div>
-        </div>
-        <div className='print-border flex w-full flex-col gap-4 rounded-sm border border-border p-3'>
-          <h4 className='text-base font-normal uppercase'>
+        <div className='print-border flex w-full flex-col gap-2.5 rounded-sm border border-border p-3'>
+          <h4 className='text-base font-normal uppercase leading-none'>
             {isDriverOwner ? 'Operator and Driver Info' : 'Operator Info'}
           </h4>
-          <div className='flex w-full items-center gap-4'>
+          <div className='flex w-full items-center gap-2.5'>
             <BaseFieldText label='Name' isPrint>
               {ownerReverseFullName}
             </BaseFieldText>
@@ -303,8 +316,10 @@ export const FranchiseSinglePrintView = memo(
           </div>
         </div>
         {!isDriverOwner && (
-          <div className='print-border flex w-full flex-col gap-4 rounded-sm border border-border p-3'>
-            <h4 className='text-base font-normal uppercase'>Driver Info</h4>
+          <div className='print-border flex w-full flex-col gap-2.5 rounded-sm border border-border p-3'>
+            <h4 className='text-base font-normal uppercase leading-none'>
+              Driver Info
+            </h4>
             <div className='flex w-full items-center gap-4'>
               <BaseFieldText label='Name' isPrint>
                 {driverReverseFullName}
@@ -327,6 +342,40 @@ export const FranchiseSinglePrintView = memo(
             />
           </>
         )}
+        <div className='print-border border-b border-border' />
+        <div className='flex w-full flex-col gap-10'>
+          <h4 className='text-base font-normal uppercase leading-none'>
+            Recommending Approval
+          </h4>
+          <div className='flex w-full justify-between gap-2.5'>
+            <BaseFieldText
+              className='max-w-72'
+              label='Executive Asst. 1, POSTMS, Passi City'
+              isPrint
+            >
+              Mariano P. Palmes
+            </BaseFieldText>
+            <BaseFieldText className='max-w-72' label='City Treasurer' isPrint>
+              Paquito J. Estandarte Jr.
+            </BaseFieldText>
+          </div>
+          <div className='mx-auto flex w-80 max-w-full flex-col items-center gap-10'>
+            <BaseFieldText label={`City Gov't Dept. Head I`} center isPrint>
+              Jason P. Padilla
+            </BaseFieldText>
+            <BaseFieldText label='City Mayor' center isPrint>
+              Atty. Stephen A. Palmares, CPA
+            </BaseFieldText>
+            <span className='text-base'>By Authority of the City Mayor</span>
+            <BaseFieldText
+              label='SP Member/Chairman, Committee on Transportation and Communication'
+              center
+              isPrint
+            >
+              Renz Carlo P. Palma
+            </BaseFieldText>
+          </div>
+        </div>
       </div>
     );
   }),
