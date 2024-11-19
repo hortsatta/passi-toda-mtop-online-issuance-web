@@ -89,7 +89,6 @@ export const MemberFranchiseSingleCard = memo(function ({
   ...moreProps
 }: Props) {
   const [
-    mvFileNo,
     plateNo,
     isExpired,
     canRenew,
@@ -103,7 +102,6 @@ export const MemberFranchiseSingleCard = memo(function ({
       ? franchise.franchiseRenewals[0]
       : franchise;
     return [
-      franchise.mvFileNo.toUpperCase(),
       franchise.plateNo.toUpperCase(),
       franchise.isExpired,
       franchise.canRenew,
@@ -229,10 +227,10 @@ export const MemberFranchiseSingleCard = memo(function ({
               </h4>
               <small className='uppercase leading-tight'>plate no</small>
             </div>
-            <div className='flex flex-col'>
+            {/* <div className='flex flex-col'>
               <span className='text-base font-medium'>{mvFileNo}</span>
               <small className='uppercase leading-tight'>mv file no</small>
-            </div>
+            </div> */}
           </div>
           <div className='items-right flex flex-col'>
             <span className='text-right text-base font-medium'>

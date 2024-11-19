@@ -39,23 +39,21 @@ const FranchiseInfo = memo(function ({
   const user = useBoundStore((state) => state.user);
   const navigate = useNavigate();
 
-  const [id, mvFileNo, plateNo, isExpired, ownerReverseFullName, isOwner] =
-    useMemo(
-      () =>
-        !franchise
-          ? []
-          : [
-              franchise.id,
-              franchise.mvFileNo.toUpperCase(),
-              franchise.plateNo.toUpperCase(),
-              franchise.isExpired,
-              franchise.user?.userProfile.reverseFullName,
-              (user?.role === UserRole.Member &&
-                franchise.user?.email === user?.email) ||
-                user?.role !== UserRole.Member,
-            ],
-      [franchise, user],
-    );
+  const [id, plateNo, isExpired, ownerReverseFullName, isOwner] = useMemo(
+    () =>
+      !franchise
+        ? []
+        : [
+            franchise.id,
+            franchise.plateNo.toUpperCase(),
+            franchise.isExpired,
+            franchise.user?.userProfile.reverseFullName,
+            (user?.role === UserRole.Member &&
+              franchise.user?.email === user?.email) ||
+              user?.role !== UserRole.Member,
+          ],
+    [franchise, user],
+  );
 
   const approvalStatus = useMemo(() => {
     if (!franchise) return null;
@@ -125,7 +123,7 @@ const FranchiseInfo = memo(function ({
     const to = !user ? AUTH_SIGN_IN_TO : FRANCHISE_REGISTER_TO;
     const state = {
       value: mvPlateNo,
-      type: mvPlateNo.length < 15 ? 'plateNo' : 'mvFileNo',
+      type: 'plateNo',
     };
 
     navigate(to, { state });
@@ -151,8 +149,8 @@ const FranchiseInfo = memo(function ({
     return (
       <div className='flex flex-col gap-2.5'>
         <p className='text-base'>
-          {mvPlateNo.length < 15 ? 'Plate' : 'MV File'} no{' '}
-          <span className='font-bold'>{mvPlateNo}</span> not yet registered.
+          Plate no <span className='font-bold'>{mvPlateNo}</span> not yet
+          registered.
         </p>
         {(!user || user?.role === UserRole.Member) && (
           <BaseButton className='w-full max-w-60' onClick={handleRegisterClick}>
@@ -166,7 +164,7 @@ const FranchiseInfo = memo(function ({
   return (
     <div className='items-left flex w-full flex-col gap-2.5'>
       <div className='w-full overflow-hidden rounded'>
-        <BaseFieldText label='MV File No'>{mvFileNo}</BaseFieldText>
+        {/* <BaseFieldText label='MV File No'>{mvFileNo}</BaseFieldText> */}
         <BaseFieldText label='Plate No'>{plateNo}</BaseFieldText>
         <BaseFieldText label='Owner'>{ownerReverseFullName}</BaseFieldText>
         <span

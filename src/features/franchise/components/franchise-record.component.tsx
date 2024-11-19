@@ -34,17 +34,15 @@ export const FranchiseRecord = memo(function ({
   setFieldErrors,
   ...moreProps
 }: Props) {
-  const [mvFileNo, vehicleMake, vehicleMotorNo, vehicleChassisNo, plateNo] =
-    useMemo(
-      () => [
-        franchise.mvFileNo.toUpperCase(),
-        franchise.vehicleMake.toUpperCase(),
-        franchise.vehicleMotorNo.toUpperCase(),
-        franchise.vehicleChassisNo.toUpperCase(),
-        franchise.plateNo.toUpperCase(),
-      ],
-      [franchise],
-    );
+  const [vehicleMake, vehicleMotorNo, vehicleChassisNo, plateNo] = useMemo(
+    () => [
+      franchise.vehicleMake.toUpperCase(),
+      franchise.vehicleMotorNo.toUpperCase(),
+      franchise.vehicleChassisNo.toUpperCase(),
+      franchise.plateNo.toUpperCase(),
+    ],
+    [franchise],
+  );
 
   const [
     statusFieldRemarks,
@@ -148,7 +146,7 @@ export const FranchiseRecord = memo(function ({
       <div className='flex w-full flex-1 flex-col gap-4'>
         <h4>Vehicle Info</h4>
         <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-          <BaseFieldText
+          {/* <BaseFieldText
             label='MV File No'
             error={getError(fieldNames.mvFileNo)}
             onClick={
@@ -156,7 +154,7 @@ export const FranchiseRecord = memo(function ({
             }
           >
             {mvFileNo}
-          </BaseFieldText>
+          </BaseFieldText> */}
           <BaseFieldText
             className='order-4'
             label='Vehicle Make'

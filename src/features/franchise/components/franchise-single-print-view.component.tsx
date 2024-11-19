@@ -48,7 +48,6 @@ export const FranchiseSinglePrintView = memo(
   ) {
     const [
       user,
-      mvFileNo,
       vehicleMake,
       vehicleMotorNo,
       vehicleChassisNo,
@@ -70,7 +69,6 @@ export const FranchiseSinglePrintView = memo(
 
       return [
         franchise.user,
-        franchise.mvFileNo.toUpperCase(),
         franchise.vehicleMake.toUpperCase(),
         franchise.vehicleMotorNo.toUpperCase(),
         franchise.vehicleChassisNo.toUpperCase(),
@@ -261,13 +259,13 @@ export const FranchiseSinglePrintView = memo(
               Vehicle Info
             </h4>
             <div className='flex w-full flex-col gap-2.5'>
-              <BaseFieldText
+              {/* <BaseFieldText
                 className='print-hidden'
                 label='MV File No'
                 isPrint
               >
                 {mvFileNo}
-              </BaseFieldText>
+              </BaseFieldText> */}
               <BaseFieldText label='Vehicle Make' isPrint>
                 {vehicleMake}
               </BaseFieldText>

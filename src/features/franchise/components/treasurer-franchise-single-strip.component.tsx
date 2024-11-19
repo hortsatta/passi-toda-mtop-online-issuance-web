@@ -96,7 +96,6 @@ export const TreasurerFranchiseSingleStrip = memo(function ({
   ...moreProps
 }: Props) {
   const [
-    mvFileNo,
     plateNo,
     isExpired,
     ownerReverseFullName,
@@ -113,7 +112,6 @@ export const TreasurerFranchiseSingleStrip = memo(function ({
       : franchise;
 
     return [
-      franchise.mvFileNo.toUpperCase(),
       franchise.plateNo.toUpperCase(),
       franchise.isExpired,
       franchise.user?.userProfile.reverseFullName,
@@ -225,12 +223,12 @@ export const TreasurerFranchiseSingleStrip = memo(function ({
             <small className='uppercase leading-tight'>plate no</small>
           </div>
           <div className='hidden h-12 border-r border-border sm:inline-block' />
-          <div className='min-w-[200px]'>
+          {/* <div className='min-w-[200px]'>
             <span className='block text-2xl font-medium leading-tight'>
               {mvFileNo}
             </span>
             <small className='uppercase leading-tight'>mv file no</small>
-          </div>
+          </div> */}
           <div className='hidden h-12 border-r border-border sm:inline-block' />
           <div>
             <span className='block text-lg font-medium leading-tight'>

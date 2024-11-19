@@ -18,7 +18,7 @@ type FormData = {
   mvPlateNo: string;
 };
 
-const INVALID_MESSAGE = 'Invalid MV File Number or Plate Number';
+const INVALID_MESSAGE = 'Invalid Plate Number';
 
 const schema = z.object({
   mvPlateNo: z.union([
@@ -72,15 +72,13 @@ export const FranchiseCheckerForm = memo(function ({
       onSubmit={handleSubmit(submitForm)}
       {...moreProps}
     >
-      <span className='text-lg'>
-        Motor Vehicle (MV) File Number or Plate Number
-      </span>
+      <span className='text-lg'>Plate Number</span>
       <div className='flex h-auto flex-col items-start justify-between gap-4 sm:h-[67px] sm:flex-row'>
         <div className='w-full flex-1'>
           <BaseControlledInput
             className='text-lg placeholder:text-base'
             name='mvPlateNo'
-            placeholder='MV1234567890123 or TX1234'
+            placeholder='TX1234'
             control={control}
             disabled={loading || isSubmitting}
             fullWidth

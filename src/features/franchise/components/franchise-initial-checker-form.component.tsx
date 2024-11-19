@@ -16,7 +16,7 @@ type FormData = {
 };
 
 const FRANCHISE_CHECKER_TO = `/${routeConfig.franchiseChecker.to}`;
-const INVALID_MESSAGE = 'Invalid MV File Number or Plate Number';
+const INVALID_MESSAGE = 'Invalid Plate Number';
 
 const schema = z.object({
   mvPlateNo: z.union([
@@ -72,14 +72,14 @@ export const FranchiseInitialCheckerForm = memo(function ({
       <div className='flex flex-1 flex-col gap-8 px-12 py-8 pt-14'>
         <p className='max-w-96 text-xl'>
           Enter your{' '}
-          <span className='font-bold'>Motor Vehicle (MV) File Number</span> or{' '}
+          {/* <span className='font-bold'>Motor Vehicle (MV) File Number</span> or{' '} */}
           <span className='font-bold'>Plate Number</span>.
         </p>
         <div className='w-full max-w-44 border-b border-b-backdrop-input-accent opacity-40' />
         <BaseControlledInput
           className='!h-16 !bg-backdrop-input-accent text-lg placeholder:text-base placeholder:text-text/60 hover:!border-text/60 focus:!border-text'
           name='mvPlateNo'
-          placeholder='MV1234567890123 or TX1234'
+          placeholder='TX1234'
           control={control}
           disabled={isSubmitting || isDone}
           fullWidth

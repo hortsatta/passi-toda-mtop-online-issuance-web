@@ -109,7 +109,6 @@ export const MemberFranchiseSingleStrip = memo(function ({
   const userProfile = useBoundStore((state) => state.user?.userProfile);
 
   const [
-    mvFileNo,
     plateNo,
     isExpired,
     canRenew,
@@ -125,7 +124,6 @@ export const MemberFranchiseSingleStrip = memo(function ({
       : franchise;
 
     return [
-      franchise.mvFileNo.toUpperCase(),
       franchise.plateNo.toUpperCase(),
       franchise.isExpired,
       franchise.canRenew,
@@ -255,12 +253,12 @@ export const MemberFranchiseSingleStrip = memo(function ({
             <small className='uppercase leading-tight'>plate no</small>
           </div>
           <div className='hidden h-12 border-r border-border sm:inline-block' />
-          <div className='min-w-[200px]'>
+          {/* <div className='min-w-[200px]'>
             <span className='block text-2xl font-medium leading-tight'>
               {mvFileNo}
             </span>
             <small className='uppercase leading-tight'>mv file no</small>
-          </div>
+          </div> */}
           <div className='hidden h-12 border-r border-border sm:inline-block' />
           <div>
             <span className='block text-lg font-medium leading-tight'>

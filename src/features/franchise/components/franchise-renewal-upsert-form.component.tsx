@@ -224,17 +224,15 @@ export const FranchiseRenewalUpsertForm = memo(function ({
 
   const isDriverOwner = useWatch({ control, name: 'isDriverOwner' });
 
-  const [mvFileNo, vehicleMake, vehicleMotorNo, vehicleChassisNo, plateNo] =
-    useMemo(
-      () => [
-        franchise.mvFileNo.toUpperCase(),
-        franchise.vehicleMake.toUpperCase(),
-        franchise.vehicleMotorNo.toUpperCase(),
-        franchise.vehicleChassisNo.toUpperCase(),
-        franchise.plateNo.toUpperCase(),
-      ],
-      [franchise],
-    );
+  const [vehicleMake, vehicleMotorNo, vehicleChassisNo, plateNo] = useMemo(
+    () => [
+      franchise.vehicleMake.toUpperCase(),
+      franchise.vehicleMotorNo.toUpperCase(),
+      franchise.vehicleChassisNo.toUpperCase(),
+      franchise.plateNo.toUpperCase(),
+    ],
+    [franchise],
+  );
 
   const loading = useMemo(
     () => formLoading || isSubmitting || isDone,
@@ -363,12 +361,12 @@ export const FranchiseRenewalUpsertForm = memo(function ({
             <h4>Vehicle Info</h4>
             <div className='flex w-full flex-1 gap-2.5'>
               <div className='grid grid-cols-1 gap-2.5 sm:grid-cols-2 md:grid-cols-3'>
-                <BaseInput
+                {/* <BaseInput
                   value={mvFileNo}
                   label='MV File No'
                   fullWidth
                   disabled
-                />
+                /> */}
                 <BaseInput
                   wrapperProps={{ className: 'order-4' }}
                   value={vehicleMake}

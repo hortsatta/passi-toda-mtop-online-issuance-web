@@ -78,7 +78,7 @@ const driverProfileSchema = z.object({
 
 const schema = z
   .object({
-    mvFileNo: z.string().length(15, 'Invalid MV file number'),
+    mvFileNo: z.string().optional(),
     vehicleMake: z
       .string()
       .min(1, 'Invalid vehicle make')
@@ -354,13 +354,13 @@ export const FranchiseUpsertForm = memo(function ({
             <h4>Vehicle Info</h4>
             <div className='flex w-full flex-col gap-2.5'>
               <div className='grid grid-cols-1 gap-2.5 sm:grid-cols-2 md:grid-cols-3'>
-                <BaseControlledInput
+                {/* <BaseControlledInput
                   label='MV File No'
                   name='mvFileNo'
                   control={control}
                   fullWidth
                   asterisk
-                />
+                /> */}
                 <BaseControlledInput
                   wrapperProps={{ className: 'order-4' }}
                   label='Vehicle Make'

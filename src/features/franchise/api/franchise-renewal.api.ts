@@ -224,7 +224,7 @@ export function uploadFranchiseRenewalFiles(
     UseMutationOptions<
       string[],
       Error,
-      { data: FranchiseRenewalUpsertFormData; mvFileNo: string },
+      { data: FranchiseRenewalUpsertFormData; plateNo: string },
       any
     >,
     'mutationFn'
@@ -232,13 +232,13 @@ export function uploadFranchiseRenewalFiles(
 ) {
   const mutationFn = async ({
     data,
-    mvFileNo,
+    plateNo,
   }: {
     data: FranchiseRenewalUpsertFormData;
-    mvFileNo: string;
+    plateNo: string;
   }): Promise<any> => {
     const url = `upload/${BASE_URL}/docs`;
-    const formData = await generateImageFormData(data, mvFileNo);
+    const formData = await generateImageFormData(data, plateNo);
 
     try {
       return kyInstance.post(url, { body: formData }).json();

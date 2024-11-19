@@ -115,7 +115,7 @@ export function useFranchiseRenewalCreate(): Result {
       } else {
         const imageResult = await mutateUploadFranchiseRenewalFiles({
           data,
-          mvFileNo: franchise.mvFileNo,
+          plateNo: franchise.plateNo,
         });
         return mutateCreateFranchiseRenewal({ ...data, ...imageResult });
       }

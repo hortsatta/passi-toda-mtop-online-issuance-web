@@ -6,7 +6,7 @@ import type { FranchiseRenewalUpsertFormData } from '../models/franchise-renewal
 
 export async function generateImageFormData(
   data: FranchiseRenewalUpsertFormData,
-  mvFileNo: string,
+  plateNo: string,
 ): Promise<FormData> {
   const items = [
     { imageData: data.vehicleORImgUrl, name: 'vehicleORImgUrl-vehicle_or' },
@@ -45,7 +45,7 @@ export async function generateImageFormData(
       ? PDF_FILE_EXT
       : IMG_FILE_EXT;
 
-    const filename = `${mvFileNo}-${name}.${fileExt}`;
+    const filename = `${plateNo.toLowerCase()}-${name}.${fileExt}`;
 
     files.push({ base64: imageData, filename });
   });
