@@ -94,9 +94,9 @@ select:-internal-autofill-selected:focus + label {
 }
 
 .print-franchise .content-wrapper {
-  @apply !rounded-none !bg-white !text-black;
+  @apply !rounded-none !bg-white !px-20 !py-20 !font-serif !text-black;
 }
 
-.print-franchise .print-border {
-  @apply !border-gray-400;
+.print-border {
+  @apply !border-black;
 }

@@ -3,43 +3,19 @@ import { forwardRef, memo, useMemo } from 'react';
 
 import dayjs from '#/config/dayjs.config';
 import { FeeType } from '#/rate-sheet/models/rate-sheet.model';
-import { BaseIcon } from '#/base/components/base-icon.component';
-import { BaseFieldText } from '#/base/components/base-field-text.component';
+import { RateSheetDetailsPrintView } from '#/rate-sheet/components/rate-sheet-details-print-view.component';
 import { FranchiseApprovalStatus } from '../models/franchise.model';
 
 import type { ComponentProps } from 'react';
 import type { RateSheet } from '#/rate-sheet/models/rate-sheet.model';
 import type { Franchise } from '../models/franchise.model';
-import { RateSheetDetailsPrintView } from '#/rate-sheet/components/rate-sheet-details-print-view.component';
 
 type Props = ComponentProps<'div'> & {
   franchise: Franchise;
   rateSheets: RateSheet[];
 };
 
-type HoriFieldTextProps = ComponentProps<'div'> & {
-  label: string;
-};
-
-const HoriFieldText = memo(function ({
-  className,
-  label,
-  children,
-  ...moreProps
-}: HoriFieldTextProps) {
-  return (
-    <div
-      className={cx(
-        'print-border flex w-full items-baseline justify-between gap-2 border-b border-border pb-1',
-        className,
-      )}
-      {...moreProps}
-    >
-      <small className='text-xs uppercase leading-tight'>{label}</small>
-      <div className='text-base font-medium leading-none'>{children}</div>
-    </div>
-  );
-});
+const IMG_BASE_URL = `${import.meta.env.VITE_SUPABASE_BASE_URL}/passi_toda_mtop/static`;
 
 export const FranchiseSinglePrintView = memo(
   forwardRef<HTMLDivElement, Props>(function (
@@ -52,15 +28,11 @@ export const FranchiseSinglePrintView = memo(
       vehicleMotorNo,
       vehicleChassisNo,
       plateNo,
-      isExpired,
-      createdAtText,
       todaAssociation,
       approvalStatus,
       approvalDate,
       expiryDate,
       activeValidityMonths,
-      isDriverOwner,
-      driverProfile,
       isRenewal,
     ] = useMemo(() => {
       const target = franchise.franchiseRenewals.length
@@ -73,8 +45,6 @@ export const FranchiseSinglePrintView = memo(
         franchise.vehicleMotorNo.toUpperCase(),
         franchise.vehicleChassisNo.toUpperCase(),
         franchise.plateNo.toUpperCase(),
-        franchise.isExpired,
-        dayjs(target.createdAt).format('MMMM DD, YYYY'),
         target.todaAssociation,
         target.approvalStatus,
         target.approvalDate
@@ -84,8 +54,6 @@ export const FranchiseSinglePrintView = memo(
           ? dayjs(target.expiryDate).format('MMMM DD, YYYY')
           : null,
         dayjs(target.expiryDate).diff(target.approvalDate, 'months'),
-        target.isDriverOwner,
-        target.driverProfile,
         !!franchise.franchiseRenewals.length,
       ];
     }, [franchise]);
@@ -95,68 +63,22 @@ export const FranchiseSinglePrintView = memo(
       [todaAssociation],
     );
 
-    const [ownerReverseFullName, ownerPhoneNumber, ownerEmail] = useMemo(
-      () => [
-        user?.userProfile.reverseFullName || '',
-        user?.userProfile.phoneNumber || '',
-        user?.email || '',
-      ],
+    const [ownerReverseFullName] = useMemo(
+      () => [user?.userProfile.reverseFullName || ''],
       [user],
     );
 
-    const [driverReverseFullName, driverPhoneNumber, driverEmail] =
-      useMemo(() => {
-        if (isDriverOwner) return [];
-
-        return [
-          driverProfile?.reverseFullName || '',
-          driverProfile?.phoneNumber || '',
-          driverProfile?.email || '',
-        ];
-      }, [isDriverOwner, driverProfile]);
-
     const headerTitle = useMemo(
-      () => (isRenewal ? 'Franchise Renewal' : 'Franchise Registration'),
-      [isRenewal],
+      () => 'Franchise Confirmation/Verification',
+      [],
     );
 
-    const statusLabel = useMemo(() => {
-      if (isExpired) return 'Franchise Expired';
+    const currentDate = useMemo(() => dayjs().format('MMMM DD, YYYY'), []);
 
-      switch (approvalStatus) {
-        case FranchiseApprovalStatus.Validated:
-          return 'Pending Payment';
-        case FranchiseApprovalStatus.Paid:
-          return 'Pending Approval';
-        case FranchiseApprovalStatus.Approved:
-          return 'Franchise Approved';
-        case FranchiseApprovalStatus.Rejected:
-          return 'Franchise Rejected';
-        case FranchiseApprovalStatus.Canceled:
-          return 'Franchise Canceled';
-        case FranchiseApprovalStatus.Revoked:
-          return 'Franchise Revoked';
-        default:
-          return 'Pending Verfication';
-      }
-    }, [approvalStatus, isExpired]);
-
-    const statusLabelIconName = useMemo(() => {
-      if (isExpired) return 'x-circle';
-
-      switch (approvalStatus) {
-        case FranchiseApprovalStatus.Validated:
-        case FranchiseApprovalStatus.Paid:
-        case FranchiseApprovalStatus.Approved:
-          return 'check-circle';
-        case FranchiseApprovalStatus.Rejected:
-        case FranchiseApprovalStatus.Canceled:
-        case FranchiseApprovalStatus.Revoked:
-          return 'x-circle';
-        default:
-          return 'cube-focus';
-      }
-    }, [approvalStatus, isExpired]);
+    const numberOfUnits = useMemo(
+      () => `One (1) Unit/s ${isRenewal ? 'Renewal' : 'Registration'}`,
+      [isRenewal],
+    );
 
     const paymentORNo = useMemo(() => {
       if (
@@ -185,194 +107,217 @@ export const FranchiseSinglePrintView = memo(
       <div
         ref={ref}
         className={cx(
-          'content-wrapper flex w-full flex-col gap-2.5 rounded bg-backdrop-surface px-4 py-5 lg:px-16 lg:py-12',
+          'content-wrapper mx-auto flex w-full max-w-[800px] flex-col gap-2.5 rounded bg-white px-4 py-5 !font-serif text-black lg:px-20 lg:py-20',
           className,
         )}
         {...moreProps}
       >
-        <div className='flex flex-col items-center gap-1.5 py-4 text-base uppercase leading-none'>
+        <div className='flex flex-col items-center gap-1.5 py-4 text-base leading-none'>
           <span>Republic of the Philippines</span>
           <span>Province of Iloilo</span>
-          <span>City of Passi</span>
+          <span className='uppercase'>City of Passi</span>
         </div>
-        <div className='flex items-start justify-between gap-2.5'>
-          <h2 className='flex-1 text-xl'>{headerTitle}</h2>
-          <BaseFieldText
-            className='!w-fit max-w-[170px] flex-none text-right'
-            label='Created On'
-            isPrint
-          >
-            {createdAtText}
-          </BaseFieldText>
+        <div className='flex flex-col items-center'>
+          <h2 className='flex-1 text-base font-bold uppercase'>
+            {headerTitle}
+          </h2>
+          <span className='text-base'>{currentDate}</span>
         </div>
-        <div className='print-border border-b border-border' />
-        <div className='flex w-full items-start justify-between'>
-          <div className='flex items-center gap-2'>
-            <BaseIcon name={statusLabelIconName} size={24} />
-            <span className='text-lg font-medium'>{statusLabel}</span>
-          </div>
-          {approvalStatus === FranchiseApprovalStatus.Approved ||
-          approvalStatus === FranchiseApprovalStatus.Revoked ? (
-            <div className='flex w-fit flex-col items-end gap-2.5'>
-              <HoriFieldText label='Granted On'>{approvalDate}</HoriFieldText>
-              <HoriFieldText label='Valid Until'>{expiryDate}</HoriFieldText>
-              <HoriFieldText label='Validity Period'>
-                {activeValidityMonths} Months
-              </HoriFieldText>
+        <div className='mb-16 flex w-full flex-col items-start gap-1.5'>
+          <div className='flex w-full justify-between'>
+            <div className='text-base leading-none'>
+              <div className='print-border inline-flex w-20 justify-between border-b'>
+                <span>#</span>
+                <span>Ord</span>
+              </div>
+              . # 2024-0
+              <div className='print-border -mb-1 inline-block w-10 border-b' />
             </div>
-          ) : (
-            <div className='flex w-fit flex-col items-start gap-1'>
-              <small className='flex items-center gap-1 text-base uppercase'>
-                <BaseIcon
-                  name={
-                    approvalStatus === FranchiseApprovalStatus.Validated ||
-                    approvalStatus === FranchiseApprovalStatus.Paid
-                      ? 'check-circle'
-                      : 'x-circle'
-                  }
-                  size={20}
-                />
-                verified
-              </small>
-              <small className='flex items-center gap-1 text-base uppercase'>
-                <BaseIcon
-                  name={
-                    approvalStatus === FranchiseApprovalStatus.Paid
-                      ? 'check-circle'
-                      : 'x-circle'
-                  }
-                  size={20}
-                />
-                paid
-              </small>
-              <small className='flex items-center gap-1 text-base uppercase'>
-                <BaseIcon name='x-circle' size={20} />
-                approved
-              </small>
-            </div>
-          )}
-        </div>
-        <div className='print-border border-b border-border' />
-        <div className='flex items-start gap-2.5'>
-          <div className='print-border flex min-h-[221px] w-full flex-col gap-2.5 rounded-sm border border-border p-3'>
-            <h4 className='text-base font-normal uppercase leading-none'>
-              Vehicle Info
-            </h4>
-            <div className='flex w-full flex-col gap-2.5'>
-              {/* <BaseFieldText
-                className='print-hidden'
-                label='MV File No'
-                isPrint
-              >
-                {mvFileNo}
-              </BaseFieldText> */}
-              <BaseFieldText label='Vehicle Make' isPrint>
-                {vehicleMake}
-              </BaseFieldText>
-              <BaseFieldText label='Vehicle Motor No' isPrint>
-                {vehicleMotorNo}
-              </BaseFieldText>
-              <BaseFieldText label='Vehicle Chassis No' isPrint>
-                {vehicleChassisNo}
-              </BaseFieldText>
-              <BaseFieldText label='Plate No' isPrint>
-                {plateNo}
-              </BaseFieldText>
+            <div className='flex w-[205px] flex-col gap-1.5 text-sm'>
+              <div className='flex'>
+                <span>Local Plate Number:</span>
+                <span className='print-border flex-1 border-b leading-none' />
+              </div>
+              <div className='flex leading-none'>
+                <span>Date:</span>
+                <span className='print-border inline-block flex-1 border-b pl-2'>
+                  {currentDate}
+                </span>
+              </div>
             </div>
           </div>
-          <div className='print-border flex min-h-[221px] w-full flex-col gap-2.5 rounded-sm border border-border p-3'>
-            <h4 className='text-base font-normal uppercase leading-none'>
-              TODA Association Info
-            </h4>
-            <div className='flex w-full flex-col gap-2.5'>
-              <BaseFieldText label='Name' isPrint>
-                {todaName}
-              </BaseFieldText>
-              <BaseFieldText label='Authorized Route' isPrint>
-                {todaAuthorizedRoute}
-              </BaseFieldText>
-              <BaseFieldText label='Authorized No. of Unit' isPrint>
-                One (1) Unit
-              </BaseFieldText>
+          <div className='flex w-full flex-col gap-1.5 text-sm'>
+            {/* Operator */}
+            <div className='flex w-full items-center'>
+              <div>
+                <span className='inline-block w-[135px] leading-none'>
+                  Name of Operator:{' '}
+                </span>
+              </div>
+              <div className='print-border flex flex-1 justify-between border-b text-base font-bold uppercase leading-none'>
+                <span>{ownerReverseFullName}</span>
+                <div className='flex w-[205px]'>
+                  <span>{`MTOP: 24-PAS-`}</span>
+                </div>
+              </div>
+            </div>
+            {/* Authority */}
+            <div className='flex w-full items-center leading-none'>
+              <div className='flex flex-1'>
+                <span className='inline-block w-[135px]'>
+                  Name of Authority:{' '}
+                </span>
+                <span className='print-border flex-1 border-b pl-2'>
+                  // CPC //MTOP
+                </span>
+              </div>
+              <div className='flex'>
+                <div className='flex w-[205px]'>
+                  <span>Validity Period: </span>
+                  <span className='print-border inline-block flex-1 border-b pl-2'>
+                    {`${activeValidityMonths} ${activeValidityMonths > 1 ? 'Months' : 'Month'}`}
+                  </span>
+                </div>
+              </div>
+            </div>
+            {/* Dates */}
+            <div className='flex w-full items-center leading-none'>
+              <div className='flex flex-1'>
+                <span className='inline-block w-[135px]'>Date Granted: </span>
+                <span className='print-border flex-1 border-b pl-2'>
+                  {approvalDate}
+                </span>
+              </div>
+              <div className='flex'>
+                <div className='flex w-[205px]'>
+                  <span>Expiry Date: </span>
+                  <span className='print-border inline-block flex-1 border-b pl-2'>
+                    {expiryDate}
+                  </span>
+                </div>
+              </div>
+            </div>
+            {/* Units */}
+            <div className='flex w-full items-center leading-none'>
+              <div className='flex flex-1'>
+                <span className='inline-block w-[135px]'>
+                  Authorized No. Of Unit:{' '}
+                </span>
+                <span className='print-border flex-1 border-b pl-2 leading-none'>
+                  {numberOfUnits}
+                </span>
+              </div>
+            </div>
+            {/* Route */}
+            <div className='flex w-full items-center leading-none'>
+              <div className='flex flex-1'>
+                <span className='inline-block w-[135px]'>
+                  Authorized Route:{' '}
+                </span>
+                <span className='print-border flex-1 border-b pl-2 leading-none'>
+                  {todaAuthorizedRoute}
+                </span>
+              </div>
+            </div>
+          </div>
+          <div className='flex w-full items-start gap-x-8 pt-4'>
+            <div className='flex flex-col gap-4 text-base uppercase'>
+              <span>Make</span>
+              <span>{vehicleMake}</span>
+            </div>
+            <div className='flex flex-col gap-4 text-base uppercase'>
+              <span>Motor No.</span>
+              <span>{vehicleMotorNo}</span>
+            </div>
+            <div className='flex flex-col gap-4 text-base uppercase'>
+              <span>Chassis/Serial No.</span>
+              <span>{vehicleChassisNo}</span>
+            </div>
+            <div className='flex flex-col gap-4 text-base uppercase'>
+              <span>Plate No.</span>
+              <span>{plateNo}</span>
             </div>
           </div>
         </div>
-        <div className='print-border flex w-full flex-col gap-2.5 rounded-sm border border-border p-3'>
-          <h4 className='text-base font-normal uppercase leading-none'>
-            {isDriverOwner ? 'Operator and Driver Info' : 'Operator Info'}
-          </h4>
-          <div className='flex w-full items-center gap-2.5'>
-            <BaseFieldText label='Name' isPrint>
-              {ownerReverseFullName}
-            </BaseFieldText>
-            <BaseFieldText label='Phone No.' isPrint>
-              {ownerPhoneNumber}
-            </BaseFieldText>
-            <BaseFieldText label='Email' isPrint>
-              {ownerEmail}
-            </BaseFieldText>
-          </div>
-        </div>
-        {!isDriverOwner && (
-          <div className='print-border flex w-full flex-col gap-2.5 rounded-sm border border-border p-3'>
-            <h4 className='text-base font-normal uppercase leading-none'>
-              Driver Info
-            </h4>
-            <div className='flex w-full items-center gap-4'>
-              <BaseFieldText label='Name' isPrint>
-                {driverReverseFullName}
-              </BaseFieldText>
-              <BaseFieldText label='Phone No.' isPrint>
-                {driverPhoneNumber}
-              </BaseFieldText>
-              <BaseFieldText label='Email' isPrint>
-                {driverEmail}
-              </BaseFieldText>
-            </div>
-          </div>
-        )}
         {currentRateSheet && (
-          <>
-            <div className='print-border border-b border-border' />
-            <RateSheetDetailsPrintView
-              rateSheet={currentRateSheet}
-              paymentORNo={paymentORNo}
-            />
-          </>
+          <RateSheetDetailsPrintView
+            rateSheet={currentRateSheet}
+            paymentDate={approvalDate || undefined}
+            paymentORNo={paymentORNo}
+          />
         )}
-        <div className='print-border border-b border-border' />
-        <div className='flex w-full flex-col gap-10'>
-          <h4 className='text-base font-normal uppercase leading-none'>
-            Recommending Approval
+        <div className='flex w-full flex-col gap-5'>
+          <h4 className='text-sm font-bold uppercase leading-none'>
+            Recommending Approval:
           </h4>
           <div className='flex w-full justify-between gap-2.5'>
-            <BaseFieldText
-              className='max-w-72'
-              label='Executive Asst. 1, POSTMS, Passi City'
-              isPrint
-            >
-              Mariano P. Palmes
-            </BaseFieldText>
-            <BaseFieldText className='max-w-72' label='City Treasurer' isPrint>
-              Paquito J. Estandarte Jr.
-            </BaseFieldText>
+            <div className='relative flex flex-col gap-0.5'>
+              <img
+                className='absolute -top-12 left-1/2 w-32 -translate-x-1/2'
+                src={`${IMG_BASE_URL}/sign-palmes.png`}
+                alt='sign-palmes'
+              />
+              <span className='text-base font-bold uppercase'>
+                Mariano P. Palmes
+              </span>
+              <div className='flex flex-col gap-1 text-sm leading-none'>
+                <span className='!text-base !leading-none'>
+                  Executive Assistant I
+                </span>
+                <span>POSTMS</span>
+                <span>Passi City, Iloilo</span>
+              </div>
+            </div>
+            <div className='flex flex-col gap-0.5'>
+              <span className='text-base font-bold uppercase'>
+                Paquito J. Estandarte Jr.
+              </span>
+              <div className='flex flex-col text-center text-base leading-none'>
+                <span>City Treasurer</span>
+              </div>
+            </div>
           </div>
-          <div className='mx-auto flex w-80 max-w-full flex-col items-center gap-10'>
-            <BaseFieldText label={`City Gov't Dept. Head I`} center isPrint>
-              Jason P. Padilla
-            </BaseFieldText>
-            <BaseFieldText label='City Mayor' center isPrint>
-              Atty. Stephen A. Palmares, CPA
-            </BaseFieldText>
-            <span className='text-base'>By Authority of the City Mayor</span>
-            <BaseFieldText
-              label='SP Member/Chairman, Committee on Transportation and Communication'
-              center
-              isPrint
-            >
-              Renz Carlo P. Palma
-            </BaseFieldText>
+          <div className='mx-auto flex max-w-full flex-col items-center gap-10'>
+            <div className='relative flex flex-col gap-0.5 pb-6 text-center'>
+              <img
+                className='absolute -top-6 left-1/2 w-16 -translate-x-1/2 opacity-90'
+                src={`${IMG_BASE_URL}/sign-padilla.png`}
+                alt='sign-padilla'
+              />
+              <span className='text-base font-bold uppercase'>
+                Jason P. Padilla
+              </span>
+              <div className='flex flex-col text-center text-base leading-none'>
+                <span>City Gov't. Dept. Head I</span>
+              </div>
+            </div>
+            <div className='flex flex-col gap-0.5 text-center'>
+              <span className='text-base font-bold uppercase'>
+                Atty. Stephen A. Palmares, CPA
+              </span>
+              <div className='flex flex-col gap-1 text-center text-base leading-none'>
+                <span>City Mayor</span>
+              </div>
+            </div>
+            <span className='text-base uppercase'>
+              By Authority of the City Mayor:
+            </span>
+            <div className='relative flex flex-col gap-0.5 text-center'>
+              <img
+                className='absolute -top-6 left-1/2 w-16 -translate-x-1/2'
+                src={`${IMG_BASE_URL}/sign-palma.png`}
+                alt='sign-palma'
+              />
+              <span className='text-base font-bold uppercase'>
+                Renz Carlo P. Palma
+              </span>
+              <div className='flex flex-col gap-1 text-center text-base leading-none'>
+                <span>SP Member/Chairman- Committee on Transportation</span>
+                <span>And Communication</span>
+              </div>
+            </div>
           </div>
+          <div className='text-base'>{todaName}</div>
         </div>
       </div>
     );

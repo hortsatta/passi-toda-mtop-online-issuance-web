@@ -2,8 +2,6 @@ import { memo, useMemo } from 'react';
 import cx from 'classix';
 
 import { convertToCurrency } from '#/core/helpers/core.helper';
-import { BaseFieldText } from '#/base/components/base-field-text.component';
-import { BaseIcon } from '#/base/components/base-icon.component';
 
 import type { ComponentProps } from 'react';
 import type { RateSheet } from '../models/rate-sheet.model';
@@ -11,17 +9,19 @@ import type { RateSheet } from '../models/rate-sheet.model';
 type Props = ComponentProps<'div'> & {
   rateSheet: RateSheet;
   paymentORNo?: string;
+  paymentDate?: string;
 };
 
 export const RateSheetDetailsPrintView = memo(function ({
   className,
   rateSheet,
   paymentORNo,
+  paymentDate,
   ...moreProps
 }: Props) {
   const [headerTitle, rateSheetFees, rateSheetPenaltyFees, totalFees] = useMemo(
     () => [
-      `${rateSheet.name} Fees`,
+      `Cleared as to Payment of:`,
       rateSheet.rateSheetFees
         .filter((fee) => !fee.isPenalty)
         .map(({ name, amount }) => ({
@@ -46,65 +46,72 @@ export const RateSheetDetailsPrintView = memo(function ({
   return (
     <div
       className={cx(
-        'inline-flex w-fit min-w-[280px] flex-col gap-2.5 self-end',
+        'inline-flex w-full max-w-[300px] flex-col self-end pr-10',
         className,
       )}
       {...moreProps}
     >
-      <div className='print-border flex flex-col gap-1.5 rounded-sm border border-border p-3 pb-2 text-base'>
-        <h4 className='pb-1.5 text-base font-normal uppercase leading-none'>
-          {headerTitle}
-        </h4>
+      <div className='flex flex-col gap-1 text-sm'>
+        <h4 className='text-sm font-normal leading-none'>{headerTitle}</h4>
         <div className='flex flex-col gap-1'>
-          {rateSheetFees.map(({ name, amount }, index) => (
+          {rateSheetFees.map(({ name }, index) => (
             <div
               key={index}
-              className='flex flex-1 items-center justify-between'
+              className='flex flex-1 items-center justify-between leading-none'
             >
               <span>{name}</span>
-              <span>{amount}</span>
             </div>
           ))}
         </div>
         {!!rateSheetPenaltyFees.length && (
-          <div className='flex flex-col gap-1 rounded-sm border border-border'>
-            {rateSheetPenaltyFees.map(({ name, amount }, index) => (
+          <div className='flex flex-col gap-1'>
+            {rateSheetPenaltyFees.map(({ name }, index) => (
               <div
                 key={`p-${index}`}
-                className='flex flex-1 items-center justify-between text-sm'
+                className='flex flex-1 items-center justify-between leading-none'
               >
                 <span>{name}</span>
-                <span key={`p-fee-${index}`} className='text-base'>
-                  {amount}
-                </span>
               </div>
             ))}
           </div>
         )}
-        <div className='print-border flex-1 border-b border-border' />
-        <div className='flex flex-1 items-center justify-end gap-5 font-bold'>
-          <span className='uppercase'>Total</span>
-          <span className='text-lg leading-none'>{totalFees}</span>
-        </div>
-      </div>
-      <div className='flex items-center justify-between gap-2.5'>
-        {paymentORNo?.length ? (
-          <BaseFieldText
-            className='max-w-[200px]'
-            label='Official Receipt No'
-            isPrint
-          >
-            {paymentORNo}
-          </BaseFieldText>
-        ) : (
-          <div className='max-w-[200px]' />
-        )}
-        <div className='flex items-center gap-1 text-lg'>
-          <BaseIcon
-            name={paymentORNo?.length ? 'check-circle' : 'x-circle'}
-            size={20}
-          />
-          <span>Paid</span>
+        <div className='flex flex-col gap-1'>
+          <div className='flex leading-none'>
+            <div className='flex flex-1'>
+              <span>O.R No.</span>
+              <span className='print-border inline-block flex-1 border-b px-1.5'>
+                {paymentORNo}
+              </span>
+            </div>
+            <div className='flex flex-1'>
+              <span>CTC No.</span>
+              <span className='print-border inline-block flex-1 border-b' />
+            </div>
+          </div>
+          <div className='flex leading-none'>
+            <div className='flex flex-1'>
+              <span>Amount</span>
+              <span className='print-border inline-block flex-1 border-b px-1.5'>
+                {totalFees}
+              </span>
+            </div>
+            <div className='flex flex-1'>
+              <span>Amount</span>
+              <span className='print-border inline-block flex-1 border-b' />
+            </div>
+          </div>
+          <div className='flex leading-none'>
+            <div className='flex flex-1'>
+              <span>Date</span>
+              <span className='print-border inline-block flex-1 border-b px-1.5'>
+                {paymentDate}
+              </span>
+            </div>
+            <div className='flex flex-1'>
+              <span>Date</span>
+              <span className='print-border inline-block flex-1 border-b' />
+            </div>
+          </div>
         </div>
       </div>
     </div>
