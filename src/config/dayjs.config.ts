@@ -8,6 +8,7 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import isBetween from 'dayjs/plugin/isBetween';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
 
 // Initialize dayjs
 dayjs.extend(relativeTime);
@@ -28,6 +29,7 @@ dayjs.extend(timezone);
 dayjs.tz.setDefault('Asia/Manila');
 // Other plugins
 dayjs.extend(isBetween);
+dayjs.extend(advancedFormat);
 
 const tzDayjs = (...args: any[]) => {
   return dayjs(...args).tz();

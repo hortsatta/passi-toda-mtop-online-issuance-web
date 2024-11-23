@@ -49,10 +49,11 @@ export function useFranchiseSinglePrint({
 
   useEffect(() => {
     if (!franchise) return;
-    const timeout = setTimeout((): any => {
-      print();
-      clearTimeout(timeout);
-    }, 500);
+    // TEMP
+    // const timeout = setTimeout((): any => {
+    //   print();
+    //   clearTimeout(timeout);
+    // }, 500);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [franchise]);
 
